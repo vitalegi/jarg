@@ -22,6 +22,7 @@ jarg_game_frontend_missions -> jarg_game_frontend_identity "Retrieve user identi
 jarg_game_frontend_missions -> jarg_game_backend_missions
 
 ## jarg_game_backend
+jarg_game_backend -> jarg_database "Retrieve content, update player game"
 jarg_game_backend_auth -> firebase_auth_app_token "Validate SSO token"
 jarg_game_backend_auth -> jarg_database_users "Is user authorized?"
 jarg_game_backend_missions -> jarg_game_backend_auth
@@ -43,6 +44,7 @@ jarg_editor_frontend_permissions -> jarg_editor_frontend_identity "Retrieve user
 jarg_editor_frontend_permissions -> jarg_editor_backend_permissions
 
 ## jarg_editor_backend
+jarg_editor_backend -> jarg_database "Modify content"
 jarg_editor_backend_auth -> firebase_auth_app_token "Validate SSO token"
 jarg_editor_backend_auth -> jarg_database_users "Is user authorized?"
 jarg_editor_backend_missions -> jarg_editor_backend_auth

@@ -123,7 +123,7 @@ description: Component view of JaRG Game WebApp
 | JaRG | JaRG Editor Backend | Manages user accesses and grants | JaRG | JaRG Editor Backend | Verify SSO token |  |
 | JaRG | JaRG Editor Backend | Verify SSO token | JaRG | Database |  | Is user authorized? |
 | JaRG | JaRG Editor Backend | Verify SSO token | JaRG | Database | Users | Is user authorized? |
-| JaRG | JaRG Editor Backend |  | JaRG | Database |  | Is user authorized? |
+| JaRG | JaRG Editor Backend |  | JaRG | Database |  | Modify content |
 | JaRG | JaRG Editor Backend |  | JaRG | Database | Characters | Get user's missions |
 | JaRG | JaRG Editor Backend |  | JaRG | Database | Maps | Get user's missions |
 | JaRG | JaRG Editor Backend |  | JaRG | Database | Missions | Get user's missions |
@@ -155,7 +155,7 @@ description: Component view of JaRG Game WebApp
 | JaRG | JaRG Game Backend | Missions services | JaRG | JaRG Game Backend | Verify SSO token |  |
 | JaRG | JaRG Game Backend | Verify SSO token | JaRG | Database |  | Is user authorized? |
 | JaRG | JaRG Game Backend | Verify SSO token | JaRG | Database | Users | Is user authorized? |
-| JaRG | JaRG Game Backend |  | JaRG | Database |  | Is user authorized? |
+| JaRG | JaRG Game Backend |  | JaRG | Database |  | Retrieve content, update player game |
 | JaRG | JaRG Game Backend |  | JaRG | Database | Characters | Get user's missions |
 | JaRG | JaRG Game Backend |  | JaRG | Database | Maps | Get user's missions |
 | JaRG | JaRG Game Backend |  | JaRG | Database | Missions | Get user's missions |
@@ -218,7 +218,7 @@ description: Component view of JaRG Game WebApp
 | JaRG | JaRG Editor Backend |  | Firebase | Firebase Auth WebApp |  | Validate SSO token |
 | JaRG | JaRG Editor Backend |  | Firebase | Firebase Auth WebApp | User SSO token | Validate SSO token |
 | JaRG | JaRG Editor Backend |  | Firebase |  |  | Validate SSO token |
-| JaRG | JaRG Editor Backend |  | JaRG | Database |  | Is user authorized? |
+| JaRG | JaRG Editor Backend |  | JaRG | Database |  | Modify content |
 | JaRG | JaRG Editor Backend |  | JaRG | Database | Characters | Get user's missions |
 | JaRG | JaRG Editor Backend |  | JaRG | Database | Maps | Get user's missions |
 | JaRG | JaRG Editor Backend |  | JaRG | Database | Missions | Get user's missions |
@@ -262,7 +262,7 @@ description: Component view of JaRG Game WebApp
 | JaRG | JaRG Game Backend |  | Firebase | Firebase Auth WebApp |  | Validate SSO token |
 | JaRG | JaRG Game Backend |  | Firebase | Firebase Auth WebApp | User SSO token | Validate SSO token |
 | JaRG | JaRG Game Backend |  | Firebase |  |  | Validate SSO token |
-| JaRG | JaRG Game Backend |  | JaRG | Database |  | Is user authorized? |
+| JaRG | JaRG Game Backend |  | JaRG | Database |  | Retrieve content, update player game |
 | JaRG | JaRG Game Backend |  | JaRG | Database | Characters | Get user's missions |
 | JaRG | JaRG Game Backend |  | JaRG | Database | Maps | Get user's missions |
 | JaRG | JaRG Game Backend |  | JaRG | Database | Missions | Get user's missions |
@@ -288,4 +288,9 @@ description: Component view of JaRG Game WebApp
 
 ## Deployments
 
+### JaRG - Deployment - Live
+
+![deployment_jarg_live](../../images/deployment_jarg_live.png)
+
+[png](../../images/deployment_jarg_live.png) | [svg](../../images/deployment_jarg_live.svg)
 
