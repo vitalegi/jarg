@@ -33,6 +33,13 @@ workspace "JaRG" "JaRG architecture" {
                     containerInstance jarg_database
                 }
             }
+            deploymentNode "Firebase App" {
+                tags "Firebase"
+                deploymentNode "Firebase Live" {
+                    containerInstance firebase_auth
+                    containerInstance firebase_auth_app
+                }
+            }
         }
     }
 
