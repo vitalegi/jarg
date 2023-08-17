@@ -32,6 +32,7 @@ module.exports = {
   rules: {
     'no-console': 1,
     'prettier/prettier': 2,
-    '@typescript-eslint/no-var-requires': 0
+    '@typescript-eslint/no-var-requires': 0,
+    '@typescript-eslint/no-unused-vars': 0
   }
 };

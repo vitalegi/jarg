@@ -1,8 +1,22 @@
-import Game from './game';
-import { IPixiAppWrapper } from './pixi/pixi-app';
+import { Application } from 'pixi.js';
+import Game from './ui/game';
+import GridService from './core/services/grid-service';
+import GridObserver from './observers/GridObserver';
 
-export default async function setup(element: HTMLDivElement, pixiApp: IPixiAppWrapper): Promise<void> {
-  const game = new Game(pixiApp);
-  await game.init();
-  element.appendChild(game.getView());
+export default async function setup(element: HTMLDivElement) {
+  const app = new Application<HTMLCanvasElement>();
+  const game = new Game(app);
+  element.appendChild(app.view);
+
+  const observer = new GridObserver();
+  const gridService = new GridService();
+
+  game.setObserver(observer);
+  gridService.setObserver(observer);
+
+  await game.initTextures();
+  gridService.initObservers();
+  game.initObservers();
+
+  await game.newGame();
 }
