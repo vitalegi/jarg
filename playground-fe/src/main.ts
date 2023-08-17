@@ -3,7 +3,6 @@ import typescriptLogo from './typescript.svg';
 import viteLogo from '/vite.svg';
 import { setupCounter } from './counter.ts';
 import setupGame from './game/game-starter.ts';
-import { PixiAppWrapper } from './game/pixi/pixi-app-wrapper.ts';
 
 const querySelector = <E extends Element = Element>(selector: string): E => {
   const element = document.querySelector<E>(selector);
@@ -32,5 +31,4 @@ querySelector<HTMLDivElement>('#app').innerHTML = `
 `;
 
 setupCounter(querySelector<HTMLButtonElement>('#counter'));
-const wrapper = new PixiAppWrapper({});
-setupGame(querySelector<HTMLDivElement>('#app'), wrapper);
+setupGame(querySelector<HTMLDivElement>('#app'));
