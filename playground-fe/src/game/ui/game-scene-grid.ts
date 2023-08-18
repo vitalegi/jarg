@@ -2,23 +2,23 @@ import { Application, FederatedPointerEvent, ICanvas, IRenderer, Resource, Sprit
 import AssetLoader from './assets-loader';
 import Grid, { GridEntry } from '../core/models/grid';
 import InteractionStore from './interation-store';
-import GridObserver, { EventType, Subscriber } from '../observers/GridObserver';
+import Observer, { EventType, Subscriber } from '../observers/observer';
 import { createRandom } from '../core/services/grid-builder';
 import { SwapModel } from '../core/models/observer-models';
 import Logger from '../../logging/logger';
-import { Bean } from '../core/bean';
+import { GameScene } from './game-coordinator';
 
-export default class Game implements Bean {
+export default class GameSceneGrid implements GameScene {
   log = Logger.getInstance('Game');
 
   private _app?: Application;
   private _assetLoader? = new AssetLoader();
   private textures = new Map<string, Texture<Resource>>();
   private interactionStore = new InteractionStore();
-  private observer?: GridObserver;
+  private observer?: Observer;
   private subscribers = new Array<Subscriber>();
 
-  public constructor(app: Application) {
+  setApplication(app: Application<ICanvas>): void {
     this._app = app;
   }
 
@@ -64,11 +64,11 @@ export default class Game implements Bean {
     return this.getApp().renderer;
   }
 
-  public setObserver(observer: GridObserver) {
+  public setObserver(observer: Observer) {
     this.observer = observer;
   }
 
-  public getObserver(): GridObserver {
+  public getObserver(): Observer {
     if (!this.observer) {
       throw Error(`observer is undefined`);
     }

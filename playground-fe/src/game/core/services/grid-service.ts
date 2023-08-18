@@ -1,11 +1,11 @@
-import GridObserver, { EventType, Subscriber } from '../../observers/GridObserver';
+import Observer, { EventType, Subscriber } from '../../observers/observer';
 import { Bean } from '../bean';
 import Grid, { GridEntry } from '../models/grid';
 import { SwapModel } from '../models/observer-models';
 
 export default class GridService implements Bean {
   private grid?: Grid;
-  private observer?: GridObserver;
+  private observer?: Observer;
   private subscribers = new Array<Subscriber>();
 
   public async init(): Promise<void> {
@@ -66,11 +66,11 @@ export default class GridService implements Bean {
     }
   }
 
-  public setObserver(observer: GridObserver) {
+  public setObserver(observer: Observer) {
     this.observer = observer;
   }
 
-  public getObserver(): GridObserver {
+  public getObserver(): Observer {
     if (!this.observer) {
       throw Error(`observer is undefined`);
     }

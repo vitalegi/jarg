@@ -1,3 +1,4 @@
+import { uniqueId } from '../../util/id-utils';
 import { GridColors } from '../constants/grid-constants';
 import Grid, { GridEntry } from '../models/grid';
 
@@ -12,10 +13,9 @@ const initEmptyGrid = function (horizontalSize: number, verticalSize: number, de
   grid.entries = new Array<GridEntry>();
   grid.horizontal = horizontalSize;
   grid.vertical = verticalSize;
-  let COUNTER = 0;
   for (let verticalIndex = 0; verticalIndex < verticalSize; verticalIndex++) {
     for (let horizontalIndex = 0; horizontalIndex < horizontalSize; horizontalIndex++) {
-      const entry = new GridEntry(defaultColor, `ge_${++COUNTER}`);
+      const entry = new GridEntry(defaultColor, `ge_${uniqueId()}`);
       entry.horizontalIndex = horizontalIndex;
       entry.verticalIndex = verticalIndex;
       grid.entries.push(entry);
