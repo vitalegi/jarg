@@ -14,9 +14,8 @@ export default async function setup(element: HTMLDivElement) {
   game.setObserver(observer);
   gridService.setObserver(observer);
 
-  await game.initTextures();
-  gridService.initObservers();
-  game.initObservers();
+  await game.init();
+  gridService.init();
 
   await game.newGame();
 }

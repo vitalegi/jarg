@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 export default class Logger {
   name = '';
   static getInstance(name: string): Logger {
@@ -6,12 +7,26 @@ export default class Logger {
     return log;
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  info(str: string, ...params: any[]): void {
-    // eslint-disable-next-line no-console
-    console.log(`${this.name} - ${str}`, params);
+  debug(str: string, ...params: any[]): void {
+    if (params && params.length > 0) {
+      console.debug(`${this.name} - ${str}`, params);
+    } else {
+      console.debug(`${this.name} - ${str}`);
+    }
   }
-  error(str: string, e: Error): void {
-    // eslint-disable-next-line no-console
-    console.error(`${this.name} - ${str}`, e);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  info(str: string, ...params: any[]): void {
+    if (params && params.length > 0) {
+      console.log(`${this.name} - ${str}`, params);
+    } else {
+      console.log(`${this.name} - ${str}`);
+    }
+  }
+  error(str: string, e?: Error): void {
+    if (e) {
+      console.error(`${this.name} - ${str}`, e);
+    } else {
+      console.error(`${this.name} - ${str}`);
+    }
   }
 }
