@@ -2,12 +2,13 @@ import { Application, FederatedPointerEvent, ICanvas, IRenderer, Resource, Sprit
 import AssetLoader from './assets-loader';
 import Grid, { GridEntry } from '../core/models/grid';
 import InteractionStore from './interation-store';
-import GridObserver from '../observers/GridObserver';
+import GridObserver, { EventType, Subscriber } from '../observers/GridObserver';
 import { createRandom } from '../core/services/grid-builder';
 import { SwapModel } from '../core/models/observer-models';
 import Logger from '../../logging/logger';
+import { Bean } from '../core/bean';
 
-export default class Game {
+export default class Game implements Bean {
   log = Logger.getInstance('Game');
 
   private _app?: Application;
@@ -15,14 +16,20 @@ export default class Game {
   private textures = new Map<string, Texture<Resource>>();
   private interactionStore = new InteractionStore();
   private observer?: GridObserver;
+  private subscribers = new Array<Subscriber>();
 
   public constructor(app: Application) {
     this._app = app;
   }
 
-  public initObservers() {
-    this.getObserver().subscribe('new-game-ready', (payload: unknown) => this.eventNewGame(Grid.parse(payload)));
-    this.getObserver().subscribe('swap-confirmed', (payload: unknown) => this.eventSwap(SwapModel.parse(payload)));
+  public async init(): Promise<void> {
+    await this.initTextures();
+    this.subscribe('new-game-ready', (payload: unknown) => this.eventNewGame(Grid.parse(payload)));
+    this.subscribe('swap-confirmed', (payload: unknown) => this.eventSwap(SwapModel.parse(payload)));
+  }
+
+  public async destroy() {
+    this.getObserver().unsubscribeAll(this.subscribers);
   }
 
   public async newGame() {
@@ -30,7 +37,7 @@ export default class Game {
     this.getObserver().publish('new-game-request', grid);
   }
 
-  public async initTextures() {
+  private async initTextures() {
     const blue = await this.getAssetLoader().load('blue.png');
     const red = await this.getAssetLoader().load('red.png');
     const white = await this.getAssetLoader().load('white.png');
@@ -130,5 +137,11 @@ export default class Game {
     e1.y = e2.y;
     e2.x = x;
     e2.y = y;
+    this.log.debug('swap done', evt);
+  }
+
+  protected subscribe(name: EventType, callback: (payload: unknown) => void): void {
+    const subscriber = this.getObserver().subscribe(name, callback);
+    this.subscribers.push(subscriber);
   }
 }
