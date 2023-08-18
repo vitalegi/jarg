@@ -1,0 +1,33 @@
+{
+  "name": "jarg",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test:unit": "vitest run",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "format": "prettier --write src/",
+    "ci": "npm run lint && npm run test:unit",
+    "build:full": "npm run ci && npm run build",
+    "pr": "npm run format && npm run lint && npm run test:unit"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/parser": "^6.4.0",
+    "eslint": "^8.47.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "jsdom": "^22.1.0",
+    "prettier": "^3.0.2",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.5",
+    "vitest": "^0.34.1"
+  },
+  "dependencies": {
+    "pixi.js": "^7.2.4"
+  }
+}
