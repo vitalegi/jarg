@@ -1,24 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Logger from '../../logging/logger';
+import { uniqueId } from '../util/id-utils';
 
 export type EventType = 'new-game-request' | 'new-game-ready' | 'swap-request' | 'swap-confirmed';
 
 export class Subscriber {
-  private static ID = 0;
   readonly id: number;
   name: EventType;
-  subscriber: (payload: unknown) => void;
-  public constructor(name: EventType, subscriber: (payload: unknown) => void) {
+  subscriber: (payload: any) => void;
+  public constructor(name: EventType, subscriber: (payload: any) => void) {
     this.name = name;
     this.subscriber = subscriber;
-    this.id = ++Subscriber.ID;
+    this.id = uniqueId();
   }
 }
 
-export default class GridObserver {
-  log = Logger.getInstance('GridObserver');
+export default class Observer {
+  log = Logger.getInstance('Observer');
   subscribers = new Array<Subscriber>();
 
-  public publish(name: EventType, payload: unknown): void {
+  public publish(name: EventType, payload: any): void {
     this.log.debug(`Emit ${name}`, payload);
     const found = this.subscribers.filter((s) => s.name === name).map((s) => s.subscriber);
     if (found.length === 0) {
@@ -27,7 +28,7 @@ export default class GridObserver {
     found.forEach((callback) => callback(payload));
   }
 
-  public subscribe(name: EventType, callback: (payload: unknown) => void): Subscriber {
+  public subscribe(name: EventType, callback: (payload: any) => void): Subscriber {
     const subscriber = new Subscriber(name, callback);
     this.log.debug(`New subscriber ${subscriber.id} on ${name}`);
     this.subscribers.push(subscriber);
