@@ -12,16 +12,30 @@ npm install
 npm run dev
 ```
 
-## Build + CI
+## Check before PR
 
 ```
-npm run build:full
+npm run pr
 ```
 
-## Unit Test
+## Testing & coverage
+
+### Run unit tests once
 
 ```
 npm run test:unit
+```
+
+### Generate coverage report
+
+```
+npm run test:coverage
+```
+
+### Run unit tests + coverage Vitest GUI mode
+
+```
+npm run test:dev
 ```
 
 ## Format
@@ -34,4 +48,10 @@ npm run format
 
 ```
 npm run ci
+```
+
+## Build + CI
+
+```
+npm run build:full
 ```
