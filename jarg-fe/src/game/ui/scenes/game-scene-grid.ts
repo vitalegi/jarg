@@ -30,6 +30,7 @@ export default class GameSceneGrid implements GameScene {
     this.observer.subscribe('new-game-ready', (payload: unknown) => this.eventNewGame(Grid.parse(payload)));
     this.observer.subscribe('swap-confirmed', (payload: unknown) => this.eventSwap(SwapModel.parse(payload)));
   }
+  async start() {}
 
   setApplication(app: Application<ICanvas>): void {
     this.app = app;
