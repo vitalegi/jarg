@@ -2,13 +2,12 @@
 import Logger from '../../logging/logger';
 import { uniqueId } from '../util/id-utils';
 
-export type EventType = 'new-game-request' | 'new-game-ready' | 'swap-request' | 'swap-confirmed';
-
 export class Subscriber {
   readonly id: number;
-  name: EventType;
+  name: string;
   subscriber: (payload: any) => void;
-  public constructor(name: EventType, subscriber: (payload: any) => void) {
+
+  public constructor(name: string, subscriber: (payload: any) => void) {
     this.name = name;
     this.subscriber = subscriber;
     this.id = uniqueId();
@@ -19,7 +18,7 @@ export default class Observer {
   log = Logger.getInstance('Observer');
   subscribers = new Array<Subscriber>();
 
-  public publish(name: EventType, payload: any): void {
+  public publish(name: string, payload: any): void {
     this.log.debug(`Emit ${name}`, payload);
     const found = this.subscribers.filter((s) => s.name === name).map((s) => s.subscriber);
     if (found.length === 0) {
@@ -28,9 +27,9 @@ export default class Observer {
     found.forEach((callback) => callback(payload));
   }
 
-  public subscribe(name: EventType, callback: (payload: any) => void): Subscriber {
+  public subscribe(name: string, callback: (payload: any) => void): Subscriber {
     const subscriber = new Subscriber(name, callback);
-    this.log.debug(`New subscriber ${subscriber.id} on ${name}`);
+    this.log.info(`New subscriber ${subscriber.id} on ${name}`);
     this.subscribers.push(subscriber);
     return subscriber;
   }
@@ -42,5 +41,28 @@ export default class Observer {
 
   public unsubscribeAll(subscribers: Array<Subscriber>): void {
     subscribers.forEach(this.unsubscribe);
+  }
+}
+
+export class ObserverSubscribers {
+  private observer: Observer;
+  private subscribers = new Array<Subscriber>();
+
+  public constructor(observer: Observer) {
+    this.observer = observer;
+  }
+
+  public subscribe(name: string, callback: (payload: unknown) => void): Subscriber {
+    const subscriber = this.observer.subscribe(name, callback);
+    this.subscribers.push(subscriber);
+    return subscriber;
+  }
+
+  public async unsubscribeAll() {
+    this.observer.unsubscribeAll(this.subscribers);
+  }
+
+  public publish(name: string, payload: any): void {
+    this.observer.publish(name, payload);
   }
 }
