@@ -1,22 +1,24 @@
-import Observer, { EventType, Subscriber } from '../../observers/observer';
+import Observer, { ObserverSubscribers } from '../../observers/observer';
 import { Bean } from '../bean';
 import Grid, { GridEntry } from '../models/grid';
 import { SwapModel } from '../models/observer-models';
 
-export default class GridService implements Bean {
+export default class GameService implements Bean {
   private grid?: Grid;
-  private observer?: Observer;
-  private subscribers = new Array<Subscriber>();
+  private observer: ObserverSubscribers;
 
-  public async init(): Promise<void> {
-    this.subscribe('new-game-request', (payload) => this.eventNewGame(Grid.parse(payload)));
-    this.subscribe('swap-request', (payload) => this.eventSwap(SwapModel.parse(payload)));
+  public constructor(observer: Observer) {
+    this.observer = new ObserverSubscribers(observer);
   }
 
   public async destroy() {
-    this.getObserver().unsubscribeAll(this.subscribers);
+    await this.observer.unsubscribeAll();
   }
 
+  public async init(): Promise<void> {
+    this.observer.subscribe('new-game-request', (payload) => this.eventNewGame(Grid.parse(payload)));
+    this.observer.subscribe('swap-request', (payload) => this.eventSwap(SwapModel.parse(payload)));
+  }
   public setGrid(grid: Grid) {
     this.grid = grid;
   }
@@ -66,16 +68,6 @@ export default class GridService implements Bean {
     }
   }
 
-  public setObserver(observer: Observer) {
-    this.observer = observer;
-  }
-
-  public getObserver(): Observer {
-    if (!this.observer) {
-      throw Error(`observer is undefined`);
-    }
-    return this.observer;
-  }
   public getGrid(): Grid {
     if (!this.grid) {
       throw Error(`grid is undefined`);
@@ -84,7 +76,7 @@ export default class GridService implements Bean {
   }
   eventNewGame(grid: Grid): void {
     this.setGrid(grid);
-    this.getObserver().publish('new-game-ready', grid);
+    this.observer.publish('new-game-ready', grid);
   }
   eventSwap(swap: SwapModel): void {
     const first = this.getEntryById(swap.first);
@@ -96,11 +88,6 @@ export default class GridService implements Bean {
     first.verticalIndex = second.verticalIndex;
     second.horizontalIndex = tmpX;
     second.verticalIndex = tmpY;
-    this.getObserver().publish('swap-confirmed', swap);
-  }
-
-  protected subscribe(name: EventType, callback: (payload: unknown) => void): void {
-    const subscriber = this.getObserver().subscribe(name, callback);
-    this.subscribers.push(subscriber);
+    this.observer.publish('swap-confirmed', swap);
   }
 }

@@ -1,40 +1,43 @@
 import { Application, FederatedPointerEvent, ICanvas, IRenderer, Resource, Sprite, Texture } from 'pixi.js';
-import AssetLoader from './assets-loader';
-import Grid, { GridEntry } from '../core/models/grid';
-import InteractionStore from './interation-store';
-import Observer, { EventType, Subscriber } from '../observers/observer';
-import { createRandom } from '../core/services/grid-builder';
-import { SwapModel } from '../core/models/observer-models';
-import Logger from '../../logging/logger';
-import { GameScene } from './game-coordinator';
+import AssetLoader from '../assets-loader';
+import Grid, { GridEntry } from '../../core/models/grid';
+import InteractionStore from '../interation-store';
+import Observer, { ObserverSubscribers } from '../../observers/observer';
+import { createRandom } from '../../core/services/game-initializr';
+import { SwapModel } from '../../core/models/observer-models';
+import Logger from '../../../logging/logger';
+import { GameScene } from './scene';
 
 export default class GameSceneGrid implements GameScene {
   log = Logger.getInstance('Game');
 
-  private _app?: Application;
-  private _assetLoader? = new AssetLoader();
+  private observer: ObserverSubscribers;
+  private app?: Application;
+  private assetLoader? = new AssetLoader();
   private textures = new Map<string, Texture<Resource>>();
   private interactionStore = new InteractionStore();
-  private observer?: Observer;
-  private subscribers = new Array<Subscriber>();
 
-  setApplication(app: Application<ICanvas>): void {
-    this._app = app;
+  public constructor(observer: Observer) {
+    this.observer = new ObserverSubscribers(observer);
+  }
+
+  public async destroy() {
+    await this.observer.unsubscribeAll();
   }
 
   public async init(): Promise<void> {
     await this.initTextures();
-    this.subscribe('new-game-ready', (payload: unknown) => this.eventNewGame(Grid.parse(payload)));
-    this.subscribe('swap-confirmed', (payload: unknown) => this.eventSwap(SwapModel.parse(payload)));
+    this.observer.subscribe('new-game-ready', (payload: unknown) => this.eventNewGame(Grid.parse(payload)));
+    this.observer.subscribe('swap-confirmed', (payload: unknown) => this.eventSwap(SwapModel.parse(payload)));
   }
 
-  public async destroy() {
-    this.getObserver().unsubscribeAll(this.subscribers);
+  setApplication(app: Application<ICanvas>): void {
+    this.app = app;
   }
 
   public async newGame() {
     const grid = await createRandom(10, 8);
-    this.getObserver().publish('new-game-request', grid);
+    this.observer.publish('new-game-request', grid);
   }
 
   private async initTextures() {
@@ -47,32 +50,21 @@ export default class GameSceneGrid implements GameScene {
   }
 
   public getAssetLoader(): AssetLoader {
-    if (!this._assetLoader) {
+    if (!this.assetLoader) {
       throw Error('assetLoader is null');
     }
-    return this._assetLoader;
+    return this.assetLoader;
   }
 
   public getApp(): Application {
-    if (!this._app) {
+    if (!this.app) {
       throw Error('app is null');
     }
-    return this._app;
+    return this.app;
   }
 
   public getRenderer(): IRenderer<ICanvas> {
     return this.getApp().renderer;
-  }
-
-  public setObserver(observer: Observer) {
-    this.observer = observer;
-  }
-
-  public getObserver(): Observer {
-    if (!this.observer) {
-      throw Error(`observer is undefined`);
-    }
-    return this.observer;
   }
 
   protected getTexture(name?: string): Texture<Resource> {
@@ -109,7 +101,7 @@ export default class GameSceneGrid implements GameScene {
       } else {
         this.log.info(`switch ${id} with ${previousId}`);
         this.interactionStore.reset();
-        this.getObserver().publish('swap-request', new SwapModel(previousId, id));
+        this.observer.publish('swap-request', new SwapModel(previousId, id));
       }
     } else {
       this.log.info(`${id}) selected`);
@@ -138,10 +130,5 @@ export default class GameSceneGrid implements GameScene {
     e2.x = x;
     e2.y = y;
     this.log.debug('swap done', evt);
-  }
-
-  protected subscribe(name: EventType, callback: (payload: unknown) => void): void {
-    const subscriber = this.getObserver().subscribe(name, callback);
-    this.subscribers.push(subscriber);
   }
 }
