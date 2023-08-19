@@ -3,7 +3,7 @@ import { ITextStyle, TextStyle } from 'pixi.js';
 export default class Fonts {
   public static text(): TextStyle {
     const text = Fonts._baseFont();
-    text.fontSize = 36;
+    text.fontSize = 24;
     return new TextStyle(text);
   }
 

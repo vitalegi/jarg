@@ -25,8 +25,6 @@ export default class ScreenInfo extends SceneElement {
       this.info.y = this.getY(this.info);
     }
   }
-  public destroy() {}
-
   private getInfo(): string {
     return `${ScreenData.width()}*${ScreenData.height()} (${ScreenData.isLandscape() ? 'ls' : 'v'})`;
   }

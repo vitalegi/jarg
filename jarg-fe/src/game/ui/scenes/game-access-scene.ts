@@ -1,12 +1,12 @@
-import { Application, ICanvas, IRenderer } from 'pixi.js';
+import { Application, Container, Graphics, ICanvas, IRenderer, Text } from 'pixi.js';
 import AssetLoader from '../assets-loader';
 import Observer, { ObserverSubscribers } from '../../observers/observer';
 import Logger from '../../../logging/logger';
 import { GameScene } from './scene';
-import * as PIXI from 'pixi.js';
 import Fonts from '../styles/fonts';
 import ScreenData from '../devices/screen';
 import ScreenInfo from '../scene-elements/screen-info';
+import BouncingObject from '../scene-elements/bouncing-object';
 
 export default class GameAccessScene implements GameScene {
   log = Logger.getInstance('GameAccessScene');
@@ -14,7 +14,7 @@ export default class GameAccessScene implements GameScene {
   private observer: ObserverSubscribers;
   private app?: Application;
   private assetLoader? = new AssetLoader();
-  private container?: PIXI.Container;
+  private container?: Container;
 
   public constructor(observer: Observer) {
     this.observer = new ObserverSubscribers(observer);
@@ -28,64 +28,30 @@ export default class GameAccessScene implements GameScene {
   async init() {}
 
   async start() {
-    const welcomeText = new PIXI.Text('Hello, adventurer...', Fonts.text());
+    const bouncers = new Array<BouncingObject>();
+    for (let i = 0; i < 500; i++) {
+      const bouncer = new BouncingObject(this.getContainer(), this.getApp(), this.randomShape());
+      bouncer.start();
+      bouncers.push(bouncer);
+    }
+
+    const welcomeText = new Text('Hello, adventurer', Fonts.text());
     welcomeText.x = (ScreenData.width() - welcomeText.width) / 2;
     welcomeText.y = 120;
     this.getContainer().addChild(welcomeText);
+
     const info = new ScreenInfo(this.getContainer(), this.getApp());
     info.start();
 
-    const circle = new PIXI.Graphics();
-    circle.beginFill('red');
-    circle.drawCircle(0, 0, 50);
-    circle.x = 50;
-    circle.y = 50;
-    this.getContainer().addChild(circle);
-    const speed = {
-      x: Math.random() * 5 + 0.01,
-      y: Math.random() * 5 + 0.01
-    };
-
     this.getApp().ticker.add((time: number) => {
       info.tick(time);
-      const incX = speed.x * time;
-      if (speed.x >= 0) {
-        if (circle.x + circle.width / 2 + incX < ScreenData.width()) {
-          circle.x += incX;
-        } else {
-          speed.x = speed.x * -1;
-          circle.x = ScreenData.width() - circle.width / 2;
-        }
-      } else {
-        if (circle.x - circle.width / 2 + incX >= 0) {
-          circle.x += incX;
-        } else {
-          speed.x = speed.x * -1;
-          circle.x = circle.width / 2;
-        }
-      }
-      const incY = speed.y * time;
-      if (speed.y >= 0) {
-        if (circle.y + circle.width / 2 + incY < ScreenData.height()) {
-          circle.y += incY;
-        } else {
-          speed.y = speed.y * -1;
-          circle.y = ScreenData.height() - circle.height / 2;
-        }
-      } else {
-        if (circle.y - circle.width / 2 + incY >= 0) {
-          circle.y += incY;
-        } else {
-          speed.y = speed.y * -1;
-          circle.y = circle.height / 2;
-        }
-      }
+      bouncers.forEach((b) => b.tick(time));
     });
   }
 
   setApplication(app: Application<ICanvas>): void {
     this.app = app;
-    this.container = new PIXI.Container();
+    this.container = new Container();
     this.app.stage.addChild(this.container);
   }
 
@@ -96,13 +62,28 @@ export default class GameAccessScene implements GameScene {
     return this.assetLoader;
   }
 
+  private randomShape(): Graphics {
+    const colors = ['red', 'blue', 'yellow'];
+    const circle = new Graphics();
+    circle.beginFill(colors[Math.floor(Math.random() * colors.length)]);
+    const r = Math.random();
+    if (r < 0.9) {
+      circle.drawCircle(0, 0, 5 + 40 * Math.random());
+    } else {
+      circle.drawCircle(0, 0, 50 + 50 * Math.random());
+    }
+    circle.x = ScreenData.width() / 2;
+    circle.y = ScreenData.height() / 2;
+    return circle;
+  }
+
   private getApp(): Application {
     if (!this.app) {
       throw Error('app is null');
     }
     return this.app;
   }
-  private getContainer(): PIXI.Container {
+  private getContainer(): Container {
     if (!this.container) {
       throw Error('container is null');
     }
