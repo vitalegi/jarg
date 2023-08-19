@@ -1,7 +1,13 @@
-## pushstate redirect
+# index alias
 [[redirects]]
-  from = "/*"
+  from = "/"
   to = "/index.html"
+  status = 200
+
+# API proxy
+[[redirects]]
+  from = "/api/*"
+  to = "https://princimicio.me/:splat"
   status = 200
 
 [[headers]]
