@@ -7,6 +7,7 @@ import Fonts from '../styles/fonts';
 import ScreenData from '../devices/screen';
 import ScreenInfo from '../scene-elements/screen-info';
 import BouncingObject from '../scene-elements/bouncing-object';
+import { Button } from '@pixi/ui';
 
 export default class GameAccessScene implements GameScene {
   log = Logger.getInstance('GameAccessScene');
@@ -29,11 +30,6 @@ export default class GameAccessScene implements GameScene {
 
   async start() {
     const bouncers = new Array<BouncingObject>();
-    for (let i = 0; i < 500; i++) {
-      const bouncer = new BouncingObject(this.getContainer(), this.getApp(), this.randomShape());
-      bouncer.start();
-      bouncers.push(bouncer);
-    }
 
     const welcomeText = new Text('Hello, adventurer', Fonts.text());
     welcomeText.x = (ScreenData.width() - welcomeText.width) / 2;
@@ -42,6 +38,23 @@ export default class GameAccessScene implements GameScene {
 
     const info = new ScreenInfo(this.getContainer(), this.getApp());
     info.start();
+
+    const newGame = new Text('New Game', Fonts.text());
+    newGame.x = (ScreenData.width() - newGame.width) / 2;
+    newGame.y = welcomeText.y + welcomeText.height;
+    this.getContainer().addChild(newGame);
+
+    const spawn = new Text('Spawn', Fonts.text());
+    spawn.x = (ScreenData.width() - spawn.width) / 2;
+    spawn.y = newGame.y + newGame.height;
+    this.getContainer().addChild(spawn);
+
+    const btn = new Button(spawn);
+    btn.onPress.connect(() => {
+      const bouncer = new BouncingObject(this.getContainer(), this.getApp(), this.randomShape());
+      bouncer.start();
+      bouncers.push(bouncer);
+    });
 
     this.getApp().ticker.add((time: number) => {
       info.tick(time);

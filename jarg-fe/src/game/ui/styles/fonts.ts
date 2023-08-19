@@ -1,6 +1,13 @@
 import { ITextStyle, TextStyle } from 'pixi.js';
 
 export default class Fonts {
+  public static button(): TextStyle {
+    const text = Fonts._baseFont();
+    text.fontSize = 24;
+    text.dropShadow = false;
+    return new TextStyle(text);
+  }
+
   public static text(): TextStyle {
     const text = Fonts._baseFont();
     text.fontSize = 24;
