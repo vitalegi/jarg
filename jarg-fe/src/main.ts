@@ -9,4 +9,4 @@ const querySelector = <E extends Element = Element>(selector: string): E => {
   return element;
 };
 
-setupGame(querySelector<HTMLDivElement>('#app'));
+setupGame(querySelector<HTMLDivElement>('#app'), window);

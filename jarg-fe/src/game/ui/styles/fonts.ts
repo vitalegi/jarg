@@ -1,0 +1,32 @@
+import { ITextStyle, TextStyle } from 'pixi.js';
+
+export default class Fonts {
+  public static text(): TextStyle {
+    const text = Fonts._baseFont();
+    text.fontSize = 36;
+    return new TextStyle(text);
+  }
+
+  public static textNote(): TextStyle {
+    const text = Fonts._baseFont();
+    text.fontSize = 12;
+    return new TextStyle(text);
+  }
+
+  private static _baseFont(): Partial<ITextStyle> {
+    return {
+      fontFamily: 'monospace',
+      fill: ['#dddddd'], // gradient
+      stroke: '#222222',
+      strokeThickness: 2,
+      dropShadow: true,
+      dropShadowColor: '#000000',
+      dropShadowBlur: 4,
+      dropShadowAngle: Math.PI / 6,
+      dropShadowDistance: 6,
+      wordWrap: true,
+      wordWrapWidth: 440,
+      lineJoin: 'round'
+    };
+  }
+}
