@@ -10,6 +10,7 @@ import { Button } from '@pixi/ui';
 import { scene } from '../../core/models/start-scene';
 import GameSceneConstants from '../../core/constants/game-scene-constants';
 import ApplicationContext from '../application-context';
+import { ITicker } from '../components/ticker';
 
 export default class GameAccessScene implements GameScene {
   log = Logger.getInstance('GameAccessScene');
@@ -17,6 +18,7 @@ export default class GameAccessScene implements GameScene {
   private observer: ObserverSubscribers;
   private ctx: ApplicationContext;
   private container?: Container;
+  private ticker?: ITicker;
 
   public constructor(ctx: ApplicationContext) {
     this.ctx = ctx;
@@ -29,6 +31,7 @@ export default class GameAccessScene implements GameScene {
 
   async destroy() {
     await this.observer.unsubscribeAll();
+    this.ctx.removeTicker(this.ticker);
     this.getContainer().removeAllListeners();
     this.getContainer().removeChildren();
   }
@@ -60,7 +63,7 @@ export default class GameAccessScene implements GameScene {
     const btn = new Button(bouncer);
     btn.onPress.connect(() => this.observer.publish('scene/start', scene(GameSceneConstants.BOUNCING).build()));
 
-    this.ctx.getApp().ticker.add((time: number) => {
+    this.ticker = this.ctx.addTicker((time: number) => {
       info.tick(time);
     });
   }
