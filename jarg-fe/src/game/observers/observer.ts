@@ -45,7 +45,7 @@ export default class Observer {
 }
 
 export class ObserverSubscribers {
-  private observer: Observer;
+  public observer: Observer;
   private subscribers = new Array<Subscriber>();
 
   public constructor(observer: Observer) {

@@ -11,6 +11,10 @@ export default class GameService implements Bean {
     this.observer = new ObserverSubscribers(observer);
   }
 
+  name(): string {
+    return 'GameService';
+  }
+
   public async destroy() {
     await this.observer.unsubscribeAll();
   }

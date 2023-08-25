@@ -21,6 +21,10 @@ export default class GameSceneGrid implements GameScene {
     this.observer = new ObserverSubscribers(observer);
   }
 
+  name(): string {
+    return 'GameSceneGrid';
+  }
+
   public async destroy() {
     await this.observer.unsubscribeAll();
   }
