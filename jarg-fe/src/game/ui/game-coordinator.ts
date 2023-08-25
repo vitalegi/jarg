@@ -2,7 +2,7 @@ import { Application } from 'pixi.js';
 import Observer, { ObserverSubscribers } from '../observers/observer';
 import Logger from '../../logging/logger';
 import { Bean } from '../core/bean';
-import { GameScene } from './scenes/scene';
+import { AbstractGameScene } from './scenes/abstract-scene';
 import { StartScene } from '../core/models/start-scene';
 import GameAccessScene from './scenes/game-access-scene';
 import GameSceneConstants from '../core/constants/game-scene-constants';
@@ -14,7 +14,7 @@ export default class GameCoordinator implements Bean {
 
   private ctx: ApplicationContext;
   private observer: ObserverSubscribers;
-  private _activeScene?: GameScene;
+  private _activeScene?: AbstractGameScene;
 
   public constructor(ctx: ApplicationContext) {
     this.ctx = ctx;
@@ -45,7 +45,7 @@ export default class GameCoordinator implements Bean {
     await newScene.start();
   }
 
-  private createScene(sceneSchema: StartScene): GameScene {
+  private createScene(sceneSchema: StartScene): AbstractGameScene {
     if (sceneSchema.name === GameSceneConstants.GAME_ACCESS) {
       return new GameAccessScene(this.ctx);
     }
@@ -55,7 +55,7 @@ export default class GameCoordinator implements Bean {
     throw Error(`Scene ${sceneSchema.name} is unknown`);
   }
 
-  private async destroyScene(scene: GameScene) {
+  private async destroyScene(scene: AbstractGameScene) {
     this.log.info(`Destroy scene ${scene.name()}`);
     await scene.destroy();
   }

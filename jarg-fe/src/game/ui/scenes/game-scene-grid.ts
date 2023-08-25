@@ -1,26 +1,16 @@
-import { Application, FederatedPointerEvent, ICanvas, IRenderer, Resource, Sprite, Texture } from 'pixi.js';
-import AssetLoader from '../assets-loader';
+import { FederatedPointerEvent, Resource, Sprite, Texture } from 'pixi.js';
 import Grid, { GridEntry } from '../../core/models/grid';
 import InteractionStore from '../interation-store';
-import Observer, { ObserverSubscribers } from '../../observers/observer';
 import { createRandom } from '../../core/services/game-initializr';
 import { SwapModel } from '../../core/models/observer-models';
 import Logger from '../../../logging/logger';
-import { GameScene } from './scene';
-import ApplicationContext from '../application-context';
+import { AbstractGameScene } from './abstract-scene';
 
-export default class GameSceneGrid implements GameScene {
+export default class GameSceneGrid extends AbstractGameScene {
   log = Logger.getInstance('Game');
 
-  private observer: ObserverSubscribers;
-  private ctx: ApplicationContext;
   private textures = new Map<string, Texture<Resource>>();
   private interactionStore = new InteractionStore();
-
-  public constructor(ctx: ApplicationContext) {
-    this.ctx = ctx;
-    this.observer = new ObserverSubscribers(ctx.getObserver());
-  }
 
   name(): string {
     return 'GameSceneGrid';
@@ -31,6 +21,7 @@ export default class GameSceneGrid implements GameScene {
   }
 
   public async init(): Promise<void> {
+    await super.init();
     await this.initTextures();
     this.observer.subscribe('new-game-ready', (payload: unknown) => this.eventNewGame(Grid.parse(payload)));
     this.observer.subscribe('swap-confirmed', (payload: unknown) => this.eventSwap(SwapModel.parse(payload)));
