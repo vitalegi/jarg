@@ -12,7 +12,7 @@ export default class ScreenInfo extends SceneElement {
     this.info = new Text(this.getInfo(), Fonts.textNote());
     this.info.x = this.getX(this.info);
     this.info.y = this.getY(this.info);
-    this.getContainer().addChild(this.info);
+    this.container.addChild(this.info);
   }
   public tick(time: number) {
     if (!this.info) {

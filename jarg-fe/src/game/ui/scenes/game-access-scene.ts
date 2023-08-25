@@ -9,17 +9,18 @@ import ScreenInfo from '../scene-elements/screen-info';
 import { Button } from '@pixi/ui';
 import { scene } from '../../core/models/start-scene';
 import GameSceneConstants from '../../core/constants/game-scene-constants';
+import ApplicationContext from '../application-context';
 
 export default class GameAccessScene implements GameScene {
   log = Logger.getInstance('GameAccessScene');
 
   private observer: ObserverSubscribers;
-  private app?: Application;
-  private assetLoader? = new AssetLoader();
+  private ctx: ApplicationContext;
   private container?: Container;
 
-  public constructor(observer: Observer) {
-    this.observer = new ObserverSubscribers(observer);
+  public constructor(ctx: ApplicationContext) {
+    this.ctx = ctx;
+    this.observer = new ObserverSubscribers(ctx.getObserver());
   }
 
   name(): string {
@@ -32,7 +33,10 @@ export default class GameAccessScene implements GameScene {
     this.getContainer().removeChildren();
   }
 
-  async init() {}
+  async init() {
+    this.container = new Container();
+    this.ctx.getApp().stage.addChild(this.container);
+  }
 
   async start() {
     const welcomeText = new Text('Hello, adventurer', Fonts.text());
@@ -40,7 +44,7 @@ export default class GameAccessScene implements GameScene {
     welcomeText.y = 120;
     this.getContainer().addChild(welcomeText);
 
-    const info = new ScreenInfo(this.getContainer(), this.getApp());
+    const info = new ScreenInfo(this.getContainer(), this.ctx);
     info.start();
 
     const newGame = new Text('New Game', Fonts.text());
@@ -56,23 +60,11 @@ export default class GameAccessScene implements GameScene {
     const btn = new Button(bouncer);
     btn.onPress.connect(() => this.observer.publish('scene/start', scene(GameSceneConstants.BOUNCING).build()));
 
-    this.getApp().ticker.add((time: number) => {
+    this.ctx.getApp().ticker.add((time: number) => {
       info.tick(time);
     });
   }
 
-  setApplication(app: Application<ICanvas>): void {
-    this.app = app;
-    this.container = new Container();
-    this.app.stage.addChild(this.container);
-  }
-
-  private getApp(): Application {
-    if (!this.app) {
-      throw Error('app is null');
-    }
-    return this.app;
-  }
   private getContainer(): Container {
     if (!this.container) {
       throw Error('container is null');

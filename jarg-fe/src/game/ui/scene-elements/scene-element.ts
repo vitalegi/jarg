@@ -1,21 +1,15 @@
 import { Container, Application } from 'pixi.js';
+import ApplicationContext from '../application-context';
 
 export default class SceneElement {
-  private container: Container;
-  private app: Application;
+  public container: Container;
+  public readonly ctx: ApplicationContext;
 
-  public constructor(container: Container, app: Application) {
+  public constructor(container: Container, ctx: ApplicationContext) {
     this.container = container;
-    this.app = app;
+    this.ctx = ctx;
   }
 
   public start() {}
   public tick(time: number) {}
-
-  protected getContainer(): Container {
-    return this.container;
-  }
-  protected getApp(): Application {
-    return this.app;
-  }
 }

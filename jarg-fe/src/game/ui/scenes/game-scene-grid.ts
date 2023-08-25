@@ -7,18 +7,19 @@ import { createRandom } from '../../core/services/game-initializr';
 import { SwapModel } from '../../core/models/observer-models';
 import Logger from '../../../logging/logger';
 import { GameScene } from './scene';
+import ApplicationContext from '../application-context';
 
 export default class GameSceneGrid implements GameScene {
   log = Logger.getInstance('Game');
 
   private observer: ObserverSubscribers;
-  private app?: Application;
-  private assetLoader? = new AssetLoader();
+  private ctx: ApplicationContext;
   private textures = new Map<string, Texture<Resource>>();
   private interactionStore = new InteractionStore();
 
-  public constructor(observer: Observer) {
-    this.observer = new ObserverSubscribers(observer);
+  public constructor(ctx: ApplicationContext) {
+    this.ctx = ctx;
+    this.observer = new ObserverSubscribers(ctx.getObserver());
   }
 
   name(): string {
@@ -36,40 +37,18 @@ export default class GameSceneGrid implements GameScene {
   }
   async start() {}
 
-  setApplication(app: Application<ICanvas>): void {
-    this.app = app;
-  }
-
   public async newGame() {
     const grid = await createRandom(10, 8);
     this.observer.publish('new-game-request', grid);
   }
 
   private async initTextures() {
-    const blue = await this.getAssetLoader().load('blue.png');
-    const red = await this.getAssetLoader().load('red.png');
-    const white = await this.getAssetLoader().load('white.png');
+    const blue = await this.ctx.getAssetLoader().load('blue.png');
+    const red = await this.ctx.getAssetLoader().load('red.png');
+    const white = await this.ctx.getAssetLoader().load('white.png');
     this.textures.set('blue', blue);
     this.textures.set('red', red);
     this.textures.set('white', white);
-  }
-
-  public getAssetLoader(): AssetLoader {
-    if (!this.assetLoader) {
-      throw Error('assetLoader is null');
-    }
-    return this.assetLoader;
-  }
-
-  public getApp(): Application {
-    if (!this.app) {
-      throw Error('app is null');
-    }
-    return this.app;
-  }
-
-  public getRenderer(): IRenderer<ICanvas> {
-    return this.getApp().renderer;
   }
 
   protected getTexture(name?: string): Texture<Resource> {
@@ -94,7 +73,7 @@ export default class GameSceneGrid implements GameScene {
       this.click(id);
     });
     sprite.eventMode = 'static';
-    this.getApp().stage.addChild(sprite);
+    this.ctx.getApp().stage.addChild(sprite);
   }
 
   protected click(id: string): void {
@@ -122,8 +101,8 @@ export default class GameSceneGrid implements GameScene {
   }
 
   protected async eventSwap(evt: SwapModel) {
-    const e1 = this.getApp().stage.getChildByName(evt.first);
-    const e2 = this.getApp().stage.getChildByName(evt.second);
+    const e1 = this.ctx.getApp().stage.getChildByName(evt.first);
+    const e2 = this.ctx.getApp().stage.getChildByName(evt.second);
     if (e1 == null || e2 == null) {
       this.interactionStore.reset();
       throw Error(`Element not found`);

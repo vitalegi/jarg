@@ -1,7 +1,8 @@
 import Logger from '../../../logging/logger';
+import ApplicationContext from '../application-context';
 import ScreenData from '../devices/screen';
 import SceneElement from './scene-element';
-import { Application, Container, Graphics, Text } from 'pixi.js';
+import { Container, Graphics, Text } from 'pixi.js';
 
 export default class BouncingObject extends SceneElement {
   log = Logger.getInstance('ScreenInfo');
@@ -9,8 +10,8 @@ export default class BouncingObject extends SceneElement {
   obj: Graphics;
   speed = { x: 0, y: 0 };
 
-  public constructor(container: Container, app: Application, obj: Graphics) {
-    super(container, app);
+  public constructor(container: Container, ctx: ApplicationContext, obj: Graphics) {
+    super(container, ctx);
     this.obj = obj;
   }
 
@@ -19,7 +20,7 @@ export default class BouncingObject extends SceneElement {
       x: (0.5 - Math.random()) * 15,
       y: (0.5 - Math.random()) * 15
     };
-    this.getContainer().addChild(this.obj);
+    this.container.addChild(this.obj);
   }
   public tick(time: number) {
     const incX = this.speed.x * time;

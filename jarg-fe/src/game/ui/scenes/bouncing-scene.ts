@@ -9,16 +9,18 @@ import BouncingObject from '../scene-elements/bouncing-object';
 import { Button } from '@pixi/ui';
 import { scene } from '../../core/models/start-scene';
 import GameSceneConstants from '../../core/constants/game-scene-constants';
+import ApplicationContext from '../application-context';
 
 export default class BouncingScene implements GameScene {
   log = Logger.getInstance('BouncingScene');
 
   private observer: ObserverSubscribers;
-  private app?: Application;
+  private ctx: ApplicationContext;
   private container?: Container;
 
-  public constructor(observer: Observer) {
-    this.observer = new ObserverSubscribers(observer);
+  public constructor(ctx: ApplicationContext) {
+    this.ctx = ctx;
+    this.observer = new ObserverSubscribers(ctx.getObserver());
   }
 
   name(): string {
@@ -31,12 +33,15 @@ export default class BouncingScene implements GameScene {
     this.getContainer().removeChildren();
   }
 
-  async init() {}
+  async init() {
+    this.container = new Container();
+    this.ctx.getApp().stage.addChild(this.container);
+  }
 
   async start() {
     const bouncers = new Array<BouncingObject>();
 
-    const info = new ScreenInfo(this.getContainer(), this.getApp());
+    const info = new ScreenInfo(this.getContainer(), this.ctx);
     info.start();
 
     const spawn = new Text('Spawn', Fonts.text());
@@ -46,7 +51,7 @@ export default class BouncingScene implements GameScene {
 
     const btn = new Button(spawn);
     btn.onPress.connect(() => {
-      const bouncer = new BouncingObject(this.getContainer(), this.getApp(), this.randomShape());
+      const bouncer = new BouncingObject(this.getContainer(), this.ctx, this.randomShape());
       bouncer.start();
       bouncers.push(bouncer);
     });
@@ -59,16 +64,10 @@ export default class BouncingScene implements GameScene {
     const backBtn = new Button(back);
     backBtn.onPress.connect(() => this.observer.publish('scene/start', scene(GameSceneConstants.GAME_ACCESS).build()));
 
-    this.getApp().ticker.add((time: number) => {
+    this.ctx.getApp().ticker.add((time: number) => {
       info.tick(time);
       bouncers.forEach((b) => b.tick(time));
     });
-  }
-
-  setApplication(app: Application<ICanvas>): void {
-    this.app = app;
-    this.container = new Container();
-    this.app.stage.addChild(this.container);
   }
 
   private randomShape(): Graphics {
@@ -86,12 +85,6 @@ export default class BouncingScene implements GameScene {
     return circle;
   }
 
-  private getApp(): Application {
-    if (!this.app) {
-      throw Error('app is null');
-    }
-    return this.app;
-  }
   private getContainer(): Container {
     if (!this.container) {
       throw Error('container is null');
