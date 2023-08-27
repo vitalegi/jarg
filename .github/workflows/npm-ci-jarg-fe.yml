@@ -1,4 +1,4 @@
-name: "Node.js CI jarg-fe"
+name: "Node.js CI JaRG-FE"
 on: [push]
 
 defaults:
