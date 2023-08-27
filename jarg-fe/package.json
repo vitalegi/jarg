@@ -29,7 +29,7 @@
     "prettier": "^3.0.2",
     "typescript": "^5.1.6",
     "vite": "^4.4.5",
-    "vitest": "^0.34.1"
+    "vitest": "^0.34.3"
   },
   "dependencies": {
     "@pixi/ui": "^0.8.3",
