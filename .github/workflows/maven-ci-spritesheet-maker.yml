@@ -14,4 +14,4 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Maven Verify
-        run: mvn --batch-mode --update-snapshots verify
+        run: mvn --batch-mode --update-snapshots -f ./spritesheet-maker/pom.xml verify
