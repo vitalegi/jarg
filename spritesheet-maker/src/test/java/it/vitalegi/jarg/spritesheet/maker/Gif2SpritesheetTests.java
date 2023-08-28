@@ -45,7 +45,7 @@ public class Gif2SpritesheetTests {
 
     @Test
     void given_gifImage_when_processGif_then_shouldProduceMetadata() {
-        var out = gif2Spritesheet.processGif(SOURCE.resolve("abra.gif"));
+        var out = gif2Spritesheet.gif2pngs(SOURCE.resolve("abra.gif"));
         log.info("OUT:   {}", out.stream().map(FrameData::getFile).collect(Collectors.toList()));
         var outPaths = FileUtil.findFilesWithExtension(TARGET.resolve("abra"), "png").collect(Collectors.toList());
         log.info("FILES: {}", out.stream().map(FrameData::getFile).collect(Collectors.toList()));

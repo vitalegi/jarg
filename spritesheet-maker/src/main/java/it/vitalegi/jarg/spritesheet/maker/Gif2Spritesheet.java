@@ -1,6 +1,8 @@
 package it.vitalegi.jarg.spritesheet.maker;
 
 import com.madgag.gif.fmsware.GifDecoder;
+import it.vitalegi.jarg.spritesheet.maker.cmd.SpritesheetJS;
+import it.vitalegi.jarg.spritesheet.maker.model.Animation;
 import it.vitalegi.jarg.spritesheet.maker.model.FrameData;
 import it.vitalegi.jarg.spritesheet.maker.util.FileUtil;
 import it.vitalegi.jarg.spritesheet.maker.util.StringUtil;
@@ -17,6 +19,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Gif2Spritesheet {
@@ -25,6 +28,8 @@ public class Gif2Spritesheet {
 
     Path source;
     Path target;
+
+    SpritesheetJS spritesheetJS = new SpritesheetJS();
 
     public Gif2Spritesheet(Path source, Path target) {
         this.source = source;
@@ -46,18 +51,22 @@ public class Gif2Spritesheet {
 
     public void run() {
         var sources = getSources();
-        sources.forEach(this::processGif);
+        sources.forEach(source -> {
+            var frames = gif2pngs(source);
+            var animation = animation(source, frames);
+            //spritesheetJS.generateSpritesheet(animation);
+        });
     }
 
     protected Stream<Path> getSources() {
         return FileUtil.findFilesWithExtension(source, "gif");
     }
 
-    protected List<FrameData> processGif(Path path) {
-        log.info("Process {}", path);
-        var name = FileUtil.getFilenameWithoutExtension(path);
+    protected List<FrameData> gif2pngs(Path path) {
+        log.info("Convert {} to PNGs", path);
+        var name = getName(path);
         try (InputStream is = new FileInputStream(path.toFile())) {
-            var out = target.resolve(name);
+            var out = pngOutputDir(name);
             FileUtil.createDirs(out);
             return gif2pngs(is, name, out);
         } catch (FileNotFoundException e) {
@@ -65,6 +74,23 @@ public class Gif2Spritesheet {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected Animation animation(Path path, List<FrameData> frames) {
+        var animation = new Animation();
+        var name = getName(path);
+        animation.setName(name);
+        animation.setFrames(frames.stream().collect(Collectors.toList()));
+        animation.setDir(pngOutputDir(name));
+        return animation;
+    }
+
+    protected String getName(Path path) {
+        return FileUtil.getFilenameWithoutExtension(path);
+    }
+
+    protected Path pngOutputDir(String name) {
+        return target.resolve(name);
     }
 
     protected List<FrameData> gif2pngs(InputStream is, String name, Path targetDir) {
