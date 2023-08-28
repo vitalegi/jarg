@@ -1,0 +1,27 @@
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+
+logging.level:
+  org.springframework: info
+
+security:
+  cors:
+    allowedOrigins: http://localhost:8080
+    allowedMethods:
+      - GET
+      - POST
+    allowCredentials: true
+    allowedHeaders:
+      - Content-Type
+      - Access-Control-Request-Method
+      - Access-Control-Allow-Credentials
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      - x-requested-with
+      - Authorization
+      - origin
+      - accept
+
+metrics:
+  skipIfLessThan: -1
