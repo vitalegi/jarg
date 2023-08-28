@@ -1,0 +1,18 @@
+[
+  {
+    "url": "/assets/characters/characters_001_01.json",
+    "animations": [
+      "abra",
+      "aerodactyl",
+      "alakazam",
+      "arbok",
+      "arcanine",
+      "articuno",
+      "beedrill",
+      "bellsprout",
+      "blastoise",
+      "bulbasaur"
+    ]
+  }
+]
+
