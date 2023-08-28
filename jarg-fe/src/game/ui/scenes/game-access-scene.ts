@@ -37,6 +37,15 @@ export default class GameAccessScene extends AbstractGameScene {
     const btn = new Button(bouncer);
     btn.onPress.connect(() => this.observer.publish('scene/start', scene(GameSceneConstants.BOUNCING).build()));
 
+    let animation = await this.ctx.getAssetLoader().loadAnimatedSprite('arcanine');
+    animation.play();
+    this.getContainer().addChild(animation);
+
+    animation = await this.ctx.getAssetLoader().loadAnimatedSprite('abra');
+    animation.x = 200;
+    animation.play();
+    this.getContainer().addChild(animation);
+
     this.addTicker((time: number) => {
       info.tick(time);
     });
