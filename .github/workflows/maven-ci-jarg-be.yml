@@ -28,6 +28,6 @@ jobs:
           DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
         run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: Docker build
-        run: docker build ./jarg-be/ --file ./jarg-be/Dockerfile --tag vitalegi/jarg-be:${{RELEASE_VERSION}}
+        run: docker build ./jarg-be/ --file ./jarg-be/Dockerfile --tag vitalegi/jarg-be:${{ env.RELEASE_VERSION }}
       - name: Docker push
-        run: docker push vitalegi/jarg-be:${{RELEASE_VERSION}}
+        run: docker push vitalegi/jarg-be:${{ env.RELEASE_VERSION }}
