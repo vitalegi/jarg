@@ -2,6 +2,7 @@
 
 ![JaRG FE CI](https://github.com/vitalegi/jarg/actions/workflows/npm-ci-jarg-fe.yml/badge.svg)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/3352c2fd-adcb-4a0f-babb-b9fa787643bc/deploy-status)](https://app.netlify.com/sites/jarg-v2/deploys)
+![JaRG BE CD](https://github.com/vitalegi/jarg/actions/workflows/maven-cd-jarg-be.yml/badge.svg)
 ![Spritesheet Maker CI](https://github.com/vitalegi/jarg/actions/workflows/maven-ci-spritesheet-maker.yml/badge.svg)
 
 
