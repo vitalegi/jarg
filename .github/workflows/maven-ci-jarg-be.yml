@@ -24,12 +24,7 @@ jobs:
           DOCKER_USER: ${{secrets.DOCKER_USER}}
           DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
         run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-      - name: Get POM Version
-        id: pom-version
-        uses: CptMokoena/maven-get-version-action@1.0.3
-        with:
-          path: ./jarg-be/
       - name: Docker build
-        run: docker build ./jarg-be/ --file ./jarg-be/Dockerfile --tag vitalegi/jarg-be:${{ steps.pom-version.outputs.version }}
+        run: docker build ./jarg-be/ --file ./jarg-be/Dockerfile --tag vitalegi/jarg-be:0.0.1
       - name: Docker push
-        run: docker push --image vitalegi/jarg-be:${{ steps.pom-version.outputs.version }}
+        run: docker push --image vitalegi/jarg-be:0.0.1
