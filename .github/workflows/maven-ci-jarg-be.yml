@@ -19,12 +19,15 @@ jobs:
           cache: maven
       - name: Maven Verify
         run: mvn --batch-mode --update-snapshots -f ./jarg-be/pom.xml verify
+      - name: Set Release version env variable
+        run: |
+          echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout  -f ./jarg-be/pom.xml)" >> $GITHUB_ENV
       - name: Docker login
         env:
           DOCKER_USER: ${{secrets.DOCKER_USER}}
           DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
         run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: Docker build
-        run: docker build ./jarg-be/ --file ./jarg-be/Dockerfile --tag vitalegi/jarg-be:0.0.1
+        run: docker build ./jarg-be/ --file ./jarg-be/Dockerfile --tag vitalegi/jarg-be:${{RELEASE_VERSION}}
       - name: Docker push
-        run: docker push vitalegi/jarg-be:0.0.1
+        run: docker push vitalegi/jarg-be:${{RELEASE_VERSION}}
