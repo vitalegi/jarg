@@ -22,6 +22,9 @@ security:
       - Authorization
       - origin
       - accept
-
+  auth:
+    jwt:
+      publicKey: ${APP_JWT_PUBLIC_KEY}
+      privateKey: ${APP_JWT_PRIVATE_KEY}
 metrics:
   skipIfLessThan: -1
