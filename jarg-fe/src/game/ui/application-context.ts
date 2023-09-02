@@ -3,6 +3,7 @@ import Observer from '../observers/observer';
 import AssetLoader from './assets-loader';
 import { ITicker, SequenceTicker } from './components/ticker';
 import Logger from '../../logging/logger';
+import UserService from '../core/services/user-service';
 
 export default class ApplicationContext {
   log = Logger.getInstance('ApplicationContext');
@@ -11,6 +12,7 @@ export default class ApplicationContext {
   private app?: Application<ICanvas>;
   private assetLoader = new AssetLoader();
   private tickers = new Array<ITicker>();
+  private userService?: UserService;
 
   public constructor(observer: Observer) {
     this.observer = observer;
@@ -52,5 +54,16 @@ export default class ApplicationContext {
     }
     this.log.info(`Remove ticker ${ticker.id()}`);
     this.tickers = this.tickers.filter((t) => t.id() !== ticker.id());
+  }
+
+  public setUserService(service: UserService): void {
+    this.userService = service;
+  }
+
+  public getUserService(): UserService {
+    if (!this.userService) {
+      throw Error(`UserService is null`);
+    }
+    return this.userService;
   }
 }

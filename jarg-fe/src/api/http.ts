@@ -5,6 +5,11 @@ export default class Http {
     this.baseUrl = baseUrl;
   }
 
+  async getJson(path: string): Promise<unknown> {
+    const response = await this.get(path);
+    return await response.json();
+  }
+
   async get(path: string): Promise<Response> {
     const response = await fetch(this.baseUrl + path, {
       method: 'GET',

@@ -18,9 +18,10 @@ export default async function setup(element: HTMLDivElement, window: Window) {
   await gameService.init();
 
   const userService = new UserService(observer);
-  await userService.isAuthenticated();
+  await userService.init();
+  ctx.setUserService(userService);
 
   const gameCoordinator = new GameCoordinator(ctx);
   await gameCoordinator.init();
-  observer.publish('scene/start', scene(GameSceneConstants.GAME_ACCESS).build());
+  observer.publish('scene/start', scene(GameSceneConstants.WELCOME).build());
 }

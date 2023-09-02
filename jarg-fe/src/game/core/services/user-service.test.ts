@@ -1,37 +1,63 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import UserService from './user-service';
 import Observer from '../../observers/observer';
-import User from '../models/user';
+import jargBe from '../../../api/jarg-be';
 
 const observer = new Observer();
-const usersService = new UserService(observer);
-const user1 = new User();
-user1.id = '123';
-user1.username = 'test1';
+const userService = new UserService(observer);
 
 beforeEach(() => {
   vi.resetAllMocks();
 });
 
 describe('login', async () => {
-  test('user state is updated', async () => {
-    expect(usersService.isAuthenticated()).resolves.toBe(false);
-    await usersService.login(user1);
-    expect(usersService.isAuthenticated()).resolves.toBe(true);
+  test('external service is called', async () => {
+    const spy = vi.spyOn(jargBe, 'tokenAccess');
+    spy.mockResolvedValue();
+
+    await userService.login('user1', 'password');
+    expect(spy).toHaveBeenCalledOnce();
+    expect(spy).toHaveBeenCalledWith('user1', 'password');
+  });
+});
+
+describe('getIdentity', async () => {
+  test('external service is called', async () => {
+    const spy = vi.spyOn(jargBe, 'authIdentity');
+    spy.mockResolvedValue({ username: 'user1' });
+
+    const out = await userService.getIdentity();
+    expect(spy).toHaveBeenCalledOnce();
+    expect(out.username).toBe('user1');
+  });
+});
+
+describe('isAuthenticated', async () => {
+  test('external service is called', async () => {
+    const spy = vi.spyOn(jargBe, 'authIdentity');
+    spy.mockResolvedValue({ username: 'user1' });
+
+    const out = await userService.isAuthenticated();
+    expect(spy).toHaveBeenCalledOnce();
+    expect(out).toBe(true);
+  });
+
+  test('external service is called and fails', async () => {
+    const spy = vi.spyOn(jargBe, 'authIdentity');
+    spy.mockRejectedValue({});
+
+    const out = await userService.isAuthenticated();
+    expect(spy).toHaveBeenCalledOnce();
+    expect(out).toBe(false);
   });
 });
 
 describe('logout', async () => {
-  test('user state is updated', async () => {
-    await usersService.login(user1);
-    await expect(usersService.isAuthenticated()).resolves.toBe(true);
-    await usersService.logout();
-    await expect(usersService.isAuthenticated()).resolves.toBe(false);
-  });
-  test('multiple invocations are valid', async () => {
-    await usersService.login(user1);
-    await usersService.logout();
-    await usersService.logout();
-    await usersService.logout();
+  test('external service is called', async () => {
+    const spy = vi.spyOn(jargBe, 'logout');
+    spy.mockResolvedValue();
+
+    await userService.logout();
+    expect(spy).toHaveBeenCalledOnce();
   });
 });
