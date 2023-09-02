@@ -12,7 +12,7 @@ export default class GameAccessScene extends AbstractGameScene {
   log = Logger.getInstance('GameAccessScene');
 
   name(): string {
-    return 'GameAccessScene';
+    return GameSceneConstants.GAME_ACCESS;
   }
 
   async start() {

@@ -7,7 +7,7 @@ logging.level:
 
 security:
   cors:
-    allowedOrigins: http://localhost:8080
+    allowedOrigins: http://localhost:8080, http://localhost:5173
     allowedMethods:
       - GET
       - POST
@@ -22,6 +22,11 @@ security:
       - Authorization
       - origin
       - accept
-
+  auth:
+    jwt:
+      cookie:
+        domain:
+      publicKey: ${APP_JWT_PUBLIC_KEY}
+      privateKey: ${APP_JWT_PRIVATE_KEY}
 metrics:
   skipIfLessThan: -1

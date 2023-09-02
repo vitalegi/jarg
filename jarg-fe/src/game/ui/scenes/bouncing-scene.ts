@@ -8,16 +8,19 @@ import BouncingObject from '../scene-elements/bouncing-object';
 import { Button } from '@pixi/ui';
 import { scene } from '../../core/models/start-scene';
 import GameSceneConstants from '../../core/constants/game-scene-constants';
+import jargBe from '../../../api/jarg-be';
 
 export default class BouncingScene extends AbstractGameScene {
   log = Logger.getInstance('BouncingScene');
 
   name(): string {
-    return 'BouncingScene';
+    return GameSceneConstants.BOUNCING;
   }
 
   async start() {
     const bouncers = new Array<BouncingObject>();
+    await jargBe.tokenAccess('user', 'password');
+    await jargBe.tokenRefresh();
 
     const info = new ScreenInfo(this.getContainer(), this.ctx);
     info.start();

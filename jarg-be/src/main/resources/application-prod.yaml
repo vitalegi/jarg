@@ -1,0 +1,14 @@
+logging.level:
+  org.springframework: info
+
+security:
+  cors:
+    allowedOrigins: https://jarg.princimicio.me
+  auth:
+    jwt:
+      cookie:
+        domain: https://jarg.princimicio.me
+      publicKey: ${APP_JWT_PUBLIC_KEY}
+      privateKey: ${APP_JWT_PRIVATE_KEY}
+metrics:
+  skipIfLessThan: 5
