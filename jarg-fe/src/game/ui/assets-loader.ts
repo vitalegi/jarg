@@ -8,7 +8,7 @@ const cache = new Map<string, unknown>();
 const spritesheetCache = new Map<string, Spritesheet>();
 
 export default class AssetLoader {
-  http = new Http();
+  http = new Http('');
   log = Logger.getInstance('AssetLoader');
 
   public async load(url: string): Promise<Texture<Resource>> {
@@ -68,7 +68,7 @@ export default class AssetLoader {
       this.log.debug(`Resource ${url} already available.`);
       return cache.get(url);
     }
-    const data = await this.http.get(url);
+    const data = (await this.http.get(url)).json();
     this.log.debug(`Put in cache ${url}`);
     cache.set(url, data);
     return data;
