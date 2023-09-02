@@ -8,7 +8,7 @@ import GameAccessScene from './scenes/game-access-scene';
 import GameSceneConstants from '../core/constants/game-scene-constants';
 import BouncingScene from './scenes/bouncing-scene';
 import ApplicationContext from './application-context';
-import WelcomeScene from './scenes/welcome-scene';
+import LoginScene from './scenes/login-scene';
 
 export default class GameCoordinator implements Bean {
   log = Logger.getInstance('GameCoordinator');
@@ -53,8 +53,8 @@ export default class GameCoordinator implements Bean {
     if (sceneSchema.name === GameSceneConstants.BOUNCING) {
       return new BouncingScene(this.ctx);
     }
-    if (sceneSchema.name === GameSceneConstants.WELCOME) {
-      return new WelcomeScene(this.ctx);
+    if (sceneSchema.name === GameSceneConstants.LOGIN) {
+      return new LoginScene(this.ctx);
     }
     throw Error(`Scene ${sceneSchema.name} is unknown`);
   }

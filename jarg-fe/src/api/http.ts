@@ -22,6 +22,7 @@ export default class Http {
       redirect: 'follow',
       referrerPolicy: 'origin'
     });
+    this.validate(response);
     return response;
   }
   async post<E>(path: string, body: E, headers: Record<string, string> = { 'Content-Type': 'application/json' }): Promise<Response> {
@@ -35,6 +36,13 @@ export default class Http {
       referrerPolicy: 'origin',
       body: JSON.stringify(body)
     });
+    this.validate(response);
     return response;
+  }
+
+  validate(response: Response): void {
+    if (response.status >= 400) {
+      throw Error(`Received error ${response.status}`);
+    }
   }
 }

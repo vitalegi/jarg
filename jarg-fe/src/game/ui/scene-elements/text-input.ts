@@ -8,8 +8,10 @@ import { Graphics, Text } from 'pixi.js';
 export default class TextInput extends SceneElement {
   log = Logger.getInstance('TextInput');
 
-  x = 0;
+  x: number | 'center' = 'center';
   y = 0;
+  width = 320;
+  height = 70;
   placeholder = '';
   initialValue = '';
   onEnter?: (val: string) => void;
@@ -23,16 +25,14 @@ export default class TextInput extends SceneElement {
   }
 
   public start() {
-    const width = 320;
-    const height = 70;
     const radius = 8;
     const border = 4;
     this._element = new Input({
       bg: new Graphics()
         .beginFill('red')
-        .drawRoundedRect(0, 0, width, height, radius + border)
+        .drawRoundedRect(0, 0, this.width, this.height, radius + border)
         .beginFill('white')
-        .drawRoundedRect(border, border, width - border * 2, height - border * 2, radius),
+        .drawRoundedRect(border, border, this.width - border * 2, this.height - border * 2, radius),
       textStyle: {
         fill: 'black',
         fontSize: 24,
@@ -44,7 +44,11 @@ export default class TextInput extends SceneElement {
       value: this.initialValue,
       padding: [0, 0, 0, 0]
     });
-    this._element.x = this.x;
+    if (this.x === 'center') {
+      this._element.x = (ScreenData.width() - this._element.width) / 2;
+    } else {
+      this._element.x = this.x;
+    }
     this._element.y = this.y;
 
     if (this.onEnter) {
