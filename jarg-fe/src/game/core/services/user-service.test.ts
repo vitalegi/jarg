@@ -21,6 +21,16 @@ describe('login', async () => {
   });
 });
 
+describe('tokenRefresh', async () => {
+  test('external service is called', async () => {
+    const spy = vi.spyOn(jargBe, 'tokenRefresh');
+    spy.mockResolvedValue();
+
+    await userService.tokenRefresh();
+    expect(spy).toHaveBeenCalledOnce();
+  });
+});
+
 describe('getIdentity', async () => {
   test('external service is called', async () => {
     const spy = vi.spyOn(jargBe, 'authIdentity');

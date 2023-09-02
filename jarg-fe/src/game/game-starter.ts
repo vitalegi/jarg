@@ -25,6 +25,7 @@ export default async function setup(element: HTMLDivElement, window: Window) {
   await gameCoordinator.init();
   const isAuthenticated = await userService.isAuthenticated();
   if (isAuthenticated) {
+    await userService.tokenRefresh();
     observer.publish('scene/start', scene(GameSceneConstants.GAME_ACCESS).build());
   } else {
     observer.publish('scene/start', scene(GameSceneConstants.LOGIN).build());

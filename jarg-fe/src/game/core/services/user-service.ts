@@ -21,6 +21,10 @@ export default class UserService {
     await jargBe.tokenAccess(username, password);
   }
 
+  public async tokenRefresh(): Promise<void> {
+    await jargBe.tokenRefresh();
+  }
+
   public async isAuthenticated(): Promise<boolean> {
     try {
       await this.getIdentity();
