@@ -5,8 +5,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
 import it.vitalegi.jarg.auth.AuthService;
+import it.vitalegi.jarg.util.StringUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -21,6 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/token")
 public class TokenResource {
 
+    public static final String AUTH_COOKIE = "auth";
+
+    public static final int AUTH_DURATION = 60 * 60 * 24 * 7;
+
+    @Value("${security.auth.jwt.cookie.domain}")
+    String cookieDomain;
+
     @Autowired
     JwtEncoder encoder;
 
@@ -28,16 +39,18 @@ public class TokenResource {
     AuthService authService;
 
     @PostMapping("/access")
-    public String token(Authentication authentication) {
+    public void token(Authentication authentication, HttpServletResponse response) {
         var scope = getScope(authentication);
-        return buildJwt(authentication.getName(), scope);
+        var jwt = buildJwt(authentication.getName(), scope);
+        response.addCookie(auth(jwt));
     }
 
     @PostMapping("/refresh")
-    public String renew(Authentication authentication) {
+    public void renew(Authentication authentication, HttpServletResponse response) {
         var subject = authService.getSubject();
         var scope = getScope(authentication);
-        return buildJwt(subject, scope);
+        var jwt = buildJwt(subject, scope);
+        response.addCookie(auth(jwt));
     }
 
     protected String getScope(Authentication authentication) {
@@ -46,7 +59,26 @@ public class TokenResource {
 
     protected String buildJwt(String subject, String scope) {
         var now = Instant.now();
-        JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(now).expiresAt(now.plus(1, ChronoUnit.DAYS)).subject(subject).claim("scope", scope).build();
-        return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        JwtClaimsSet claims = JwtClaimsSet.builder() //
+                .issuer("self") //
+                .issuedAt(now) //
+                .expiresAt(now.plusSeconds(AUTH_DURATION)) //
+                .subject(subject) //
+                .claim("scope", scope) //
+                .build();
+        return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    protected Cookie auth(String jwt) {
+        var cookie = new Cookie(AUTH_COOKIE, jwt);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(AUTH_DURATION);
+        cookie.setAttribute("SameSite", "Lax");
+        if (StringUtil.isNotNullOrEmpty(cookieDomain)) {
+            cookie.setDomain(cookieDomain);
+        }
+        return cookie;
     }
 }

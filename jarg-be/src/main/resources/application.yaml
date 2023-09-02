@@ -24,6 +24,8 @@ security:
       - accept
   auth:
     jwt:
+      cookie:
+        domain:
       publicKey: ${APP_JWT_PUBLIC_KEY}
       privateKey: ${APP_JWT_PRIVATE_KEY}
 metrics:
