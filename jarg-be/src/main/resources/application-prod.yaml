@@ -7,7 +7,7 @@ security:
   auth:
     jwt:
       cookie:
-        domain: https://jarg.princimicio.me
+        domain: jarg.princimicio.me
       publicKey: ${APP_JWT_PUBLIC_KEY}
       privateKey: ${APP_JWT_PRIVATE_KEY}
 metrics:
