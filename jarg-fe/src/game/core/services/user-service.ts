@@ -21,6 +21,10 @@ export default class UserService {
     await jargBe.tokenAccess(username, password);
   }
 
+  public async signup(username: string, password: string): Promise<void> {
+    await jargBe.authSignup(username, password);
+  }
+
   public async tokenRefresh(): Promise<void> {
     await jargBe.tokenRefresh();
   }

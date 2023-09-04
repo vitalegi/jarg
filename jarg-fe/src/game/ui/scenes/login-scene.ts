@@ -40,21 +40,37 @@ export default class LoginScene extends AbstractGameScene {
     passwordInput.start();
     this.getContainer().addChild(passwordInput.getElement());
 
-    // button
-    const buttonView = new Graphics().beginFill('#A5E24D').drawRoundedRect(0, 0, 100, 100, 50);
-    const text = new Text('🤙', { fontSize: 50 });
-    text.anchor.set(0.5);
-    text.x = buttonView.width / 2;
-    text.y = buttonView.height / 2;
-    buttonView.addChild(text);
-    buttonView.x = (ScreenData.width() - buttonView.width) / 2;
-    buttonView.y = passwordInput.y + passwordInput.height + 20;
-    const button = new Button(buttonView);
+    // login button
+    const signinView = new Graphics().beginFill('#A5E24D').drawRoundedRect(0, 0, 100, 60, 10);
+    const signinText = new Text('Signin', { fontSize: 24 });
+    signinText.anchor.set(0.5);
+    signinText.x = signinView.width / 2;
+    signinText.y = 30;
+    signinView.addChild(signinText);
+    signinView.x = ScreenData.width() / 2 - signinView.width - 10;
+    signinView.y = passwordInput.y + passwordInput.height + 20;
+    const button = new Button(signinView);
     button.enabled = true;
     button.onPress.connect(() => {
       this.doLogin(this.username, this.password);
     });
-    this.getContainer().addChild(buttonView);
+    this.getContainer().addChild(signinView);
+
+    // registration button
+    const signupView = new Graphics().beginFill('#A5E24D').drawRoundedRect(0, 0, 100, 60, 10);
+    const signupText = new Text('Signup', { fontSize: 24 });
+    signupText.anchor.set(0.5);
+    signupText.x = signupView.width / 2;
+    signupText.y = 30;
+    signupView.addChild(signupText);
+    signupView.x = ScreenData.width() / 2 + 10;
+    signupView.y = passwordInput.y + passwordInput.height + 20;
+    const signupButton = new Button(signupView);
+    signupButton.enabled = true;
+    signupButton.onPress.connect(() => {
+      this.doSignup(this.username, this.password);
+    });
+    this.getContainer().addChild(signupView);
 
     //await this.ctx.getUserService().login('user', 'password');
     const isAuthenticated = await this.ctx.getUserService().isAuthenticated();
@@ -74,6 +90,16 @@ export default class LoginScene extends AbstractGameScene {
 
   protected async doLogin(username: string, password: string): Promise<void> {
     try {
+      await this.ctx.getUserService().login(username, password);
+      this.observer.publish('scene/start', scene(GameSceneConstants.GAME_ACCESS).build());
+    } catch (e) {
+      this.log.info(`Login failed`);
+    }
+  }
+
+  protected async doSignup(username: string, password: string): Promise<void> {
+    try {
+      await this.ctx.getUserService().signup(username, password);
       await this.ctx.getUserService().login(username, password);
       this.observer.publish('scene/start', scene(GameSceneConstants.GAME_ACCESS).build());
     } catch (e) {

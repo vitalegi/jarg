@@ -25,6 +25,10 @@ export class JargBe {
     return User.parse(response);
   }
 
+  async authSignup(username: string, password: string): Promise<void> {
+    await this.http.post('/auth/signup', { username: username, password: password });
+  }
+
   async logout(): Promise<void> {
     await this.http.getJson('/auth/logout');
   }
