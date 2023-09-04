@@ -23,6 +23,8 @@ security:
     allowedMethods:
       - GET
       - POST
+      - PUT
+      - DELETE
     allowCredentials: true
     allowedHeaders:
       - Content-Type
