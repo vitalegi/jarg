@@ -5,6 +5,18 @@ springdoc:
 logging.level:
   org.springframework: info
 
+spring:
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    enabled: true
+    change-log: 'classpath:db/changelog/db.changelog-master.yaml'
+
 security:
   cors:
     allowedOrigins: http://localhost:8080, http://localhost:5173
