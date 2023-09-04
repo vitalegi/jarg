@@ -1,7 +1,9 @@
 package it.vitalegi.jarg.auth;
 
+import it.vitalegi.jarg.account.service.AccountService;
 import it.vitalegi.jarg.auth.model.Auth;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -11,6 +13,22 @@ import org.springframework.stereotype.Service;
 @Log4j2
 @Service
 public class AuthService {
+
+    @Autowired
+    AccountService accountService;
+
+    public Integer getAccountId() {
+        var subject = getSubject();
+        var accountId = accountService.getAccountId(subject);
+        if (accountId == null) {
+            accountId = accountService.addAccount(subject);
+            if (accountId == null) {
+                throw new IllegalArgumentException("Subject " + subject + " is unknown");
+            }
+            return accountId;
+        }
+        return accountId;
+    }
 
     public Auth getJwtData() {
         var auth = new Auth();

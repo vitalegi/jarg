@@ -1,0 +1,59 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <property name="blob_type" value="bytea" dbms="postgresql"/>
+    <property name="blob_type" value="byte" dbms="!postgresql"/>
+
+    <changeSet id="20230904-005" author="vitalegi">
+        <createTable tableName="account">
+            <column name="account_id" type="int">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="account_pk"/>
+            </column>
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="20230904-006" author="vitalegi">
+        <createSequence
+                cycle="false"
+                dataType="int"
+                sequenceName="persona_seq"
+        />
+    </changeSet>
+    <changeSet id="20230904-007" author="vitalegi">
+        <createTable tableName="persona">
+            <column name="persona_id" type="int">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="persona_pk"/>
+            </column>
+            <column name="owner_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payload" type="${blob_type}">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="20230904-008" author="vitalegi">
+        <addForeignKeyConstraint
+                baseTableName="persona"
+                baseColumnNames="owner_id"
+                referencedTableName="account"
+                referencedColumnNames="account_id"
+                constraintName="fk_persona_account_id"
+                deferrable="false"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"
+        />
+    </changeSet>
+    <changeSet id="20230904-009" author="vitalegi">
+        <createSequence
+                cycle="false"
+                dataType="int"
+                sequenceName="account_seq"
+        />
+    </changeSet>
+</databaseChangeLog>
