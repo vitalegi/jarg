@@ -9,7 +9,7 @@
 # the `language` matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
-name: "CodeQL - Javascript"
+name: "CodeQL - jarg-fe"
 
 on:
   push:
@@ -38,7 +38,10 @@ jobs:
         # Use only 'java' to analyze code written in Java, Kotlin or both
         # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
-
+    defaults:
+      run:
+        working-directory: ./jarg-fe
+  
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -72,7 +75,6 @@ jobs:
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
-        working-directory: ./jarg-fe
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
