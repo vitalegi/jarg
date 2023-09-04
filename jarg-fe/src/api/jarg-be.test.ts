@@ -43,6 +43,14 @@ describe('authIdentity', async () => {
   });
 });
 
+describe('authIdentity', async () => {
+  test('exteral call with correct params', async () => {
+    const spy = vi.spyOn(jargBe.http, 'post');
+    await jargBe.authSignup('user', 'password');
+    expect(spy).toHaveBeenCalledWith('/auth/signup', { username: 'user', password: 'password' });
+  });
+});
+
 describe('logout', async () => {
   test('exteral call with correct params', async () => {
     const spy = vi.spyOn(jargBe.http, 'getJson');
