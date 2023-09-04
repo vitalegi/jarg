@@ -1,6 +1,12 @@
 logging.level:
   org.springframework: info
 
+spring:
+  datasource:
+    url: jdbc:h2:mem:db1
+    username: sa
+    password: ''
+
 security:
   auth:
     jwt:

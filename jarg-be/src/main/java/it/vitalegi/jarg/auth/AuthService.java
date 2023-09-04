@@ -2,7 +2,6 @@ package it.vitalegi.jarg.auth;
 
 import it.vitalegi.jarg.auth.model.Auth;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -42,15 +41,6 @@ public class AuthService {
             log.debug("{} is not a JWT", authentication.getPrincipal());
             return null;
         }
-    }
-
-
-    public void register() {
-
-    }
-
-    public void login() {
-
     }
 
     private Authentication getAuthentication() {

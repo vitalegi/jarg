@@ -1,0 +1,47 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet id="20230904-001" author="vitalegi">
+        <createTable tableName="users">
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_pk"/>
+            </column>
+            <column name="password" type="varchar(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="20230904-002" author="vitalegi">
+        <createTable tableName="authorities">
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="authorities_pk"/>
+            </column>
+            <column name="authority" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="20230904-003" author="vitalegi">
+        <addForeignKeyConstraint baseTableName="authorities"
+                                 baseColumnNames="username"
+                                 constraintName="fk_authorities_users_username"
+                                 deferrable="false"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 referencedColumnNames="username"
+                                 referencedTableName="users"
+        />
+    </changeSet>
+    <changeSet id="20230904-004" author="vitalegi">
+        <createIndex indexName="ix_auth_username" tableName="authorities">
+            <column name="username"/>
+            <column name="authority"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
