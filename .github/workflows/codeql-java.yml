@@ -33,6 +33,7 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'java' ]
+        project: ['jarg-be', 'spritesheet-maker']
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Use only 'java' to analyze code written in Java, Kotlin or both
         # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
@@ -76,12 +77,12 @@ jobs:
           java-version: "17"
           distribution: "temurin"
           cache: maven
-      - name: Autobuild - jarg-be
+      - name: Autobuild - ${{ matrix.project }}
         run: |
-          echo "Build jarg-be"
-          mvn --batch-mode --update-snapshots -f ./jarg-be/pom.xml package
+          echo "Build ${{ matrix.project }}"
+          mvn --batch-mode --update-snapshots -f ./${{ matrix.project }}/pom.xml package
 
-      - name: Perform CodeQL Analysis
+      - name: Perform CodeQL Analysis - ${{ matrix.project }}
         uses: github/codeql-action/analyze@v2
         with:
           category: "/language:${{matrix.language}}"
