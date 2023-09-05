@@ -7,6 +7,7 @@ import ScreenInfo from '../scene-elements/screen-info';
 import { Button } from '@pixi/ui';
 import { scene } from '../../core/models/start-scene';
 import GameSceneConstants from '../../core/constants/game-scene-constants';
+import RandomBackground from '../scene-elements/random-background';
 
 export default class GameAccessScene extends AbstractGameScene {
   log = Logger.getInstance('GameAccessScene');
@@ -20,6 +21,9 @@ export default class GameAccessScene extends AbstractGameScene {
     welcomeText.x = (ScreenData.width() - welcomeText.width) / 2;
     welcomeText.y = 120;
     this.getContainer().addChild(welcomeText);
+
+    const bg = new RandomBackground(this.getContainer(), this.ctx);
+    bg.start();
 
     const info = new ScreenInfo(this.getContainer(), this.ctx);
     info.start();
@@ -47,6 +51,7 @@ export default class GameAccessScene extends AbstractGameScene {
     this.getContainer().addChild(animation);
 
     this.addTicker((time: number) => {
+      bg.tick(time);
       info.tick(time);
     });
   }
