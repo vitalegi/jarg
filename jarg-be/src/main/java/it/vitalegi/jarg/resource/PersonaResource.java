@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Log4j2
-@RequestMapping("/persona/{gameId}")
+@RequestMapping("/persona")
 @RestController
 @Performance(Type.ENDPOINT)
 public class PersonaResource {
@@ -22,15 +22,15 @@ public class PersonaResource {
     @Autowired
     PersonaService personaService;
 
-    @Operation(description = "Get all personas")
+    @Operation(description = "Create new persona")
     @PutMapping
-    public Persona createPersona(@PathVariable("gameId") long gameId, @RequestBody NewPersona request) {
-        return personaService.create(gameId, request.getName(), request.getClassId(), request.getRaceId(), request.getSkin());
+    public Persona createPersona(@RequestBody NewPersona request) {
+        return personaService.create(request.getName(), request.getClassId(), request.getRaceId(), request.getSkin());
     }
 
-    @Operation(description = "Get all characters")
+    @Operation(description = "Get all my personas")
     @GetMapping()
-    public List<AssetCollection> getCharacters(@PathVariable("gameId") long gameId) {
-        return null;
+    public List<Persona> getMyPersonas() {
+        return personaService.getMyPersonas();
     }
 }

@@ -2,7 +2,6 @@ package it.vitalegi.jarg.auth.service;
 
 
 import it.vitalegi.jarg.auth.SignupService;
-import it.vitalegi.jarg.auth.model.NewUser;
 import it.vitalegi.jarg.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
