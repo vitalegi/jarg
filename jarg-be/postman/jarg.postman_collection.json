@@ -65,6 +65,104 @@
 			"name": "app",
 			"item": [
 				{
+					"name": "auth",
+					"item": [
+						{
+							"name": "Identity",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api}}/auth/identity",
+									"host": [
+										"{{api}}"
+									],
+									"path": [
+										"auth",
+										"identity"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "signup",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"user\",\r\n    \"password\": \"password\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api}}/auth/signup",
+									"host": [
+										"{{api}}"
+									],
+									"path": [
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "persona",
+					"item": [
+						{
+							"name": "create",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Pinco\",\r\n    \"classId\": 1,\r\n    \"raceId\": 2,\r\n    \"skin\": \"arcanine\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api}}/persona",
+									"host": [
+										"{{api}}"
+									],
+									"path": [
+										"persona"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get mine",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api}}/persona",
+									"host": [
+										"{{api}}"
+									],
+									"path": [
+										"persona"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "getBattle",
 					"request": {
 						"method": "GET",
@@ -77,24 +175,6 @@
 							"path": [
 								"battle",
 								"01d027c1-4a8e-492c-ba28-39b67c081721"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Identity",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api}}/auth/identity",
-							"host": [
-								"{{api}}"
-							],
-							"path": [
-								"auth",
-								"identity"
 							]
 						}
 					},
@@ -164,6 +244,10 @@
 					"if (pm.environment.get(\"env\") === 'local') {",
 					"    console.log('local');",
 					"    pm.globals.set(\"api\", \"http://localhost:8080\");",
+					"}",
+					"if (pm.environment.get(\"env\") === \"prod\") {",
+					"    console.log('prod');",
+					"    pm.globals.set(\"api\", \"https://jarg.princimicio.me/api\");",
 					"}",
 					"",
 					"console.log(pm.environment);"

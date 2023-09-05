@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -21,7 +24,7 @@ public class PersonaService {
     @Autowired
     PersonaRepository personaRepository;
 
-    public Persona create(long gameId, String name, long classId, long raceId, String skin) {
+    public Persona create(String name, long classId, long raceId, String skin) {
         var accountId = authService.getAccountId();
         var persona = new Persona();
         persona.setName(name);
@@ -42,6 +45,13 @@ public class PersonaService {
         entity.setPayload(SerializrUtil.toByte(persona));
         entity = personaRepository.save(entity);
         return map(entity);
+    }
+
+    public List<Persona> getMyPersonas() {
+        var accountId = authService.getAccountId();
+        log.info("get personas for {}", accountId);
+        var personas = personaRepository.findAllByOwnerId(accountId);
+        return personas.stream().map(this::map).sorted(Comparator.comparing(Persona::getId)).collect(Collectors.toList());
     }
 
     private ConsumableStat consumableStat(int current, int max) {

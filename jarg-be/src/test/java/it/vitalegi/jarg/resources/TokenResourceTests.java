@@ -3,6 +3,8 @@ package it.vitalegi.jarg.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.vitalegi.jarg.auth.model.Auth;
+import it.vitalegi.jarg.mock.MockUtil;
+import it.vitalegi.jarg.mock.TokenMock;
 import it.vitalegi.jarg.resource.TokenResource;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -24,21 +26,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Log4j2
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
-public class TokenTests extends RestResource {
+@ActiveProfiles({"test", "it"})
+public class TokenResourceTests {
+
+    @Autowired
+    protected MockMvc mockMvc;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
+
+    @Autowired
+    TokenMock tokenMock;
 
     @Test
     void given_validCredentials_when_tokenAccess_then_shouldBeAuthenticated() throws Exception {
-        var auth = user(USER_1);
+        var id = MockUtil.randomUserId();
+        var auth = MockUtil.user(id);
 
-        var response = tokenAccessOk(auth).andReturn().getResponse();
+        var response = tokenMock.accessOk(auth).andReturn().getResponse();
         var cookie = response.getCookie(TokenResource.AUTH_COOKIE);
         assertNotNull(cookie, "tokenAccess should set AUTH cookie");
 
         String payload = mockMvc.perform(get("/auth/identity").cookie(cookie)) //
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         var out = objectMapper.readValue(payload, Auth.class);
-        assertEquals(USER_1, out.getSubject());
+        assertEquals(id, out.getSubject());
     }
 
     @Test
@@ -51,13 +63,14 @@ public class TokenTests extends RestResource {
 
     @Test
     void given_validCredentials_when_tokenRefresh_then_shouldRegenerateCookie() throws Exception {
-        var auth = user(USER_1);
+        var id = MockUtil.randomUserId();
+        var auth = MockUtil.user(id);
 
-        var response = tokenAccessOk(auth).andReturn().getResponse();
+        var response = tokenMock.accessOk(auth).andReturn().getResponse();
         var cookie = response.getCookie(TokenResource.AUTH_COOKIE);
         assertNotNull(cookie, "tokenAccess should set AUTH cookie");
 
-        var response2 = tokenRefreshOk(auth).andReturn().getResponse();
+        var response2 = tokenMock.refreshOk(auth).andReturn().getResponse();
         var cookie2 = response2.getCookie(TokenResource.AUTH_COOKIE);
         assertNotNull(cookie2, "tokenRefresh should set AUTH cookie");
     }

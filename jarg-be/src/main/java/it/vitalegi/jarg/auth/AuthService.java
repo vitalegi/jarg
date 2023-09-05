@@ -21,6 +21,7 @@ public class AuthService {
         var subject = getSubject();
         var accountId = accountService.getAccountId(subject);
         if (accountId == null) {
+            log.info("Account is missing, add for {}", subject);
             accountId = accountService.addAccount(subject);
             if (accountId == null) {
                 throw new IllegalArgumentException("Subject " + subject + " is unknown");
