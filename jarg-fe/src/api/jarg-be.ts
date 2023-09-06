@@ -1,14 +1,32 @@
+import { NewPersona } from '../game/core/models/new-persona';
+import { Persona } from '../game/core/models/persona';
 import User from '../game/core/models/user';
 import Logger from '../logging/logger';
 import Http from './http';
 
+class PersonaApi {
+  http: Http;
+  constructor(http: Http) {
+    this.http = http;
+  }
+
+  public async createPersona(request: NewPersona): Promise<Persona> {
+    const response = await this.http.putJson('/persona', request);
+    return Persona.parse(response);
+  }
+}
+
 export class JargBe {
   log = Logger.getInstance('JargBe');
-  http: Http;
+  private http: Http;
 
   constructor() {
     const baseUrl = import.meta.env.VITE_JARG_API;
     this.http = new Http(baseUrl);
+  }
+
+  persona(): PersonaApi {
+    return new PersonaApi(this.http);
   }
 
   async tokenAccess(username: string, password: string): Promise<void> {

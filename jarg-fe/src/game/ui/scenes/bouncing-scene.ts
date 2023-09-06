@@ -3,12 +3,10 @@ import Logger from '../../../logging/logger';
 import { AbstractGameScene } from './abstract-scene';
 import Fonts from '../styles/fonts';
 import ScreenData from '../devices/screen';
-import ScreenInfo from '../scene-elements/screen-info';
 import BouncingObject from '../scene-elements/bouncing-object';
 import { Button } from '@pixi/ui';
 import { scene } from '../../core/models/start-scene';
 import GameSceneConstants from '../../core/constants/game-scene-constants';
-import jargBe from '../../../api/jarg-be';
 
 export default class BouncingScene extends AbstractGameScene {
   log = Logger.getInstance('BouncingScene');
@@ -18,12 +16,10 @@ export default class BouncingScene extends AbstractGameScene {
   }
 
   async start() {
-    const bouncers = new Array<BouncingObject>();
-    await jargBe.tokenAccess('user', 'password');
-    await jargBe.tokenRefresh();
+    this.withRandomBackground();
+    this.withScreenInfo();
 
-    const info = new ScreenInfo(this.getContainer(), this.ctx);
-    info.start();
+    const bouncers = new Array<BouncingObject>();
 
     const spawn = new Text('Spawn', Fonts.text());
     spawn.x = (ScreenData.width() - spawn.width) / 2;
@@ -46,7 +42,6 @@ export default class BouncingScene extends AbstractGameScene {
     backBtn.onPress.connect(() => this.observer.publish('scene/start', scene(GameSceneConstants.GAME_ACCESS).build()));
 
     this.addTicker((time: number) => {
-      info.tick(time);
       bouncers.forEach((b) => b.tick(time));
     });
   }

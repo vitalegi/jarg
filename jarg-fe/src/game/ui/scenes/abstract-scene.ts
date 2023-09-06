@@ -4,6 +4,8 @@ import { ObserverSubscribers } from '../../observers/observer';
 import ApplicationContext from '../application-context';
 import { ITicker } from '../components/ticker';
 import Logger from '../../../logging/logger';
+import RandomBackground from '../scene-elements/random-background';
+import ScreenInfo from '../scene-elements/screen-info';
 
 export abstract class AbstractGameScene implements Bean {
   private _log = Logger.getInstance('AbstractGameScene');
@@ -41,9 +43,25 @@ export abstract class AbstractGameScene implements Bean {
     return this.container;
   }
 
-  protected addTicker(tick: (time: number) => void): void {
+  protected addTicker(tick: (time: number) => void, description?: string): void {
     const ticker = this.ctx.addTicker(tick);
     this.tickers.push(ticker);
-    this._log.info(`Add ticker for ${this.name()}: ${ticker.id()}. # tickers on this scene: ${this.tickers.length}`);
+    const desc = description ? '(' + description + ')' : '';
+    this._log.info(`Add ticker for ${this.name()}: ${ticker.id()} ${desc}. # tickers on this scene: ${this.tickers.length}`);
+  }
+
+  protected withRandomBackground(): void {
+    const bg = new RandomBackground(this.getContainer(), this.ctx);
+    bg.start();
+    this.addTicker((time: number) => {
+      bg.tick(time);
+    }, 'randomBackground');
+  }
+  protected withScreenInfo(): void {
+    const info = new ScreenInfo(this.getContainer(), this.ctx);
+    info.start();
+    this.addTicker((time: number) => {
+      info.tick(time);
+    }, 'ScreenInfo');
   }
 }

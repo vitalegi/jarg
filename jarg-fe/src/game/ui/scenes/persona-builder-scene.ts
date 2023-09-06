@@ -6,12 +6,14 @@ import ScreenData from '../devices/screen';
 import { Button, List } from '@pixi/ui';
 import { scene } from '../../core/models/start-scene';
 import GameSceneConstants from '../../core/constants/game-scene-constants';
+import jargBe from '../../../api/jarg-be';
+import { NewPersona } from '../../core/models/new-persona';
 
-export default class GameAccessScene extends AbstractGameScene {
-  log = Logger.getInstance('GameAccessScene');
+export default class PersonaBuilderScene extends AbstractGameScene {
+  log = Logger.getInstance('PersonaBuilderScene');
 
   name(): string {
-    return GameSceneConstants.GAME_ACCESS;
+    return GameSceneConstants.PERSONA_BUILDER;
   }
 
   async start() {
@@ -21,20 +23,15 @@ export default class GameAccessScene extends AbstractGameScene {
     const options = new List({ type: 'vertical' });
     options.y = 20;
 
-    options.addChild(this.text('Hello, adventurer'));
-    options.addChild(this.option('Persona', () => this.observer.publish('scene/start', scene(GameSceneConstants.PERSONA_BUILDER).build())));
-    options.addChild(this.option('Bouncer', () => this.observer.publish('scene/start', scene(GameSceneConstants.BOUNCING).build())));
+    options.addChild(this.text('Create new Persona'));
+    options.addChild(this.text('Cost TODO'));
+    options.addChild(this.text('Name TODO'));
+    options.addChild(this.text('Class TODO'));
+    options.addChild(this.text('Race TODO'));
+    options.addChild(this.option('Create!', () => this.createPersona()));
+    options.addChild(this.option('Back', () => this.observer.publish('scene/start', scene(GameSceneConstants.GAME_ACCESS).build())));
 
     this.getContainer().addChild(options);
-
-    let animation = await this.ctx.getAssetLoader().loadAnimatedSprite('arcanine');
-    animation.play();
-    this.getContainer().addChild(animation);
-
-    animation = await this.ctx.getAssetLoader().loadAnimatedSprite('abra');
-    animation.x = 200;
-    animation.play();
-    this.getContainer().addChild(animation);
 
     this.addTicker((time: number) => {
       options.x = (ScreenData.width() - options.width) / 2;
@@ -52,5 +49,9 @@ export default class GameAccessScene extends AbstractGameScene {
       button.onPress.connect(onPress);
     }
     return label;
+  }
+
+  protected async createPersona(): Promise<void> {
+    await jargBe.persona().createPersona(new NewPersona());
   }
 }
