@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class SerializrUtil {
 
-    private static ObjectMapper om;
+    private static final ObjectMapper om;
 
     static {
         om = new ObjectMapper();

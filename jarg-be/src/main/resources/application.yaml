@@ -43,4 +43,4 @@ security:
       publicKey: ${APP_JWT_PUBLIC_KEY}
       privateKey: ${APP_JWT_PRIVATE_KEY}
 metrics:
-  skipIfLessThan: -1
+  skipIfLessThan: 50

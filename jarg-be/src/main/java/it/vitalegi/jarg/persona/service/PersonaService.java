@@ -40,18 +40,25 @@ public class PersonaService {
         persona.setBaseStats(baseStats());
         persona.setStatsGrowth(statsGrowth());
 
-        var entity = new PersonaEntity();
-        entity.setOwnerId(accountId);
-        entity.setPayload(SerializrUtil.toByte(persona));
-        entity = personaRepository.save(entity);
-        return map(entity);
+        var out = doCreatePersona(persona, accountId);
+        log.info("Create persona {}", out.getId());
+        return out;
     }
+
 
     public List<Persona> getMyPersonas() {
         var accountId = authService.getAccountId();
         log.info("get personas for {}", accountId);
         var personas = personaRepository.findAllByOwnerId(accountId);
         return personas.stream().map(this::map).sorted(Comparator.comparing(Persona::getId)).collect(Collectors.toList());
+    }
+
+    protected Persona doCreatePersona(Persona persona, int ownerId) {
+        var entity = new PersonaEntity();
+        entity.setOwnerId(ownerId);
+        entity.setPayload(SerializrUtil.toByte(persona));
+        entity = personaRepository.save(entity);
+        return map(entity);
     }
 
     private ConsumableStat consumableStat(int current, int max) {
