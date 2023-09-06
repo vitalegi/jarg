@@ -30,7 +30,7 @@ export default class Fonts {
       dropShadowColor: '#000000',
       dropShadowBlur: 4,
       dropShadowAngle: Math.PI / 6,
-      dropShadowDistance: 6,
+      dropShadowDistance: 2,
       wordWrap: true,
       wordWrapWidth: 440,
       lineJoin: 'round'
