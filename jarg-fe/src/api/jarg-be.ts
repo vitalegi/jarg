@@ -18,7 +18,7 @@ class PersonaApi {
 
 export class JargBe {
   log = Logger.getInstance('JargBe');
-  private http: Http;
+  http: Http;
 
   constructor() {
     const baseUrl = import.meta.env.VITE_JARG_API;
