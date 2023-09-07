@@ -8,6 +8,8 @@ import { scene } from '../../core/models/start-scene';
 import GameSceneConstants from '../../core/constants/game-scene-constants';
 import jargBe from '../../../api/jarg-be';
 import { NewPersona } from '../../core/models/new-persona';
+import { Persona } from '../../core/models/persona';
+import PersonaSheet from '../scene-elements/persona-sheet';
 
 export default class PersonaBuilderScene extends AbstractGameScene {
   log = Logger.getInstance('PersonaBuilderScene');
@@ -52,6 +54,18 @@ export default class PersonaBuilderScene extends AbstractGameScene {
   }
 
   protected async createPersona(): Promise<void> {
-    await jargBe.persona().createPersona(new NewPersona());
+    const request = new NewPersona();
+    request.name = 'No name ' + Math.floor(Math.random() * 100);
+    const persona = await jargBe.persona().createPersona(request);
+    this.withPersona(persona);
+  }
+
+  protected withPersona(persona: Persona): void {
+    const element = new PersonaSheet(this.getContainer(), this.ctx);
+    element.persona = persona;
+    element.start();
+    this.addTicker((time: number) => {
+      element.tick(time);
+    }, 'personaSheet');
   }
 }
