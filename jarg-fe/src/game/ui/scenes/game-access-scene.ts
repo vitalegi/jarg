@@ -1,4 +1,4 @@
-import { Sprite, Text } from 'pixi.js';
+import { Text } from 'pixi.js';
 import Logger from '../../../logging/logger';
 import { AbstractGameScene } from './abstract-scene';
 import Fonts from '../styles/fonts';
@@ -37,17 +37,6 @@ export default class GameAccessScene extends AbstractGameScene {
     animation.play();
     this.getContainer().addChild(animation);
 
-    const texture = await this.ctx.getAssetLoader().loadTexture('terrain_01/isometric_pixel_0014.png');
-    for (let horizontal = 0; horizontal < 10; horizontal++) {
-      for (let vertical = 0; vertical < 10; vertical++) {
-        const tile = new Sprite(texture);
-        tile.x = 200 + 50 * horizontal;
-        tile.y = 100 + 50 * vertical;
-        tile.width = 5 + horizontal * 10;
-        tile.height = 5 + horizontal * 10;
-        this.getContainer().addChild(tile);
-      }
-    }
     this.addTicker((time: number) => {
       options.x = (ScreenData.width() - options.width) / 2;
     });
