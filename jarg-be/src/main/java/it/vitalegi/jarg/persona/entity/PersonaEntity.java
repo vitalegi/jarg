@@ -3,6 +3,9 @@ package it.vitalegi.jarg.persona.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import java.util.UUID;
 
 @Table(name = "persona")
 @Entity(name = "persona")
@@ -11,9 +14,9 @@ import lombok.Setter;
 public class PersonaEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "persona_seq")
-    @SequenceGenerator(name = "persona_seq", sequenceName = "persona_seq", allocationSize = 1)
-    private Integer personaId;
+    @GeneratedValue
+    @JdbcTypeCode(java.sql.Types.VARCHAR)
+    private UUID personaId;
 
     private Integer ownerId;
 

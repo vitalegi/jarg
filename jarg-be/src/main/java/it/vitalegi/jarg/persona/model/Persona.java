@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Data
 public class Persona {
-    long id;
+    UUID id;
     String name;
     String skin;
     int level;
