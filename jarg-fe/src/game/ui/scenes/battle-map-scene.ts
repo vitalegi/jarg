@@ -1,4 +1,4 @@
-import { Sprite, Text } from 'pixi.js';
+import { Container, Sprite, Text } from 'pixi.js';
 import Logger from '../../../logging/logger';
 import { AbstractGameScene } from './abstract-scene';
 import Fonts from '../styles/fonts';
@@ -34,16 +34,37 @@ export default class BattleMapScene extends AbstractGameScene {
     this.getContainer().addChild(animation);
 
     const texture = await this.ctx.getAssetLoader().loadTexture('terrain_01/isometric_pixel_0014.png');
-    for (let horizontal = 0; horizontal < 10; horizontal++) {
-      for (let vertical = 0; vertical < 10; vertical++) {
+
+    const w = 100;
+    const h = 100;
+
+    const maxX = 5;
+    const maxY = 7;
+    const mapContainer = new Container();
+
+    for (let i = 0; i < Math.max(maxX, maxY); i++) {
+      for (let j = 0; j <= i; j++) {
+        const x = i - j;
+        const y = j;
+
+        const pixel_x = ((x - y) * w) / 2;
+        const pixel_y = (i * w) / 4;
+
+        this.log.info(`Render ${x},${y} in ${pixel_x},${pixel_y}`);
+
         const tile = new Sprite(texture);
-        tile.x = 200 + 50 * horizontal;
-        tile.y = 100 + 50 * vertical;
-        tile.width = 5 + horizontal * 10;
-        tile.height = 5 + horizontal * 10;
-        this.getContainer().addChild(tile);
+        tile.x = pixel_x + (Math.max(maxX, maxY) * w) / 2;
+        tile.y = pixel_y;
+        tile.width = w;
+        tile.height = h;
+        mapContainer.addChild(tile);
       }
     }
+    mapContainer.x = (ScreenData.width() - mapContainer.width - w) / 2;
+    mapContainer.y = 200;
+    this.log.info(`w : ${mapContainer.width}`);
+    this.getContainer().addChild(mapContainer);
+
     this.addTicker((time: number) => {
       options.x = (ScreenData.width() - options.width) / 2;
     });

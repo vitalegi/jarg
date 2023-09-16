@@ -1,55 +1,60 @@
+{"frames": {
+
+"terrain_01/isometric_pixel_0014.png":
 {
-  "frames": {
-    "terrain_01/isometric_pixel_0014.png": {
-      "frame": { "x": 0, "y": 0, "w": 50, "h": 50 },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 50 },
-      "sourceSize": { "w": 50, "h": 50 }
-    },
-    "terrain_02/isometric_pixel_0028.png": {
-      "frame": { "x": 50, "y": 0, "w": 50, "h": 50 },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 50 },
-      "sourceSize": { "w": 50, "h": 50 }
-    },
-    "terrain_03/isometric_pixel_0035.png": {
-      "frame": { "x": 100, "y": 0, "w": 50, "h": 50 },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 50 },
-      "sourceSize": { "w": 50, "h": 50 }
-    },
-    "terrain_04/isometric_pixel_0036.png": {
-      "frame": { "x": 150, "y": 0, "w": 50, "h": 50 },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 50 },
-      "sourceSize": { "w": 50, "h": 50 }
-    },
-    "terrain_05/isometric_pixel_0043.png": {
-      "frame": { "x": 200, "y": 0, "w": 50, "h": 50 },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 50 },
-      "sourceSize": { "w": 50, "h": 50 }
-    },
-    "terrain_06/isometric_pixel_0064.png": {
-      "frame": { "x": 250, "y": 0, "w": 50, "h": 50 },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": { "x": 0, "y": 0, "w": 50, "h": 50 },
-      "sourceSize": { "w": 50, "h": 50 }
-    }
-  },
-  "meta": {
-    "app": "https://www.codeandweb.com/texturepacker",
-    "version": "1.1",
+	"frame": {"x":0,"y":0,"w":42,"h":49},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":42,"h":49},
+	"sourceSize": {"w":42,"h":49}
+},
+"terrain_02/isometric_pixel_0028.png":
+{
+	"frame": {"x":42,"y":0,"w":42,"h":49},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":42,"h":49},
+	"sourceSize": {"w":42,"h":49}
+},
+"terrain_03/isometric_pixel_0035.png":
+{
+	"frame": {"x":84,"y":0,"w":42,"h":49},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":42,"h":49},
+	"sourceSize": {"w":42,"h":49}
+},
+"terrain_04/isometric_pixel_0036.png":
+{
+	"frame": {"x":126,"y":0,"w":42,"h":49},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":42,"h":49},
+	"sourceSize": {"w":42,"h":49}
+},
+"terrain_05/isometric_pixel_0043.png":
+{
+	"frame": {"x":168,"y":0,"w":42,"h":49},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":42,"h":49},
+	"sourceSize": {"w":42,"h":49}
+},
+"terrain_06/isometric_pixel_0064.png":
+{
+	"frame": {"x":210,"y":0,"w":42,"h":49},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":42,"h":49},
+	"sourceSize": {"w":42,"h":49}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
     "image": "/assets/map-elements/isometric-block-001-v2.png",
-    "format": "RGBA8888",
-    "size": { "w": 300, "h": 50 },
-    "scale": "1",
-    "smartupdate": "$TexturePacker:SmartUpdate:92f77bd24d2c6ee857078fa3b0262d77:d94f2afe3fe878e535ba4e4da0790a7e:94becebea6d86ce283ab937f96bb976d$"
-  }
+	"format": "RGBA8888",
+	"size": {"w":252,"h":49},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:78d5a94438cc9ddac9940ad6062a88e1:42d2f921917054ee215664406096065f:94becebea6d86ce283ab937f96bb976d$"
+}
 }
