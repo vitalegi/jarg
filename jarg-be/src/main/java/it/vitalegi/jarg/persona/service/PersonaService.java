@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -26,6 +27,16 @@ public class PersonaService {
 
     public Persona create(String name, long classId, long raceId, String skin) {
         var accountId = authService.getAccountId();
+        var persona = initPersona(name, classId, raceId, skin);
+        return doCreatePersona(persona, accountId);
+    }
+
+    public Persona createNpc() {
+        var persona = initPersona("???", 1, 2, "arcanine");
+        return persona;
+    }
+
+    protected Persona initPersona(String name, long classId, long raceId, String skin) {
         var persona = new Persona();
         persona.setName(name);
         persona.setHp(consumableStat(30, 30));
@@ -39,12 +50,8 @@ public class PersonaService {
         persona.setSkills(new ArrayList<>());
         persona.setBaseStats(baseStats());
         persona.setStatsGrowth(statsGrowth());
-
-        var out = doCreatePersona(persona, accountId);
-        log.info("Create persona {}", out.getId());
-        return out;
+        return persona;
     }
-
 
     public List<Persona> getMyPersonas() {
         var accountId = authService.getAccountId();
@@ -58,6 +65,7 @@ public class PersonaService {
         entity.setOwnerId(ownerId);
         entity.setPayload(SerializrUtil.toByte(persona));
         entity = personaRepository.save(entity);
+        log.info("Create persona {}", entity.getPersonaId());
         return map(entity);
     }
 

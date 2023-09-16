@@ -55,8 +55,8 @@ public class PersonaResourceTests {
         var persona3 = personaMock.createPersonaOk(jwt2, new NewPersonaBuilder().name("C").build());
         var persona4 = personaMock.createPersonaOk(jwt2, new NewPersonaBuilder().name("D").build());
 
-        var personas1 = personaMock.getMyPersonasOk(jwt1).stream().map(Persona::getName).collect(Collectors.toList());
-        var personas2 = personaMock.getMyPersonasOk(jwt2).stream().map(Persona::getName).collect(Collectors.toList());
+        var personas1 = personaMock.getMyPersonasOk(jwt1).stream().map(Persona::getName).sorted().collect(Collectors.toList());
+        var personas2 = personaMock.getMyPersonasOk(jwt2).stream().map(Persona::getName).sorted().collect(Collectors.toList());
         assertEquals(Arrays.asList("A", "B"), personas1);
         assertEquals(Arrays.asList("C", "D"), personas2);
     }
