@@ -4,10 +4,10 @@ import { AbstractGameScene } from './abstract-scene';
 import Fonts from '../styles/fonts';
 import ScreenData from '../devices/screen';
 import ScreenInfo from '../scene-elements/screen-info';
-import GameSceneConstants from '../../core/constants/game-scene-constants';
-import { Button, Input } from '@pixi/ui';
+import GameSceneConstants from '../scene-coordinators/game-scene-constants';
+import { Button } from '@pixi/ui';
 import TextInput from '../scene-elements/text-input';
-import { scene } from '../../core/models/start-scene';
+import SceneManager from '../scene-coordinators/scene-manager';
 
 export default class LoginScene extends AbstractGameScene {
   log = Logger.getInstance('LoginScene');
@@ -91,7 +91,7 @@ export default class LoginScene extends AbstractGameScene {
   protected async doLogin(username: string, password: string): Promise<void> {
     try {
       await this.ctx.getUserService().login(username, password);
-      this.observer.publish('scene/start', scene(GameSceneConstants.GAME_ACCESS).build());
+      SceneManager.startGameAccess(this.observer);
     } catch (e) {
       this.log.info(`Login failed`);
     }
@@ -101,7 +101,7 @@ export default class LoginScene extends AbstractGameScene {
     try {
       await this.ctx.getUserService().signup(username, password);
       await this.ctx.getUserService().login(username, password);
-      this.observer.publish('scene/start', scene(GameSceneConstants.GAME_ACCESS).build());
+      SceneManager.startGameAccess(this.observer);
     } catch (e) {
       this.log.info(`Login failed`);
     }

@@ -10,8 +10,8 @@ import ScreenInfo from '../scene-elements/screen-info';
 export abstract class AbstractGameScene implements Bean {
   private _log = Logger.getInstance('AbstractGameScene');
 
-  public observer: ObserverSubscribers;
-  public ctx: ApplicationContext;
+  protected observer: ObserverSubscribers;
+  protected ctx: ApplicationContext;
   private container?: Container;
   private tickers = new Array<ITicker>();
 
