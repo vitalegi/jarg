@@ -1,4 +1,4 @@
-import { AnimatedSprite, Assets, BaseTexture, Resource, Spritesheet, Texture } from 'pixi.js';
+import { AnimatedSprite, Assets, BaseTexture, Resource, Sprite, Spritesheet, Texture } from 'pixi.js';
 import Http from '../../api/http';
 import Logger from '../../logging/logger';
 import AssetIndex from '../core/models/ui/asset-index';
@@ -12,12 +12,21 @@ export default class AssetLoader {
   log = Logger.getInstance('AssetLoader');
 
   public async load(url: string): Promise<Texture<Resource>> {
-    const asset = await Assets.load(url);
-    return asset;
+    return await Assets.load(url);
+  }
+
+  public async loadSprite(name: string): Promise<Sprite> {
+    return new Sprite(await this.loadTexture(name));
+  }
+
+  public async loadTexture(name: string): Promise<Texture<Resource>> {
+    const collection = await this.findCollectionByAnimationName(name);
+    const spritesheet = await this.loadSpritesheet(collection);
+    return spritesheet.textures[name];
   }
 
   public async loadAnimatedSprite(name: string): Promise<AnimatedSprite> {
-    const collection = await this.getAnimationCollection(name);
+    const collection = await this.findCollectionByAnimationName(name);
     const spritesheet = await this.loadSpritesheet(collection);
     const animation = new AnimatedSprite(spritesheet.animations[name]);
     animation.animationSpeed = 0.1666;
@@ -25,8 +34,8 @@ export default class AssetLoader {
   }
 
   public async getAnimationNames(): Promise<string[]> {
-    const index = await this.getAssetIndex();
-    return index.collections.flatMap((collection) => collection.animations);
+    const index = await this.getCollections();
+    return index.flatMap((collection) => collection.animations);
   }
 
   public async loadSpritesheet(collection: CollectionIndex): Promise<Spritesheet> {
@@ -44,9 +53,9 @@ export default class AssetLoader {
     return spritesheet;
   }
 
-  protected async getAnimationCollection(name: string): Promise<CollectionIndex> {
-    const index = await this.getAssetIndex();
-    const collections = index.collections.filter((c) => c.animations.indexOf(name) !== -1);
+  protected async findCollectionByAnimationName(name: string): Promise<CollectionIndex> {
+    const index = await this.getCollections();
+    const collections = index.filter((c) => c.animations.indexOf(name) !== -1);
     if (collections.length === 0) {
       throw Error(`Can't find animation ${name}`);
     }
@@ -58,9 +67,17 @@ export default class AssetLoader {
     return collections[0];
   }
 
-  protected async getAssetIndex(): Promise<AssetIndex> {
-    const value = await this.getCacheable('/assets/characters/characters_001.json');
-    return AssetIndex.parse(value);
+  protected async getCollections(): Promise<CollectionIndex[]> {
+    return this.getAssetIndexes(['/assets/characters_001.json', '/assets/tiles_001.json']);
+  }
+
+  protected async getAssetIndexes(urls: string[]): Promise<CollectionIndex[]> {
+    const collections = new Array<CollectionIndex>();
+    for (const url of urls) {
+      const value = await this.getCacheable(url);
+      collections.push(...AssetIndex.parse(value).collections);
+    }
+    return collections;
   }
 
   protected async getCacheable(url: string): Promise<unknown> {

@@ -5,8 +5,8 @@ import Fonts from '../styles/fonts';
 import ScreenData from '../devices/screen';
 import BouncingObject from '../scene-elements/bouncing-object';
 import { Button } from '@pixi/ui';
-import { scene } from '../../core/models/start-scene';
-import GameSceneConstants from '../../core/constants/game-scene-constants';
+import GameSceneConstants from '../scene-coordinators/game-scene-constants';
+import SceneManager from '../scene-coordinators/scene-manager';
 
 export default class BouncingScene extends AbstractGameScene {
   log = Logger.getInstance('BouncingScene');
@@ -39,7 +39,7 @@ export default class BouncingScene extends AbstractGameScene {
     this.getContainer().addChild(back);
 
     const backBtn = new Button(back);
-    backBtn.onPress.connect(() => this.observer.publish('scene/start', scene(GameSceneConstants.GAME_ACCESS).build()));
+    backBtn.onPress.connect(() => SceneManager.startGameAccess(this.observer));
 
     this.addTicker((time: number) => {
       bouncers.forEach((b) => b.tick(time));

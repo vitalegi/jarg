@@ -3,9 +3,9 @@ import GameService from './core/services/game-service';
 import Observer from './observers/observer';
 import GameCoordinator from './ui/game-coordinator';
 import UserService from './core/services/user-service';
-import { scene } from './core/models/start-scene';
-import GameSceneConstants from './core/constants/game-scene-constants';
+import GameSceneConstants from './ui/scene-coordinators/game-scene-constants';
 import ApplicationContext from './ui/application-context';
+import SceneManager from './ui/scene-coordinators/scene-manager';
 
 export default async function setup(element: HTMLDivElement, window: Window) {
   const app = new Application<HTMLCanvasElement>({ resizeTo: window });
@@ -26,8 +26,8 @@ export default async function setup(element: HTMLDivElement, window: Window) {
   const isAuthenticated = await userService.isAuthenticated();
   if (isAuthenticated) {
     await userService.tokenRefresh();
-    observer.publish('scene/start', scene(GameSceneConstants.GAME_ACCESS).build());
+    SceneManager.startGameAccess(observer);
   } else {
-    observer.publish('scene/start', scene(GameSceneConstants.LOGIN).build());
+    SceneManager.startLogin(observer);
   }
 }

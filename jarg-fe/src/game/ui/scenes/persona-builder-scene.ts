@@ -4,12 +4,12 @@ import { AbstractGameScene } from './abstract-scene';
 import Fonts from '../styles/fonts';
 import ScreenData from '../devices/screen';
 import { Button, List } from '@pixi/ui';
-import { scene } from '../../core/models/start-scene';
-import GameSceneConstants from '../../core/constants/game-scene-constants';
+import GameSceneConstants from '../scene-coordinators/game-scene-constants';
 import jargBe from '../../../api/jarg-be';
 import { NewPersona } from '../../core/models/new-persona';
 import { Persona } from '../../core/models/persona';
 import PersonaSheet from '../scene-elements/persona-sheet';
+import SceneManager from '../scene-coordinators/scene-manager';
 
 export default class PersonaBuilderScene extends AbstractGameScene {
   log = Logger.getInstance('PersonaBuilderScene');
@@ -31,7 +31,7 @@ export default class PersonaBuilderScene extends AbstractGameScene {
     options.addChild(this.text('Class TODO'));
     options.addChild(this.text('Race TODO'));
     options.addChild(this.option('Create!', () => this.createPersona()));
-    options.addChild(this.option('Back', () => this.observer.publish('scene/start', scene(GameSceneConstants.GAME_ACCESS).build())));
+    options.addChild(this.option('Back', () => SceneManager.startGameAccess(this.observer)));
 
     this.getContainer().addChild(options);
 

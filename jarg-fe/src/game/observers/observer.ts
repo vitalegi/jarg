@@ -2,6 +2,10 @@
 import Logger from '../../logging/logger';
 import { uniqueId } from '../util/id-utils';
 
+export interface Publisher {
+  publish(name: string, payload: any): void;
+}
+
 export class Subscriber {
   readonly id: number;
   name: string;
@@ -14,7 +18,7 @@ export class Subscriber {
   }
 }
 
-export default class Observer {
+export default class Observer implements Publisher {
   log = Logger.getInstance('Observer');
   subscribers = new Array<Subscriber>();
 
@@ -44,7 +48,7 @@ export default class Observer {
   }
 }
 
-export class ObserverSubscribers {
+export class ObserverSubscribers implements Publisher {
   public observer: Observer;
   private subscribers = new Array<Subscriber>();
 

@@ -5,13 +5,12 @@ import Fonts from '../styles/fonts';
 import ScreenData from '../devices/screen';
 import { Button, List } from '@pixi/ui';
 import GameSceneConstants from '../scene-coordinators/game-scene-constants';
-import SceneManager from '../scene-coordinators/scene-manager';
 
-export default class GameAccessScene extends AbstractGameScene {
-  log = Logger.getInstance('GameAccessScene');
+export default class BattleMapScene extends AbstractGameScene {
+  log = Logger.getInstance('BattleMapScene');
 
   name(): string {
-    return GameSceneConstants.GAME_ACCESS;
+    return GameSceneConstants.BATTLE_MAP;
   }
 
   async start() {
@@ -21,10 +20,7 @@ export default class GameAccessScene extends AbstractGameScene {
     const options = new List({ type: 'vertical' });
     options.y = 20;
 
-    options.addChild(this.text('Hello, adventurer'));
-    options.addChild(this.option('Persona', () => SceneManager.startPersonaBuilder(this.observer)));
-    options.addChild(this.option('Battle!', () => SceneManager.startBattle(this.observer)));
-    options.addChild(this.option('Bouncer', () => SceneManager.startBouncing(this.observer)));
+    options.addChild(this.text('Battle'));
 
     this.getContainer().addChild(options);
 
