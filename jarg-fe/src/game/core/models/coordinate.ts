@@ -29,4 +29,8 @@ export class Coordinate {
   public equals(other: Coordinate): boolean {
     return this.x === other.x && this.y === other.y;
   }
+
+  public toString(): string {
+    return `(${this.x},${this.y})`;
+  }
 }
