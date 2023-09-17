@@ -179,7 +179,7 @@ export class Skill {
 }
 
 export class Persona {
-  id = 0;
+  id = '';
   name = '';
   skin = '';
   level = 0;
@@ -201,7 +201,7 @@ export class Persona {
     }
     const out = new Persona();
     if ('id' in value) {
-      out.id = asNumber(value.id);
+      out.id = asString(value.id);
     }
     if ('name' in value) {
       out.name = asString(value.name);
