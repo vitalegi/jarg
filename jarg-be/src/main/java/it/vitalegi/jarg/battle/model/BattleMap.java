@@ -1,5 +1,6 @@
 package it.vitalegi.jarg.battle.model;
 
+import it.vitalegi.jarg.persona.model.Persona;
 import lombok.Data;
 
 import java.util.List;
@@ -11,7 +12,8 @@ public class BattleMap {
 
     UUID id;
     List<Tile> tiles;
-    List<BattlePersona> personas;
+    List<Persona> personas;
+    List<PersonaPlacement> placements;
     List<PersonaGroup> groups;
 
     public List<PersonaGroup> getGroupsByType(PersonaGroupType type) {

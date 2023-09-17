@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +36,20 @@ public class PersonaMock extends BaseMock {
     public Persona createPersonaOk(RequestPostProcessor user, NewPersona obj) throws Exception {
         var payload = payload(createPersona(user, obj).andExpect(status().isOk()));
         return objectMapper.readValue(payload, Persona.class);
+    }
+
+    public void validatePersona(Persona persona) {
+        assertNotNull(persona.getId());
+        assertNotNull(persona.getName());
+        assertNotNull(persona.getSkin());
+        assertNotNull(persona.getRace());
+        assertNotNull(persona.getRace().getId());
+        assertNotNull(persona.getClasses());
+        assertNotNull(persona.getHp());
+        assertNotNull(persona.getMp());
+        assertNotNull(persona.getBaseStats());
+        assertNotNull(persona.getStatsGrowth());
+        assertNotNull(persona.getSkills());
     }
 
 }
