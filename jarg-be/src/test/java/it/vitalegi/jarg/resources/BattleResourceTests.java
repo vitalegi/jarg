@@ -6,7 +6,6 @@ import it.vitalegi.jarg.mock.AuthMock;
 import it.vitalegi.jarg.mock.BattleMock;
 import it.vitalegi.jarg.mock.MockUtil;
 import it.vitalegi.jarg.mock.PersonaMock;
-import it.vitalegi.jarg.persona.model.NewPersonaBuilder;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +37,6 @@ public class BattleResourceTests {
         var id1 = MockUtil.randomUserId();
         var jwt1 = MockUtil.jwt(id1);
 
-        var persona1 = personaMock.createPersonaOk(jwt1, new NewPersonaBuilder().name("A").skin("skin").classId(500).raceId(600).build());
-
         var battle = battleMock.createRandomOk(jwt1);
         assertNotNull(battle.getId());
 
@@ -48,6 +45,7 @@ public class BattleResourceTests {
         battleMock.validatePersonaGroupNpcs(battle.getGroupsByType(PersonaGroupType.NPC));
 
         battle.getTiles().forEach(battleMock::validateTile);
-        
+        battle.getPersonas().forEach(personaMock::validatePersona);
+        battle.getPlacements().forEach(p -> battleMock.validatePersonaPlacement(p, battle.getPersonas(), battle.getTiles()));
     }
 }

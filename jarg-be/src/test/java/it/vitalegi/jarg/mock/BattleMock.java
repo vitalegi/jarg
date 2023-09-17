@@ -1,6 +1,7 @@
 package it.vitalegi.jarg.mock;
 
 import it.vitalegi.jarg.battle.model.*;
+import it.vitalegi.jarg.persona.model.Persona;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.servlet.ResultActions;
@@ -31,6 +32,7 @@ public class BattleMock extends BaseMock {
             validatePersonaGroupPlayer(group);
         }
     }
+
     public void validatePersonaGroupPlayer(PersonaGroup group) {
         assertNotNull(group.getId());
         assertNotNull(group.getOwnerId());
@@ -58,5 +60,11 @@ public class BattleMock extends BaseMock {
     public void validateCoordinate(Coordinate coordinate) {
         assertTrue(coordinate.getX() >= 0);
         assertTrue(coordinate.getY() >= 0);
+    }
+
+    public void validatePersonaPlacement(PersonaPlacement placement, List<Persona> personas, List<Tile> tiles) {
+        assertNotNull(placement.getPersonaId());
+        assertTrue(personas.stream().anyMatch(p -> p.getId().equals(placement.getPersonaId())), "One persona should exist with this ID " + placement.getPersonaId());
+        assertTrue(tiles.stream().anyMatch(t -> t.getCoordinate().equals(placement.getCoordinate())), "One tile should exist with this coordinates " + placement.getCoordinate());
     }
 }

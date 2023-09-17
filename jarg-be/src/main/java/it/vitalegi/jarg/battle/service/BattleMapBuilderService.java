@@ -1,6 +1,7 @@
 package it.vitalegi.jarg.battle.service;
 
 import it.vitalegi.jarg.battle.model.*;
+import it.vitalegi.jarg.persona.model.Persona;
 import it.vitalegi.jarg.persona.service.PersonaService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -28,7 +28,9 @@ public class BattleMapBuilderService {
         var enemiesGroup = enemiesGroup();
         out.setGroups(Arrays.asList(playerGroup, enemiesGroup));
         out.setPersonas(new ArrayList<>());
-        out.getPersonas().addAll(createRandomPersonas(out.getTiles(), enemiesGroup));
+        var enemies = createRandomPersonas();
+        out.getPersonas().addAll(enemies);
+        out.setPlacements(createRandomPersonaPlacements(out.getTiles(), enemiesGroup, enemies));
         return out;
     }
 
@@ -47,31 +49,45 @@ public class BattleMapBuilderService {
         return enemiesGroup;
     }
 
-    protected List<BattlePersona> createRandomPersonas(List<Tile> tiles, PersonaGroup group) {
-        var personas = new ArrayList<BattlePersona>();
+    protected List<Persona> createRandomPersonas() {
+        var personas = new ArrayList<Persona>();
         for (var i = 0; i < 5; i++) {
-            personas.add(createRandomPersona(getRandomFreeCoordinates(tiles, personas), group));
+            personas.add(createRandomPersona());
         }
         return personas;
     }
 
-    protected Coordinate getRandomFreeCoordinates(List<Tile> tiles, List<BattlePersona> personas) {
+    protected Persona createRandomPersona() {
+        var out = personaService.createNpc();
+        out.setId(UUID.randomUUID());
+        return out;
+    }
+
+    protected List<PersonaPlacement> createRandomPersonaPlacements(List<Tile> tiles, PersonaGroup group, List<Persona> personas) {
+        var placements = new ArrayList<PersonaPlacement>();
+        for (Persona persona : personas) {
+            placements.add(createRandomPersonaPlacement(tiles, group, persona, placements));
+        }
+        return placements;
+    }
+
+    protected PersonaPlacement createRandomPersonaPlacement(List<Tile> tiles, PersonaGroup group, Persona persona, List<PersonaPlacement> existingPlacements) {
+        var placement = new PersonaPlacement();
+        placement.setPersonaId(persona.getId());
+        placement.setGroupId(group.getId());
+        placement.setCoordinate(getRandomFreeCoordinates(tiles, existingPlacements));
+        return placement;
+    }
+
+    protected Coordinate getRandomFreeCoordinates(List<Tile> tiles, List<PersonaPlacement> personas) {
         var available = tiles.stream() //
                 .filter(Tile::isWalkable) //
                 .filter(t -> personas.stream().noneMatch(p -> p.getCoordinate().equals(t.getCoordinate()))) //
-                .collect(Collectors.toList());
+                .toList();
 
         return available.get((int) (available.size() * Math.random())).getCoordinate();
     }
 
-    protected BattlePersona createRandomPersona(Coordinate coordinate, PersonaGroup group) {
-        var out = new BattlePersona();
-        out.setCoordinate(coordinate);
-        out.setPersona(personaService.createNpc());
-        out.getPersona().setId(UUID.randomUUID());
-        out.setGroupId(group.getId());
-        return out;
-    }
 
     protected List<Tile> createRandomTiles() {
         int maxX = 8;
