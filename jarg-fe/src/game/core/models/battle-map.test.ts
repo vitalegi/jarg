@@ -11,7 +11,7 @@ test('given an object that is a valid battle map then should parse', () => {
           x: 3,
           y: 4
         },
-        animation: 'terrain_05/isometric_pixel_0043.png',
+        animation: 'terrain_05/isometric_0043.png',
         walkable: true
       },
       {
@@ -19,7 +19,7 @@ test('given an object that is a valid battle map then should parse', () => {
           x: 0,
           y: 1
         },
-        animation: 'terrain_02/isometric_pixel_0028.png',
+        animation: 'terrain_02/isometric_0028.png',
         walkable: true
       }
     ],
@@ -146,7 +146,7 @@ test('given an object that is a valid battle map then should parse', () => {
   const tile1 = value.tiles[0];
   expect(tile1.coordinate.x).toBe(3);
   expect(tile1.coordinate.y).toBe(4);
-  expect(tile1.animation).toBe('terrain_05/isometric_pixel_0043.png');
+  expect(tile1.animation).toBe('terrain_05/isometric_0043.png');
   expect(tile1.walkable).toBe(true);
 
   expect(value.personas.length).toBe(2);

@@ -111,7 +111,7 @@ public class BattleMapBuilderService {
     }
 
     protected String getRandomTerrain() {
-        final var TILES = Arrays.asList("terrain_01/isometric_pixel_0014.png", "terrain_02/isometric_pixel_0028.png", "terrain_03/isometric_pixel_0035.png", "terrain_04/isometric_pixel_0036.png", "terrain_05/isometric_pixel_0043.png", "terrain_06/isometric_pixel_0064.png");
+        final var TILES = Arrays.asList("terrain_01/isometric_0014.png", "terrain_02/isometric_0028.png", "terrain_03/isometric_0035.png", "terrain_04/isometric_0036.png", "terrain_05/isometric_0043.png", "terrain_06/isometric_0064.png");
         int id = (int) (Math.random() * TILES.size());
         return TILES.get(id);
     }

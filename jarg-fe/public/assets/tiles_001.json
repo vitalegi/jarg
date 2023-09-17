@@ -1,14 +1,14 @@
 {
   "collections": [
     {
-      "url": "/assets/map-elements/isometric-block-001-v2.json",
+      "url": "/assets/map-elements/isometric-block-001-v3.json",
       "animations": [
-        "terrain_01/isometric_pixel_0014.png",
-        "terrain_02/isometric_pixel_0028.png",
-        "terrain_03/isometric_pixel_0035.png",
-        "terrain_04/isometric_pixel_0036.png",
-        "terrain_05/isometric_pixel_0043.png",
-        "terrain_06/isometric_pixel_0064.png"
+        "terrain_01/isometric_0014.png",
+        "terrain_02/isometric_0028.png",
+        "terrain_03/isometric_0035.png",
+        "terrain_04/isometric_0036.png",
+        "terrain_05/isometric_0043.png",
+        "terrain_06/isometric_0064.png"
       ]
     }
   ]
