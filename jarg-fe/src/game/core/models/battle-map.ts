@@ -42,4 +42,28 @@ export class BattleMap {
     }
     return tiles[0];
   }
+
+  public getPersona(personaId: string): Persona {
+    const personas = this.personas.filter((e) => e.id === personaId);
+    if (personas.length === 0) {
+      throw Error(`Persona ${personaId} not found`);
+    }
+    return personas[0];
+  }
+
+  public getPersonaPlacement(personaId: string): PersonaPlacement {
+    const objs = this.placements.filter((p) => p.personaId === personaId);
+    if (objs.length === 0) {
+      throw Error(`PersonaPlacement ${personaId} not available`);
+    }
+    return objs[0];
+  }
+
+  public findPersonaPlacementByCoordinate(coordinate: Coordinate): PersonaPlacement | undefined {
+    const placements = this.placements.filter((p) => p.coordinate.equals(coordinate));
+    if (placements.length === 0) {
+      return undefined;
+    }
+    return placements[0];
+  }
 }
