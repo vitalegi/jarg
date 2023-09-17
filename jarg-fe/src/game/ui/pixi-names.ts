@@ -1,8 +1,12 @@
 import { Coordinate } from '../core/models/coordinate';
 import { Persona } from '../core/models/persona';
 import { Tile } from '../core/models/tile';
+import { Option } from './scene-elements/menu';
 
 export default class PixiNames {
+  public static menuOption(option: Option): string {
+    return `menu_${option.id}`;
+  }
   public static tile(obj: Tile | Coordinate): string {
     if (obj instanceof Tile) {
       return `tile_${obj.coordinate.x}_${obj.coordinate.y}`;

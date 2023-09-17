@@ -2,14 +2,14 @@ import { Text } from 'pixi.js';
 import Logger from '../../../logging/logger';
 import { AbstractGameScene } from './abstract-scene';
 import Fonts from '../styles/fonts';
-import ScreenData from '../devices/screen';
-import { Button, List } from '@pixi/ui';
+import { Button } from '@pixi/ui';
 import GameSceneConstants from '../scene-coordinators/game-scene-constants';
 import jargBe from '../../../api/jarg-be';
 import { NewPersona } from '../../core/models/new-persona';
 import { Persona } from '../../core/models/persona';
 import PersonaSheet from '../scene-elements/persona-sheet';
 import SceneManager from '../scene-coordinators/scene-manager';
+import { OptionFactory } from '../scene-elements/menu';
 
 export default class PersonaBuilderScene extends AbstractGameScene {
   log = Logger.getInstance('PersonaBuilderScene');
@@ -22,22 +22,17 @@ export default class PersonaBuilderScene extends AbstractGameScene {
     this.withRandomBackground();
     this.withScreenInfo();
 
-    const options = new List({ type: 'vertical' });
-    options.y = 20;
+    this.withMenu(
+      OptionFactory.text('Create new Persona'),
+      OptionFactory.text('Cost TODO'),
+      OptionFactory.text('Name TODO'),
+      OptionFactory.text('Class TODO'),
+      OptionFactory.text('Race TODO'),
+      OptionFactory.alwaysEnabled('Create!', () => this.createPersona()),
+      OptionFactory.alwaysEnabled('Back', () => SceneManager.startGameAccess(this.observer))
+    );
 
-    options.addChild(this.text('Create new Persona'));
-    options.addChild(this.text('Cost TODO'));
-    options.addChild(this.text('Name TODO'));
-    options.addChild(this.text('Class TODO'));
-    options.addChild(this.text('Race TODO'));
-    options.addChild(this.option('Create!', () => this.createPersona()));
-    options.addChild(this.option('Back', () => SceneManager.startGameAccess(this.observer)));
-
-    this.getContainer().addChild(options);
-
-    this.addTicker((time: number) => {
-      options.x = (ScreenData.width() - options.width) / 2;
-    });
+    this.addTicker((time: number) => {});
   }
 
   protected text(text: string): Text {
