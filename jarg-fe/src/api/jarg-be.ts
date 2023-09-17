@@ -1,3 +1,4 @@
+import { BattleMap } from '../game/core/models/battle-map';
 import { NewPersona } from '../game/core/models/new-persona';
 import { Persona } from '../game/core/models/persona';
 import User from '../game/core/models/user';
@@ -16,6 +17,18 @@ class PersonaApi {
   }
 }
 
+class BattleApi {
+  http: Http;
+  constructor(http: Http) {
+    this.http = http;
+  }
+
+  public async createRandom(): Promise<BattleMap> {
+    const response = await this.http.putJson('/battle/random', {});
+    return BattleMap.parse(response);
+  }
+}
+
 export class JargBe {
   log = Logger.getInstance('JargBe');
   http: Http;
@@ -27,6 +40,10 @@ export class JargBe {
 
   persona(): PersonaApi {
     return new PersonaApi(this.http);
+  }
+
+  battle(): BattleApi {
+    return new BattleApi(this.http);
   }
 
   async tokenAccess(username: string, password: string): Promise<void> {

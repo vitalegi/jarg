@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import jargBe from './jarg-be';
+import { NewPersona } from '../game/core/models/new-persona';
 
 beforeEach(() => {
   vi.resetAllMocks();
@@ -57,5 +58,33 @@ describe('logout', async () => {
     spy.mockResolvedValue({});
     await jargBe.logout();
     expect(spy).toHaveBeenCalledWith('/auth/logout');
+  });
+});
+
+describe('battle', async () => {
+  test('create random, external call with correct params', async () => {
+    const spy = vi.spyOn(jargBe.http, 'putJson');
+    spy.mockResolvedValue({});
+    await jargBe.battle().createRandom();
+    expect(spy).toHaveBeenCalledWith('/battle/random', {});
+  });
+});
+
+describe('persona', async () => {
+  test('create persona, external call with correct params', async () => {
+    const spy = vi.spyOn(jargBe.http, 'putJson');
+    spy.mockResolvedValue({});
+    const r = new NewPersona();
+    r.classId = 1;
+    r.name = 'aa';
+    r.raceId = 5;
+    r.skin = 'bb';
+    await jargBe.persona().createPersona(r);
+    expect(spy).toHaveBeenCalledWith('/persona', {
+      classId: 1,
+      name: 'aa',
+      raceId: 5,
+      skin: 'bb'
+    });
   });
 });
