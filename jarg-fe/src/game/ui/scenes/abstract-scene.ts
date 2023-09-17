@@ -6,6 +6,7 @@ import { ITicker } from '../components/ticker';
 import Logger from '../../../logging/logger';
 import RandomBackground from '../scene-elements/random-background';
 import ScreenInfo from '../scene-elements/screen-info';
+import Menu, { Option } from '../scene-elements/menu';
 
 export abstract class AbstractGameScene implements Bean {
   private _log = Logger.getInstance('AbstractGameScene');
@@ -49,7 +50,14 @@ export abstract class AbstractGameScene implements Bean {
     const desc = description ? '(' + description + ')' : '';
     this._log.info(`Add ticker for ${this.name()}: ${ticker.id()} ${desc}. # tickers on this scene: ${this.tickers.length}`);
   }
-
+  protected withMenu(...entries: Array<Option>): Menu {
+    const menu = new Menu(this.getContainer(), this.ctx, ...entries);
+    menu.start();
+    this.addTicker((time: number) => {
+      menu.tick(time);
+    }, 'Menu');
+    return menu;
+  }
   protected withRandomBackground(): void {
     const bg = new RandomBackground(this.getContainer(), this.ctx);
     bg.start();

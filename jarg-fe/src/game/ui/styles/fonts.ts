@@ -14,6 +14,12 @@ export default class Fonts {
     return new TextStyle(text);
   }
 
+  public static menuOption(): TextStyle {
+    const text = Fonts._baseFont();
+    text.fontSize = 32;
+    return new TextStyle(text);
+  }
+
   public static textNote(): TextStyle {
     const text = Fonts._baseFont();
     text.fontSize = 12;
