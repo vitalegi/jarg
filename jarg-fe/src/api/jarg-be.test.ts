@@ -90,8 +90,54 @@ describe('persona', async () => {
 
   test('getMyPersonae, external call with correct params', async () => {
     const spy = vi.spyOn(jargBe.http, 'getJson');
-    spy.mockResolvedValue({});
-    await jargBe.persona().getMyPersonae();
+    spy.mockResolvedValue([
+      {
+        id: '8a2e963b-4900-4a66-a43a-0cb6b4d4c88e',
+        name: 'Aaaa',
+        skin: 'test',
+        level: 1,
+        race: {
+          id: 2,
+          name: '???'
+        },
+        classes: [
+          {
+            def: {
+              id: 1,
+              name: '???'
+            },
+            level: 1
+          }
+        ],
+        exp: 0,
+        baseStats: {
+          attack: 5,
+          defence: 5,
+          intelligence: 5,
+          resistance: 5
+        },
+        hp: {
+          max: 30,
+          current: 30
+        },
+        mp: {
+          max: 10,
+          current: 10
+        },
+        statsGrowth: {
+          hp: 5,
+          mp: 5,
+          attack: 5,
+          defence: 5,
+          intelligence: 5,
+          resistance: 5
+        },
+        skills: []
+      }
+    ]);
+    const out = await jargBe.persona().getMyPersonae();
     expect(spy).toHaveBeenCalledWith('/persona');
+    expect(out.length).toBe(1);
+    expect(out[0].id).toBe('8a2e963b-4900-4a66-a43a-0cb6b4d4c88e');
   });
 });
