@@ -46,8 +46,8 @@ export default class SceneManager {
   public static async startPersonaBuilder(publisher: Publisher) {
     SceneManager.startScene(publisher, { name: GameSceneConstants.PERSONA_BUILDER });
   }
-  public static async startPersonasCatalogue(publisher: Publisher) {
-    SceneManager.startScene(publisher, { name: GameSceneConstants.PERSONAS_CATALOGUE });
+  public static async startPersonaeCatalogue(publisher: Publisher) {
+    SceneManager.startScene(publisher, { name: GameSceneConstants.PERSONAE_CATALOGUE });
   }
   public static async startGameAccess(publisher: Publisher) {
     SceneManager.startScene(publisher, { name: GameSceneConstants.GAME_ACCESS });

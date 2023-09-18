@@ -19,12 +19,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Service
 public class PersonaMock extends BaseMock {
 
-    public ResultActions getMyPersonas(RequestPostProcessor user) throws Exception {
+    public ResultActions getMyPersonae(RequestPostProcessor user) throws Exception {
         return mockMvc.perform(get("/persona").with(user));
     }
 
-    public List<Persona> getMyPersonasOk(RequestPostProcessor user) throws Exception {
-        var payload = payload(getMyPersonas(user).andExpect(status().isOk()));
+    public List<Persona> getMyPersonaeOk(RequestPostProcessor user) throws Exception {
+        var payload = payload(getMyPersonae(user).andExpect(status().isOk()));
         return objectMapper.readValue(payload, new TypeReference<>() {
         });
     }

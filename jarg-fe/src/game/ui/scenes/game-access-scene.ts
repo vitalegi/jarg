@@ -17,7 +17,8 @@ export default class GameAccessScene extends AbstractGameScene {
 
     this.withMenu(
       OptionFactory.text('Hello, adventurer'),
-      OptionFactory.alwaysEnabled('Persona', () => SceneManager.startPersonaBuilder(this.observer)),
+      OptionFactory.alwaysEnabled('New Persona', () => SceneManager.startPersonaBuilder(this.observer)),
+      OptionFactory.alwaysEnabled('Personae', () => SceneManager.startPersonaeCatalogue(this.observer)),
       OptionFactory.alwaysEnabled('Battle!', () => SceneManager.startBattle(this.observer)),
       OptionFactory.alwaysEnabled('Bouncer', () => SceneManager.startBouncing(this.observer))
     );

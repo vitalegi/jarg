@@ -62,9 +62,9 @@ public class BattleMock extends BaseMock {
         assertTrue(coordinate.getY() >= 0);
     }
 
-    public void validatePersonaPlacement(PersonaPlacement placement, List<Persona> personas, List<Tile> tiles) {
+    public void validatePersonaPlacement(PersonaPlacement placement, List<Persona> personae, List<Tile> tiles) {
         assertNotNull(placement.getPersonaId());
-        assertTrue(personas.stream().anyMatch(p -> p.getId().equals(placement.getPersonaId())), "One persona should exist with this ID " + placement.getPersonaId());
+        assertTrue(personae.stream().anyMatch(p -> p.getId().equals(placement.getPersonaId())), "One persona should exist with this ID " + placement.getPersonaId());
         assertTrue(tiles.stream().anyMatch(t -> t.getCoordinate().equals(placement.getCoordinate())), "One tile should exist with this coordinates " + placement.getCoordinate());
     }
 }

@@ -27,9 +27,9 @@ public class BattleMapBuilderService {
         var playerGroup = playerGroup(ownerId);
         var enemiesGroup = enemiesGroup();
         out.setGroups(Arrays.asList(playerGroup, enemiesGroup));
-        out.setPersonas(new ArrayList<>());
-        var enemies = createRandomPersonas();
-        out.getPersonas().addAll(enemies);
+        out.setPersonae(new ArrayList<>());
+        var enemies = createRandomPersonae();
+        out.getPersonae().addAll(enemies);
         out.setPlacements(createRandomPersonaPlacements(out.getTiles(), enemiesGroup, enemies));
         return out;
     }
@@ -49,12 +49,12 @@ public class BattleMapBuilderService {
         return enemiesGroup;
     }
 
-    protected List<Persona> createRandomPersonas() {
-        var personas = new ArrayList<Persona>();
+    protected List<Persona> createRandomPersonae() {
+        var personae = new ArrayList<Persona>();
         for (var i = 0; i < 5; i++) {
-            personas.add(createRandomPersona());
+            personae.add(createRandomPersona());
         }
-        return personas;
+        return personae;
     }
 
     protected Persona createRandomPersona() {
@@ -63,9 +63,9 @@ public class BattleMapBuilderService {
         return out;
     }
 
-    protected List<PersonaPlacement> createRandomPersonaPlacements(List<Tile> tiles, PersonaGroup group, List<Persona> personas) {
+    protected List<PersonaPlacement> createRandomPersonaPlacements(List<Tile> tiles, PersonaGroup group, List<Persona> personae) {
         var placements = new ArrayList<PersonaPlacement>();
-        for (Persona persona : personas) {
+        for (Persona persona : personae) {
             placements.add(createRandomPersonaPlacement(tiles, group, persona, placements));
         }
         return placements;
@@ -79,10 +79,10 @@ public class BattleMapBuilderService {
         return placement;
     }
 
-    protected Coordinate getRandomFreeCoordinates(List<Tile> tiles, List<PersonaPlacement> personas) {
+    protected Coordinate getRandomFreeCoordinates(List<Tile> tiles, List<PersonaPlacement> personae) {
         var available = tiles.stream() //
                 .filter(Tile::isWalkable) //
-                .filter(t -> personas.stream().noneMatch(p -> p.getCoordinate().equals(t.getCoordinate()))) //
+                .filter(t -> personae.stream().noneMatch(p -> p.getCoordinate().equals(t.getCoordinate()))) //
                 .toList();
 
         return available.get((int) (available.size() * Math.random())).getCoordinate();

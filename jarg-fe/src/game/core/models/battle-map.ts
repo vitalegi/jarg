@@ -8,7 +8,7 @@ import { Tile } from './tile';
 export class BattleMap {
   id = '';
   tiles = new Array<Tile>();
-  personas = new Array<Persona>();
+  personae = new Array<Persona>();
   placements = new Array<PersonaPlacement>();
   groups = new Array<PersonaGroup>();
 
@@ -23,8 +23,8 @@ export class BattleMap {
     if ('tiles' in value && Array.isArray(value.tiles)) {
       out.tiles = value.tiles.map(Tile.parse);
     }
-    if ('personas' in value && Array.isArray(value.personas)) {
-      out.personas = value.personas.map(Persona.parse);
+    if ('personae' in value && Array.isArray(value.personae)) {
+      out.personae = value.personae.map(Persona.parse);
     }
     if ('placements' in value && Array.isArray(value.placements)) {
       out.placements = value.placements.map(PersonaPlacement.parse);
@@ -44,11 +44,11 @@ export class BattleMap {
   }
 
   public getPersona(personaId: string): Persona {
-    const personas = this.personas.filter((e) => e.id === personaId);
-    if (personas.length === 0) {
+    const personae = this.personae.filter((e) => e.id === personaId);
+    if (personae.length === 0) {
       throw Error(`Persona ${personaId} not found`);
     }
-    return personas[0];
+    return personae[0];
   }
 
   public getPersonaPlacement(personaId: string): PersonaPlacement {

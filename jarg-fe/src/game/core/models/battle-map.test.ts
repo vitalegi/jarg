@@ -23,7 +23,7 @@ test('given an object that is a valid battle map then should parse', () => {
         walkable: true
       }
     ],
-    personas: [
+    personae: [
       {
         id: 'db144740-c6e0-4462-91b4-a2977e73fad6',
         name: '???',
@@ -149,9 +149,9 @@ test('given an object that is a valid battle map then should parse', () => {
   expect(tile1.animation).toBe('terrain_05/isometric_0043.png');
   expect(tile1.walkable).toBe(true);
 
-  expect(value.personas.length).toBe(2);
-  expect(value.personas[0].id).toBe('db144740-c6e0-4462-91b4-a2977e73fad6');
-  expect(value.personas[1].id).toBe('552821e9-17c3-433a-b09c-a7966604b5c7');
+  expect(value.personae.length).toBe(2);
+  expect(value.personae[0].id).toBe('db144740-c6e0-4462-91b4-a2977e73fad6');
+  expect(value.personae[1].id).toBe('552821e9-17c3-433a-b09c-a7966604b5c7');
 
   expect(value.placements.length).toBe(2);
   expect(value.placements[0].coordinate.x).toBe(0);
