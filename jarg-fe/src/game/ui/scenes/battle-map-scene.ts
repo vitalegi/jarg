@@ -95,7 +95,7 @@ export default class BattleMapScene extends AbstractGameScene {
         tile.height = h;
         container.addChild(tile);
       }
-      // personas
+      // personae
       for (let j = 0; j <= i; j++) {
         const x = i - j;
         const y = j;

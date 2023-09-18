@@ -40,13 +40,13 @@ public class PersonaResourceTests {
         assertEquals(500, persona1.getClasses().get(0).getDef().getId());
         assertEquals(600, persona1.getRace().getId());
 
-        var persona2 = personaMock.getMyPersonasOk(jwt1);
+        var persona2 = personaMock.getMyPersonaeOk(jwt1);
         assertEquals(1, persona2.size());
         assertEquals(persona1, persona2.get(0));
     }
 
     @Test
-    void given_authorizedUser_when_getMyPersonas_then_shouldRetrieveCorrectPersonas() throws Exception {
+    void given_authorizedUser_when_getMyPersonae_then_shouldRetrieveCorrectPersonae() throws Exception {
         var jwt1 = MockUtil.randomJwt();
         var jwt2 = MockUtil.randomJwt();
 
@@ -55,9 +55,9 @@ public class PersonaResourceTests {
         var persona3 = personaMock.createPersonaOk(jwt2, new NewPersonaBuilder().name("C").build());
         var persona4 = personaMock.createPersonaOk(jwt2, new NewPersonaBuilder().name("D").build());
 
-        var personas1 = personaMock.getMyPersonasOk(jwt1).stream().map(Persona::getName).sorted().collect(Collectors.toList());
-        var personas2 = personaMock.getMyPersonasOk(jwt2).stream().map(Persona::getName).sorted().collect(Collectors.toList());
-        assertEquals(Arrays.asList("A", "B"), personas1);
-        assertEquals(Arrays.asList("C", "D"), personas2);
+        var personae1 = personaMock.getMyPersonaeOk(jwt1).stream().map(Persona::getName).sorted().collect(Collectors.toList());
+        var personae2 = personaMock.getMyPersonaeOk(jwt2).stream().map(Persona::getName).sorted().collect(Collectors.toList());
+        assertEquals(Arrays.asList("A", "B"), personae1);
+        assertEquals(Arrays.asList("C", "D"), personae2);
     }
 }

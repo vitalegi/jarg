@@ -12,7 +12,7 @@ public class BattleMap {
 
     UUID id;
     List<Tile> tiles;
-    List<Persona> personas;
+    List<Persona> personae;
     List<PersonaPlacement> placements;
     List<PersonaGroup> groups;
 

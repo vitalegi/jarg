@@ -53,11 +53,11 @@ public class PersonaService {
         return persona;
     }
 
-    public List<Persona> getMyPersonas() {
+    public List<Persona> getMyPersonae() {
         var accountId = authService.getAccountId();
-        log.info("get personas for {}", accountId);
-        var personas = personaRepository.findAllByOwnerId(accountId);
-        return personas.stream().map(this::map).sorted(Comparator.comparing(Persona::getId)).collect(Collectors.toList());
+        log.info("get personae for {}", accountId);
+        var personae = personaRepository.findAllByOwnerId(accountId);
+        return personae.stream().map(this::map).sorted(Comparator.comparing(Persona::getId)).collect(Collectors.toList());
     }
 
     protected Persona doCreatePersona(Persona persona, int ownerId) {

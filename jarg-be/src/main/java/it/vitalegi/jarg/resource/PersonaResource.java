@@ -28,9 +28,9 @@ public class PersonaResource {
         return personaService.create(request.getName(), request.getClassId(), request.getRaceId(), request.getSkin());
     }
 
-    @Operation(description = "Get all my personas")
+    @Operation(description = "Get all my personae")
     @GetMapping()
-    public List<Persona> getMyPersonas() {
-        return personaService.getMyPersonas();
+    public List<Persona> getMyPersonae() {
+        return personaService.getMyPersonae();
     }
 }

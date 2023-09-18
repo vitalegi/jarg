@@ -45,7 +45,7 @@ public class BattleResourceTests {
         battleMock.validatePersonaGroupNpcs(battle.getGroupsByType(PersonaGroupType.NPC));
 
         battle.getTiles().forEach(battleMock::validateTile);
-        battle.getPersonas().forEach(personaMock::validatePersona);
-        battle.getPlacements().forEach(p -> battleMock.validatePersonaPlacement(p, battle.getPersonas(), battle.getTiles()));
+        battle.getPersonae().forEach(personaMock::validatePersona);
+        battle.getPlacements().forEach(p -> battleMock.validatePersonaPlacement(p, battle.getPersonae(), battle.getTiles()));
     }
 }
