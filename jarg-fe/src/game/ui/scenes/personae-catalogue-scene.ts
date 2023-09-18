@@ -25,9 +25,6 @@ export default class PersonaeCatalogueScene extends AbstractGameScene {
   public constructor(ctx: ApplicationContext, personae: Array<Persona>) {
     super(ctx);
     this.personae = personae;
-    for (let i = 0; i < this.personae.length; i++) {
-      this.personae[i].level = Math.floor(Math.random() * 100);
-    }
   }
 
   name(): string {
