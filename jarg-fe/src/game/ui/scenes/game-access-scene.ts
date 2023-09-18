@@ -3,6 +3,7 @@ import { AbstractGameScene } from './abstract-scene';
 import GameSceneConstants from '../scene-coordinators/game-scene-constants';
 import SceneManager from '../scene-coordinators/scene-manager';
 import { OptionFactory } from '../scene-elements/menu';
+import jargBe from '../../../api/jarg-be';
 
 export default class GameAccessScene extends AbstractGameScene {
   log = Logger.getInstance('GameAccessScene');
@@ -18,7 +19,7 @@ export default class GameAccessScene extends AbstractGameScene {
     this.withMenu(
       OptionFactory.text('Hello, adventurer'),
       OptionFactory.alwaysEnabled('New Persona', () => SceneManager.startPersonaBuilder(this.observer)),
-      OptionFactory.alwaysEnabled('Personae', () => SceneManager.startPersonaeCatalogue(this.observer)),
+      OptionFactory.alwaysEnabled('Personae', () => this.personaeCatalogue()),
       OptionFactory.alwaysEnabled('Battle!', () => SceneManager.startBattle(this.observer)),
       OptionFactory.alwaysEnabled('Bouncer', () => SceneManager.startBouncing(this.observer))
     );
@@ -33,5 +34,10 @@ export default class GameAccessScene extends AbstractGameScene {
     this.getContainer().addChild(animation);
 
     this.addTicker((time: number) => {});
+  }
+
+  protected async personaeCatalogue(): Promise<void> {
+    const personae = await jargBe.persona().getMyPersonae();
+    SceneManager.startPersonaeCatalogue(this.observer, personae);
   }
 }

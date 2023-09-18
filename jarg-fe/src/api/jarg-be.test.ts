@@ -87,4 +87,11 @@ describe('persona', async () => {
       skin: 'bb'
     });
   });
+
+  test('getMyPersonae, external call with correct params', async () => {
+    const spy = vi.spyOn(jargBe.http, 'getJson');
+    spy.mockResolvedValue({});
+    await jargBe.persona().getMyPersonae();
+    expect(spy).toHaveBeenCalledWith('/persona');
+  });
 });

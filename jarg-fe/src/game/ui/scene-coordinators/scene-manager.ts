@@ -8,6 +8,8 @@ import BouncingScene from '../scenes/bouncing-scene';
 import GameAccessScene from '../scenes/game-access-scene';
 import LoginScene from '../scenes/login-scene';
 import PersonaBuilderScene from '../scenes/persona-builder-scene';
+import PersonaeCatalogueScene from '../scenes/personae-catalogue-scene';
+import { Persona } from '../../core/models/persona';
 
 export default class SceneManager {
   public static createScene(ctx: ApplicationContext, sceneSchema: unknown): AbstractGameScene {
@@ -40,14 +42,21 @@ export default class SceneManager {
     if (name === GameSceneConstants.PERSONA_BUILDER) {
       return new PersonaBuilderScene(ctx);
     }
+    if (name === GameSceneConstants.PERSONAE_CATALOGUE) {
+      let personae = new Array<Persona>();
+      if ('personae' in sceneSchema && Array.isArray(sceneSchema.personae)) {
+        personae = sceneSchema.personae.map(Persona.parse);
+      }
+      return new PersonaeCatalogueScene(ctx, personae);
+    }
     throw Error(`Scene ${name} is unknown`);
   }
 
   public static async startPersonaBuilder(publisher: Publisher) {
     SceneManager.startScene(publisher, { name: GameSceneConstants.PERSONA_BUILDER });
   }
-  public static async startPersonaeCatalogue(publisher: Publisher) {
-    SceneManager.startScene(publisher, { name: GameSceneConstants.PERSONAE_CATALOGUE });
+  public static async startPersonaeCatalogue(publisher: Publisher, personae: Array<Persona>) {
+    SceneManager.startScene(publisher, { name: GameSceneConstants.PERSONAE_CATALOGUE, personae: personae });
   }
   public static async startGameAccess(publisher: Publisher) {
     SceneManager.startScene(publisher, { name: GameSceneConstants.GAME_ACCESS });

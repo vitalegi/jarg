@@ -7,6 +7,10 @@ export default class PixiNames {
   public static menuOption(option: Option): string {
     return `menu_${option.id}`;
   }
+  public static cataloguePersona(persona: Persona): string {
+    return `catalogue_persona_${persona.id}`;
+  }
+
   public static tile(obj: Tile | Coordinate): string {
     if (obj instanceof Tile) {
       return `tile_${obj.coordinate.x}_${obj.coordinate.y}`;
