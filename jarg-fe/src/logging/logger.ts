@@ -22,7 +22,7 @@ export default class Logger {
       console.log(`${this.name} - ${str}`);
     }
   }
-  error(str: string, e?: Error): void {
+  error(str: string, e?: unknown): void {
     if (e) {
       console.error(`${this.name} - ${str}`, e);
     } else {

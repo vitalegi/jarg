@@ -15,6 +15,14 @@ class PersonaApi {
     const response = await this.http.putJson('/persona', request);
     return Persona.parse(response);
   }
+
+  public async getMyPersonae(): Promise<Array<Persona>> {
+    const response = await this.http.getJson('/persona');
+    if (Array.isArray(response)) {
+      return response.map(Persona.parse);
+    }
+    throw Error(`Received data is not an array`);
+  }
 }
 
 class BattleApi {

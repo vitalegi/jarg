@@ -29,7 +29,7 @@ public class PersonaResource {
     }
 
     @Operation(description = "Get all my personae")
-    @GetMapping()
+    @GetMapping
     public List<Persona> getMyPersonae() {
         return personaService.getMyPersonae();
     }

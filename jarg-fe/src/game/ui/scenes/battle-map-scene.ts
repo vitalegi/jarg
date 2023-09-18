@@ -27,15 +27,6 @@ export default class BattleMapScene extends AbstractGameScene {
     this.withRandomBackground();
     this.withScreenInfo();
 
-    let animation = await this.ctx.getAssetLoader().loadAnimatedSprite('arcanine');
-    animation.play();
-    this.getContainer().addChild(animation);
-
-    animation = await this.ctx.getAssetLoader().loadAnimatedSprite('abra');
-    animation.x = 200;
-    animation.play();
-    this.getContainer().addChild(animation);
-
     this._battleMap = await jargBe.battle().createRandom();
 
     const w = 100;
