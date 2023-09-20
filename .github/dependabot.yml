@@ -9,6 +9,10 @@ updates:
     directory: "/jarg-fe" # Location of package manifests
     schedule:
       interval: "weekly"
+  - package-ecosystem: "npm" # See documentation for possible values
+    directory: "/jarg-home" # Location of package manifests
+    schedule:
+      interval: "weekly"
   - package-ecosystem: "maven" # See documentation for possible values
     directory: "/jarg-be" # Location of package manifests
     schedule:
