@@ -1,18 +1,17 @@
-import { Container, DisplayObject, Text } from 'pixi.js';
 import Logger from '../../../logging/logger';
-import { AbstractGameScene } from './abstract-scene';
-import Fonts from '../styles/fonts';
-import { Button, List, ScrollBox } from '@pixi/ui';
-import GameSceneConstants from '../scene-coordinators/game-scene-constants';
 import { Persona } from '../../core/models/persona';
+import Fonts from '../styles/fonts';
+import SceneElement from './scene-element';
+import { Container, DisplayObject, Text } from 'pixi.js';
+import { Button, List, ScrollBox } from '@pixi/ui';
 import ApplicationContext from '../application-context';
-import ScreenData from '../devices/screen';
-import PersonaSheetCompact from '../scene-elements/persona-sheet-compact';
-import PixiNames from '../pixi-names';
 import { SortBy, SortOrder } from '../../core/models/ui/sorting';
+import ScreenData from '../devices/screen';
+import PersonaSheetCompact from './persona-sheet-compact';
+import PixiNames from '../pixi-names';
 
-export default class PersonaeCatalogueScene extends AbstractGameScene {
-  log = Logger.getInstance('PersonaeCatalogueScene');
+export default class PersonaeCatalogueMenu extends SceneElement {
+  log = Logger.getInstance('PersonaeCatalogueMenu');
 
   personae: Array<Persona>;
   scrollBox?: ScrollBox;
@@ -20,26 +19,18 @@ export default class PersonaeCatalogueScene extends AbstractGameScene {
   sortBy?: SortBy;
   sortOrder?: SortOrder;
 
-  public constructor(ctx: ApplicationContext, personae: Array<Persona>) {
-    super(ctx);
+  public constructor(container: Container, ctx: ApplicationContext, personae: Persona[]) {
+    super(container, ctx);
     this.personae = personae;
   }
 
-  name(): string {
-    return GameSceneConstants.PERSONA_BUILDER;
-  }
-
-  async start() {
-    this.withRandomBackground();
-    this.withScreenInfo();
-
+  public async start() {
     let marginLR = 100;
     let marginTB = 50;
     if (!ScreenData.isLandscape()) {
       marginLR = 5;
       marginTB = 5;
     }
-
     const options = new List({ type: 'horizontal' });
     options.addChild(
       this.button('Sort by Name', () => {
@@ -71,7 +62,7 @@ export default class PersonaeCatalogueScene extends AbstractGameScene {
         this.updatePersonae(this.personae, this.sortBy, this.sortOrder);
       })
     );
-    this.getContainer().addChild(options);
+    this.container.addChild(options);
 
     this.scrollBox = new ScrollBox({
       elementsMargin: 20,
@@ -82,15 +73,11 @@ export default class PersonaeCatalogueScene extends AbstractGameScene {
     this.scrollBox.x = marginLR;
     this.scrollBox.y = marginTB;
 
-    for (const persona of this.personae) {
-      const entry = new PersonaSheetCompact(this.scrollBox, this.ctx, persona, (p) => PixiNames.cataloguePersona(p));
-      const scrollBox = this.scrollBox;
-      entry.addToContainer = (content) => scrollBox.addItem(content);
-      await entry.start();
-    }
     this.addEntries(this.scrollBox, this.personae);
-    this.getContainer().addChild(this.scrollBox);
+    this.container.addChild(this.scrollBox);
   }
+
+  public tick(time: number) {}
 
   protected async addEntries(scrollBox: ScrollBox, personae: Persona[]): Promise<void> {
     for (const persona of personae) {

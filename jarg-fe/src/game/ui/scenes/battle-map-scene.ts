@@ -3,7 +3,7 @@ import Logger from '../../../logging/logger';
 import { AbstractGameScene } from './abstract-scene';
 import Fonts from '../styles/fonts';
 import ScreenData from '../devices/screen';
-import { Button, List } from '@pixi/ui';
+import { Button } from '@pixi/ui';
 import GameSceneConstants from '../scene-coordinators/game-scene-constants';
 import jargBe from '../../../api/jarg-be';
 import { Tile } from '../../core/models/tile';
@@ -12,7 +12,7 @@ import ArrayUtil from '../../util/array-util';
 import { Coordinate } from '../../core/models/coordinate';
 import PixiNames from '../pixi-names';
 import { Persona } from '../../core/models/persona';
-import { PersonaPlacement } from '../../core/models/persona-placement';
+import PersonaeCatalogueMenu from '../scene-elements/personae-catalogue-menu';
 
 export default class BattleMapScene extends AbstractGameScene {
   log = Logger.getInstance('BattleMapScene');
@@ -35,6 +35,13 @@ export default class BattleMapScene extends AbstractGameScene {
     const mapContainer = new Container();
     await this.renderMap(this._battleMap, mapContainer);
     this.getContainer().addChild(mapContainer);
+
+    const myPersonae = await jargBe.persona().getMyPersonae();
+    const selectPersonae = new PersonaeCatalogueMenu(this.getContainer(), this.ctx, myPersonae);
+    selectPersonae.start();
+    this.addTicker((time: number) => {
+      selectPersonae.tick(time);
+    }, 'SelectPersonae');
 
     this.addTicker((time: number) => {});
   }
