@@ -8,5 +8,4 @@ import java.util.List;
 public class PlayerDisplacementRule {
     int max;
     List<Coordinate> allowedCoordinates;
-
 }

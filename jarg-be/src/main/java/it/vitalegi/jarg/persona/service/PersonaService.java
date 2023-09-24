@@ -10,6 +10,8 @@ import it.vitalegi.jarg.persona.model.PersonaClass;
 import it.vitalegi.jarg.persona.model.Race;
 import it.vitalegi.jarg.persona.model.StatsGrowth;
 import it.vitalegi.jarg.persona.repository.PersonaRepository;
+import it.vitalegi.jarg.util.ArrayUtil;
+import it.vitalegi.jarg.util.ResourceUtil;
 import it.vitalegi.jarg.util.SerializrUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
@@ -32,14 +34,21 @@ public class PersonaService {
     @Autowired
     PersonaRepository personaRepository;
 
+    @Autowired
+    ResourceUtil resourceUtil;
+
     public Persona create(int accountId, String name, long classId, long raceId, String skin) {
         var persona = initPersona(name, classId, raceId, skin);
         return doCreatePersona(persona, accountId);
     }
 
     public Persona createNpc() {
-        var persona = initPersona("???", 1, 2, "arcanine");
+        var persona = initPersona(ArrayUtil.getRandomElement(getPersonaNames()), 1, 2, "arcanine");
         return persona;
+    }
+
+    public List<String> getPersonaNames() {
+        return resourceUtil.readValues("/persona-names.json");
     }
 
     protected Persona initPersona(String name, long classId, long raceId, String skin) {
