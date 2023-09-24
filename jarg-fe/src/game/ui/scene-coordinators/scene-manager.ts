@@ -26,28 +26,21 @@ export default class SceneManager {
     switch (name) {
       case GameSceneConstants.BATTLE_MAP:
         return new BattleMapScene(ctx);
-    }
-    if (name === GameSceneConstants.BATTLE_MAP) {
-      return new BattleMapScene(ctx);
-    }
-    if (name === GameSceneConstants.GAME_ACCESS) {
-      return new GameAccessScene(ctx);
-    }
-    if (name === GameSceneConstants.BOUNCING) {
-      return new BouncingScene(ctx);
-    }
-    if (name === GameSceneConstants.LOGIN) {
-      return new LoginScene(ctx);
-    }
-    if (name === GameSceneConstants.PERSONA_BUILDER) {
-      return new PersonaBuilderScene(ctx);
-    }
-    if (name === GameSceneConstants.PERSONAE_CATALOGUE) {
-      let personae = new Array<Persona>();
-      if ('personae' in sceneSchema && Array.isArray(sceneSchema.personae)) {
-        personae = sceneSchema.personae.map(Persona.parse);
+      case GameSceneConstants.GAME_ACCESS:
+        return new GameAccessScene(ctx);
+      case GameSceneConstants.BOUNCING:
+        return new BouncingScene(ctx);
+      case GameSceneConstants.LOGIN:
+        return new LoginScene(ctx);
+      case GameSceneConstants.PERSONA_BUILDER:
+        return new PersonaBuilderScene(ctx);
+      case GameSceneConstants.PERSONAE_CATALOGUE: {
+        let personae = new Array<Persona>();
+        if ('personae' in sceneSchema && Array.isArray(sceneSchema.personae)) {
+          personae = sceneSchema.personae.map(Persona.parse);
+        }
+        return new PersonaeCatalogueScene(ctx, personae);
       }
-      return new PersonaeCatalogueScene(ctx, personae);
     }
     throw Error(`Scene ${name} is unknown`);
   }
