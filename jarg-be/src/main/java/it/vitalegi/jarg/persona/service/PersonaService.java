@@ -2,9 +2,16 @@ package it.vitalegi.jarg.persona.service;
 
 import it.vitalegi.jarg.auth.AuthService;
 import it.vitalegi.jarg.persona.entity.PersonaEntity;
-import it.vitalegi.jarg.persona.model.*;
+import it.vitalegi.jarg.persona.model.BaseStats;
+import it.vitalegi.jarg.persona.model.ClassModel;
+import it.vitalegi.jarg.persona.model.ConsumableStat;
+import it.vitalegi.jarg.persona.model.Persona;
+import it.vitalegi.jarg.persona.model.PersonaClass;
+import it.vitalegi.jarg.persona.model.Race;
+import it.vitalegi.jarg.persona.model.StatsGrowth;
 import it.vitalegi.jarg.persona.repository.PersonaRepository;
 import it.vitalegi.jarg.util.SerializrUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +32,7 @@ public class PersonaService {
     @Autowired
     PersonaRepository personaRepository;
 
-    public Persona create(String name, long classId, long raceId, String skin) {
-        var accountId = authService.getAccountId();
+    public Persona create(int accountId, String name, long classId, long raceId, String skin) {
         var persona = initPersona(name, classId, raceId, skin);
         return doCreatePersona(persona, accountId);
     }
@@ -53,11 +59,30 @@ public class PersonaService {
         return persona;
     }
 
-    public List<Persona> getMyPersonae() {
-        var accountId = authService.getAccountId();
-        log.info("get personae for {}", accountId);
-        var personae = personaRepository.findAllByOwnerId(accountId);
+    public List<Persona> getPersonae(int userId) {
+        log.info("get personae for {}", userId);
+        var personae = personaRepository.findAllByOwnerId(userId);
         return personae.stream().map(this::map).sorted(Comparator.comparing(Persona::getId)).collect(Collectors.toList());
+    }
+
+    public Persona getPersonaCheckPermissions(UUID personaId, int userId) {
+        try {
+            var persona = getPersona(personaId);
+            if (userId != persona.getOwnerId()) {
+                throw new IllegalArgumentException("User " + userId + " is not owner of " + personaId + ". owner: " + persona.getOwnerId());
+            }
+            return map(persona);
+        } catch (EntityNotFoundException e) {
+            throw new IllegalArgumentException("Persona " + personaId + " not found");
+        }
+    }
+
+    public PersonaEntity getPersona(UUID personaId) {
+        try {
+            return personaRepository.getReferenceById(personaId);
+        } catch (EntityNotFoundException e) {
+            throw new IllegalArgumentException("Persona " + personaId + " not found");
+        }
     }
 
     protected Persona doCreatePersona(Persona persona, int ownerId) {

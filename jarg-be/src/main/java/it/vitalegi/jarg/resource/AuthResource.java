@@ -10,9 +10,11 @@ import it.vitalegi.jarg.logging.Performance;
 import it.vitalegi.jarg.logging.Type;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Log4j2
 @RequestMapping("/auth")
@@ -28,7 +30,9 @@ public class AuthResource {
 
     @GetMapping("/identity")
     public Auth getIdentity() {
-        return authService.getJwtData();
+        var auth = authService.getJwtData();
+        auth.setAccountId(authService.getAccountId());
+        return auth;
     }
 
     @Operation(description = "Register the user")

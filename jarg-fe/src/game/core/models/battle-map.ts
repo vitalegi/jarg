@@ -1,25 +1,24 @@
-import { asBoolean, asString } from '../../util/converter-utils';
+import { asBoolean, asNumber, asString } from '../../util/converter-utils';
 import { Coordinate } from './coordinate';
 import { Persona } from './persona';
 import { PersonaGroup } from './persona-group';
 import { PersonaPlacement } from './persona-placement';
 import { Tile } from './tile';
 
-export class BattleMap {
-  id = '';
+export class BattleMapPayload {
   tiles = new Array<Tile>();
   personae = new Array<Persona>();
   placements = new Array<PersonaPlacement>();
   groups = new Array<PersonaGroup>();
 
-  public static parse(value: unknown): BattleMap {
+  public static parse(value: unknown): BattleMapPayload {
     if (!value) {
       throw new Error(`invalid element`);
     }
     if (typeof value !== 'object') {
       throw new Error(`invalid element`);
     }
-    const out = new BattleMap();
+    const out = new BattleMapPayload();
     if ('tiles' in value && Array.isArray(value.tiles)) {
       out.tiles = value.tiles.map(Tile.parse);
     }
@@ -65,5 +64,46 @@ export class BattleMap {
       return undefined;
     }
     return placements[0];
+  }
+}
+
+export class BattleMap {
+  battleId = '';
+  ownerId = 0;
+  creationDate = '';
+  lastUpdate = '';
+  status = '';
+  battle = new BattleMapPayload();
+
+  public static parse(value: unknown): BattleMap {
+    if (!value) {
+      throw new Error(`invalid element`);
+    }
+    if (typeof value !== 'object') {
+      throw new Error(`invalid element`);
+    }
+    const out = new BattleMap();
+    if ('battleId' in value) {
+      out.battleId = asString(value.battleId);
+    }
+    if ('ownerId' in value) {
+      out.ownerId = asNumber(value.ownerId);
+    }
+    if ('creationDate' in value) {
+      out.creationDate = asString(value.creationDate);
+    }
+    if ('lastUpdate' in value) {
+      out.lastUpdate = asString(value.lastUpdate);
+    }
+    if ('status' in value) {
+      out.status = asString(value.status);
+    }
+    if ('battleId' in value) {
+      out.battleId = asString(value.battleId);
+    }
+    if ('battle' in value) {
+      out.battle = BattleMapPayload.parse(value.battle);
+    }
+    return out;
   }
 }

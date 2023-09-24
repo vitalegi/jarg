@@ -51,6 +51,7 @@ export default class PersonaBuilderScene extends AbstractGameScene {
   protected async createPersona(): Promise<void> {
     const request = new NewPersona();
     request.name = 'No name ' + Math.floor(Math.random() * 100);
+    request.skin = 'arcanine';
     const persona = await jargBe.persona().createPersona(request);
     this.withPersona(persona);
   }

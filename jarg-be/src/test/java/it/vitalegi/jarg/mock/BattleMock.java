@@ -1,15 +1,28 @@
 package it.vitalegi.jarg.mock;
 
-import it.vitalegi.jarg.battle.model.*;
+import com.fasterxml.jackson.core.type.TypeReference;
+import it.vitalegi.jarg.battle.model.BattleMap;
+import it.vitalegi.jarg.battle.model.BattleMapPayload;
+import it.vitalegi.jarg.battle.model.Coordinate;
+import it.vitalegi.jarg.battle.model.PersonaGroup;
+import it.vitalegi.jarg.battle.model.PersonaGroupType;
+import it.vitalegi.jarg.battle.model.PersonaPlacement;
+import it.vitalegi.jarg.battle.model.Tile;
+import it.vitalegi.jarg.battleaction.model.AddPersona;
+import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
+import it.vitalegi.jarg.battleaction.model.BattleAction;
 import it.vitalegi.jarg.persona.model.Persona;
+import org.opentest4j.AssertionFailedError;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,15 +30,76 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Service
 public class BattleMock extends BaseMock {
 
+
     public ResultActions createRandom(RequestPostProcessor user) throws Exception {
         return mockMvc.perform(put("/battle/random").with(user));
     }
 
     public BattleMap createRandomOk(RequestPostProcessor user) throws Exception {
-        var payload = payload(createRandom(user).andExpect(status().isOk()));
-        return objectMapper.readValue(payload, BattleMap.class);
+        return payloadJson(createRandom(user).andExpect(status().isOk()), BattleMap.class);
     }
 
+    public ResultActions getBattle(RequestPostProcessor user, UUID battleId) throws Exception {
+        return mockMvc.perform(get("/battle/" + battleId).with(user));
+    }
+
+    public BattleMap getBattleOk(RequestPostProcessor user, UUID battleId) throws Exception {
+        return payloadJson(getBattle(user, battleId).andExpect(status().isOk()), BattleMap.class);
+    }
+
+    public ResultActions addPlayerPersona(RequestPostProcessor user, UUID battleId, AddPersonaRequest request) throws Exception {
+        return postJson(user, "/battle/" + battleId + "/persona", request);
+    }
+
+    public List<BattleAction> addPlayerPersonaOk(RequestPostProcessor user, UUID battleId, AddPersonaRequest request) throws Exception {
+        var response = addPlayerPersona(user, battleId, request);
+        response.andExpect(status().isOk());
+        var payload = payload(response);
+        return objectMapper.readValue(payload, new TypeReference<List<BattleAction>>() {
+        });
+    }
+
+    public void validateEqualsBattle(BattleMap expected, BattleMap actual) {
+        assertEquals(expected.getBattleId(), actual.getBattleId());
+        assertEquals(expected.getStatus(), actual.getStatus());
+        assertEquals(expected.getOwnerId(), actual.getOwnerId());
+        validateEqualsBattlePayload(expected.getBattle(), actual.getBattle());
+    }
+
+    public void validateEqualsBattlePayload(BattleMapPayload expected, BattleMapPayload actual) {
+        validatePersonae(expected.getPersonae(), actual.getPersonae());
+        assertEquals(expected.getGroups(), actual.getGroups());
+        assertEquals(expected.getPlacements(), actual.getPlacements());
+        assertEquals(expected.getTiles(), actual.getTiles());
+    }
+
+    public void validatePersonae(List<Persona> expected, List<Persona> actual) {
+        assertEquals(expected.size(), actual.size());
+        expected.forEach(e -> validatePersona(e, actual));
+    }
+
+    public void validatePersona(Persona expected, List<Persona> actual) {
+        try {
+            validatePersona(expected, actual.stream().filter(a -> a.getId().equals(expected.getId())).findFirst().orElse(null));
+        } catch (AssertionFailedError ex) {
+            throw new AssertionFailedError("Error validating " + expected.getName() + " " + expected.getId(), ex);
+        }
+    }
+
+    public void validatePersona(Persona expected, Persona actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getSkin(), actual.getSkin());
+        assertEquals(expected.getLevel(), actual.getLevel());
+        assertEquals(expected.getRace(), actual.getRace());
+        assertEquals(expected.getClasses(), actual.getClasses());
+        assertEquals(expected.getExp(), actual.getExp());
+        assertEquals(expected.getBaseStats(), actual.getBaseStats());
+        assertEquals(expected.getHp(), actual.getHp());
+        assertEquals(expected.getMp(), actual.getMp());
+        assertEquals(expected.getStatsGrowth(), actual.getStatsGrowth());
+        assertEquals(expected.getSkills(), actual.getSkills());
+    }
 
     public void validatePersonaGroupPlayers(List<PersonaGroup> groups) {
         for (var group : groups) {
@@ -66,5 +140,11 @@ public class BattleMock extends BaseMock {
         assertNotNull(placement.getPersonaId());
         assertTrue(personae.stream().anyMatch(p -> p.getId().equals(placement.getPersonaId())), "One persona should exist with this ID " + placement.getPersonaId());
         assertTrue(tiles.stream().anyMatch(t -> t.getCoordinate().equals(placement.getCoordinate())), "One tile should exist with this coordinates " + placement.getCoordinate());
+    }
+
+    public void validateActionAddPersona(PersonaPlacement expected, BattleAction action) {
+        assertTrue(action instanceof AddPersona);
+        var obj = (AddPersona) action;
+        assertEquals(expected, obj.getPersonaPlacement());
     }
 }

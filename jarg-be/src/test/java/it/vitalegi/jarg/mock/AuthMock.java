@@ -5,6 +5,7 @@ import jakarta.servlet.http.Cookie;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,4 +28,8 @@ public class AuthMock extends BaseMock {
         return payloadJson(identity().andExpect(status().isOk()), Auth.class);
     }
 
+    public Integer accountId(RequestPostProcessor user) throws Exception {
+        var auth = payloadJson(mockMvc.perform(get("/auth/identity").with(user)), Auth.class);
+        return auth.getAccountId();
+    }
 }

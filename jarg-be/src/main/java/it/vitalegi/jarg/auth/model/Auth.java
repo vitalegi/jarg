@@ -6,7 +6,8 @@ import java.time.Instant;
 
 @Data
 public class Auth {
-    String subject;
 
+    Integer accountId;
+    String subject;
     Instant expiresAt;
 }

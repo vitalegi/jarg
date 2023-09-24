@@ -53,19 +53,19 @@ export default class BattleMapScene extends AbstractGameScene {
   }
 
   protected async renderMap(battleMap: BattleMap, container: Container): Promise<void> {
-    const textures = await this.loadTileTextures(battleMap.tiles);
+    const textures = await this.loadTileTextures(battleMap.battle.tiles);
 
     const w = 120;
     const h = 120;
-    const maxX = ArrayUtil.max(battleMap.tiles.map((t) => t.coordinate.x));
-    const maxY = ArrayUtil.max(battleMap.tiles.map((t) => t.coordinate.y));
+    const maxX = ArrayUtil.max(battleMap.battle.tiles.map((t) => t.coordinate.x));
+    const maxY = ArrayUtil.max(battleMap.battle.tiles.map((t) => t.coordinate.y));
 
     for (let i = 0; i < maxX + maxY + 1; i++) {
       // tiles
       for (let j = 0; j <= i; j++) {
         const x = i - j;
         const y = j;
-        const tileEntry = battleMap.findTile(new Coordinate(x, y));
+        const tileEntry = battleMap.battle.findTile(new Coordinate(x, y));
         if (tileEntry === undefined) {
           continue;
         }
@@ -90,11 +90,11 @@ export default class BattleMapScene extends AbstractGameScene {
       for (let j = 0; j <= i; j++) {
         const x = i - j;
         const y = j;
-        const placement = this.getBattleMap().findPersonaPlacementByCoordinate(new Coordinate(x, y));
+        const placement = this.getBattleMap().battle.findPersonaPlacementByCoordinate(new Coordinate(x, y));
         if (placement === undefined) {
           continue;
         }
-        const persona = this.getBattleMap().getPersona(placement.personaId);
+        const persona = this.getBattleMap().battle.getPersona(placement.personaId);
         const animation = await this.createPersonaSprite(persona);
         const tile = container.getChildByName(PixiNames.tile(placement.coordinate));
         if (tile === null) {

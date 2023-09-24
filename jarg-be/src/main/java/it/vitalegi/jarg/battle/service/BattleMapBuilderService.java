@@ -1,6 +1,13 @@
 package it.vitalegi.jarg.battle.service;
 
-import it.vitalegi.jarg.battle.model.*;
+import it.vitalegi.jarg.battle.map.BattleMapper;
+import it.vitalegi.jarg.battle.model.BattleMap;
+import it.vitalegi.jarg.battle.model.BattleMapPayload;
+import it.vitalegi.jarg.battle.model.Coordinate;
+import it.vitalegi.jarg.battle.model.PersonaGroup;
+import it.vitalegi.jarg.battle.model.PersonaGroupType;
+import it.vitalegi.jarg.battle.model.PersonaPlacement;
+import it.vitalegi.jarg.battle.model.Tile;
 import it.vitalegi.jarg.persona.model.Persona;
 import it.vitalegi.jarg.persona.service.PersonaService;
 import lombok.extern.log4j.Log4j2;
@@ -19,9 +26,11 @@ public class BattleMapBuilderService {
     @Autowired
     PersonaService personaService;
 
+    @Autowired
+    BattleService battleService;
+
     public BattleMap createRandomMap(int ownerId) {
-        var out = new BattleMap();
-        out.setId(UUID.randomUUID());
+        var out = new BattleMapPayload();
         out.setTiles(createRandomTiles());
 
         var playerGroup = playerGroup(ownerId);
@@ -31,7 +40,7 @@ public class BattleMapBuilderService {
         var enemies = createRandomPersonae();
         out.getPersonae().addAll(enemies);
         out.setPlacements(createRandomPersonaPlacements(out.getTiles(), enemiesGroup, enemies));
-        return out;
+        return BattleMapper.map(battleService.createBattle(out, ownerId));
     }
 
     protected PersonaGroup playerGroup(int ownerId) {

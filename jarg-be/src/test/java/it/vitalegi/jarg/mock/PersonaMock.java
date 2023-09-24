@@ -3,6 +3,8 @@ package it.vitalegi.jarg.mock;
 import com.fasterxml.jackson.core.type.TypeReference;
 import it.vitalegi.jarg.persona.model.NewPersona;
 import it.vitalegi.jarg.persona.model.Persona;
+import it.vitalegi.jarg.persona.service.PersonaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.servlet.ResultActions;

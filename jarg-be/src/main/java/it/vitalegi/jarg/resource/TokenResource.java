@@ -1,9 +1,5 @@
 package it.vitalegi.jarg.resource;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.stream.Collectors;
-
 import it.vitalegi.jarg.auth.AuthService;
 import it.vitalegi.jarg.util.StringUtil;
 import jakarta.servlet.http.Cookie;
@@ -19,6 +15,9 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.Instant;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RestController

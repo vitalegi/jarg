@@ -15,7 +15,7 @@ spring:
       ddl-auto: validate
   liquibase:
     enabled: true
-    change-log: 'classpath:db/changelog/db.changelog-master.yaml'
+    change-log: 'classpath:db/db.changelog-master.yaml'
 
 security:
   cors:
