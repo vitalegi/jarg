@@ -3,6 +3,7 @@ package it.vitalegi.jarg.resource;
 import io.swagger.v3.oas.annotations.Operation;
 import it.vitalegi.jarg.auth.AuthService;
 import it.vitalegi.jarg.battle.model.BattleMap;
+import it.vitalegi.jarg.battle.model.Coordinate;
 import it.vitalegi.jarg.battle.service.BattleTransactionalService;
 import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
 import it.vitalegi.jarg.battleaction.model.BattleAction;
@@ -49,6 +50,12 @@ public class BattleResource {
     @GetMapping("/{battleId}")
     public BattleMap getBattle(@PathVariable("battleId") UUID battleId) {
         return battleTransactionalService.getBattle(battleId, getUserId());
+    }
+
+    @Operation(description = "Get battle position for first displacement")
+    @GetMapping("/{battleId}/displacement/available")
+    public List<Coordinate> getAvailableDisplacements(@PathVariable("battleId") UUID battleId) {
+        return battleTransactionalService.getAvailableDisplacements(battleId, getUserId());
     }
 
     protected int getUserId() {

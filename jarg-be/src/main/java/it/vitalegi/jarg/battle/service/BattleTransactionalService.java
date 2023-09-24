@@ -1,8 +1,10 @@
 package it.vitalegi.jarg.battle.service;
 
 import it.vitalegi.jarg.battle.model.BattleMap;
+import it.vitalegi.jarg.battle.model.Coordinate;
 import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
 import it.vitalegi.jarg.battleaction.model.BattleAction;
+import it.vitalegi.jarg.mapbuilder.service.BattleMapBuilderRandomService;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,23 +18,27 @@ import java.util.UUID;
 @Transactional
 public class BattleTransactionalService {
     @Autowired
-    BattleMapBuilderService battleMapBuilderService;
+    BattleMapBuilderRandomService battleMapBuilderRandomService;
 
     @Autowired
     BattleService battleService;
 
     @Autowired
-    BattleActionService battleActionService;
+    AddPlayerActionService addPlayerActionService;
 
     public BattleMap createRandomMap(int userId) {
-        return battleMapBuilderService.createRandomMap(userId);
+        return battleMapBuilderRandomService.createMap(userId);
     }
 
     public List<BattleAction> addPlayerPersona(UUID battleId, int userId, AddPersonaRequest addPersona) {
-        return battleActionService.addPlayerPersona(battleId, userId, addPersona);
+        return addPlayerActionService.addPlayerPersona(battleId, userId, addPersona);
     }
 
     public BattleMap getBattle(UUID battleId, int userId) {
         return battleService.getBattleCheckPermission(battleId, userId);
+    }
+
+    public List<Coordinate> getAvailableDisplacements(UUID battleId, int userId) {
+        return addPlayerActionService.getAvailableDisplacements(battleId, userId);
     }
 }

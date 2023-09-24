@@ -3,6 +3,7 @@ package it.vitalegi.jarg.battle.model;
 import it.vitalegi.jarg.persona.model.Persona;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -14,6 +15,14 @@ public class BattleMapPayload {
     List<Persona> personae;
     List<PersonaPlacement> placements;
     List<PersonaGroup> groups;
+    PlayerDisplacementRule playerDisplacementRule;
+
+    public BattleMapPayload() {
+        tiles = new ArrayList<>();
+        personae = new ArrayList<>();
+        placements = new ArrayList<>();
+        groups = new ArrayList<>();
+    }
 
     public List<PersonaGroup> getGroupsByType(PersonaGroupType type) {
         return groups.stream().filter(g -> g.getType() == type).collect(Collectors.toList());

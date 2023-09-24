@@ -59,6 +59,19 @@ public class BattleMock extends BaseMock {
         });
     }
 
+
+    public ResultActions getAvailableDisplacements(RequestPostProcessor user, UUID battleId) throws Exception {
+        return getJson(user, "/battle/" + battleId + "/displacement/available");
+    }
+
+    public List<Coordinate> getAvailableDisplacementsOk(RequestPostProcessor user, UUID battleId) throws Exception {
+        var response = getAvailableDisplacements(user, battleId);
+        response.andExpect(status().isOk());
+        var payload = payload(response);
+        return objectMapper.readValue(payload, new TypeReference<List<Coordinate>>() {
+        });
+    }
+
     public void validateEqualsBattle(BattleMap expected, BattleMap actual) {
         assertEquals(expected.getBattleId(), actual.getBattleId());
         assertEquals(expected.getStatus(), actual.getStatus());
