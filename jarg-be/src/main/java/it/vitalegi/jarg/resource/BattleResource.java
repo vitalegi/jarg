@@ -7,10 +7,12 @@ import it.vitalegi.jarg.battle.model.Coordinate;
 import it.vitalegi.jarg.battle.service.BattleTransactionalService;
 import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
 import it.vitalegi.jarg.battleaction.model.BattleAction;
+import it.vitalegi.jarg.battleaction.model.DeletePersonaRequest;
 import it.vitalegi.jarg.logging.Performance;
 import it.vitalegi.jarg.logging.Type;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,6 +46,13 @@ public class BattleResource {
     @PostMapping("/{battleId}/persona")
     public List<BattleAction> addPersona(@PathVariable("battleId") UUID battleId, @RequestBody AddPersonaRequest addPersona) {
         return battleTransactionalService.addPlayerPersona(battleId, getUserId(), addPersona);
+    }
+
+
+    @Operation(description = "Remove player's persona from battle")
+    @DeleteMapping("/{battleId}/persona")
+    public List<BattleAction> removePersona(@PathVariable("battleId") UUID battleId, @RequestBody DeletePersonaRequest deletePersona) {
+        return battleTransactionalService.removePlayerPersona(battleId, getUserId(), deletePersona);
     }
 
     @Operation(description = "Get battle")

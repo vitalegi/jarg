@@ -29,8 +29,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @Log4j2
@@ -262,6 +261,26 @@ public class BattleResourceTests {
         battleTransactionalService.addPlayerPersona(battleId, id1, new AddPersonaRequest(persona5.getId(), coordinatesInDisplacementArea.get(4)));
         var displacements5 = battleMock.getAvailableDisplacementsOk(jwt1, battleId);
         assertEquals(0, displacements5.size(), "Max number of personae displaceable by the user: 5");
+    }
+
+
+    @DisplayName("deletePersona - GIVEN owner of a battle WHEN persona is owned by the player THEN should remove")
+    @Test
+    void given_authorizedUser_when_deletePersona_validPersona_then_shouldRemove() throws Exception {
+        var jwt1 = MockUtil.randomJwt();
+        var id1 = authMock.accountId(jwt1);
+
+        var battle = battleMapTestBuilder.map1(jwt1);
+        var battleId = battle.getBattleId();
+
+        var persona1 = createRandomPersona(id1, "A");
+        var coordinatesInDisplacementArea = battleMapTestBuilder.map1PlayerArea();
+        battleTransactionalService.addPlayerPersona(battleId, id1, new AddPersonaRequest(persona1.getId(), coordinatesInDisplacementArea.get(0)));
+        battleMock.deletePlayerPersonaOk(jwt1, battleId, persona1.getId());
+
+        var battle2 = battleTransactionalService.getBattle(battleId, id1);
+        assertTrue(battle2.getBattle().getPersonae().stream().noneMatch(p -> p.getId().equals(persona1.getId())));
+        assertTrue(battle2.getBattle().getPlacements().stream().noneMatch(p -> p.getPersonaId().equals(persona1.getId())));
     }
 
     private List<Tile> getEmptyTiles(BattleMap map) {

@@ -11,6 +11,7 @@ import it.vitalegi.jarg.battle.model.Tile;
 import it.vitalegi.jarg.battleaction.model.AddPersona;
 import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
 import it.vitalegi.jarg.battleaction.model.BattleAction;
+import it.vitalegi.jarg.battleaction.model.DeletePersonaRequest;
 import it.vitalegi.jarg.persona.model.Persona;
 import org.opentest4j.AssertionFailedError;
 import org.springframework.context.annotation.Profile;
@@ -54,11 +55,25 @@ public class BattleMock extends BaseMock {
     public List<BattleAction> addPlayerPersonaOk(RequestPostProcessor user, UUID battleId, AddPersonaRequest request) throws Exception {
         var response = addPlayerPersona(user, battleId, request);
         response.andExpect(status().isOk());
+        return toBattleAction(response);
+    }
+
+    public ResultActions deletePlayerPersona(RequestPostProcessor user, UUID battleId, UUID personaId) throws Exception {
+        return deleteJson(user, "/battle/" + battleId + "/persona", new DeletePersonaRequest(personaId));
+    }
+
+    public List<BattleAction> deletePlayerPersonaOk(RequestPostProcessor user, UUID battleId, UUID personaId) throws Exception {
+        var response = deletePlayerPersona(user, battleId, personaId);
+        response.andExpect(status().isOk());
+        return toBattleAction(response);
+    }
+
+    protected List<BattleAction> toBattleAction(ResultActions response) throws Exception {
+        response.andExpect(status().isOk());
         var payload = payload(response);
         return objectMapper.readValue(payload, new TypeReference<List<BattleAction>>() {
         });
     }
-
 
     public ResultActions getAvailableDisplacements(RequestPostProcessor user, UUID battleId) throws Exception {
         return getJson(user, "/battle/" + battleId + "/displacement/available");

@@ -7,6 +7,7 @@ import it.vitalegi.jarg.battle.model.Tile;
 import it.vitalegi.jarg.battleaction.model.AddPersona;
 import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
 import it.vitalegi.jarg.battleaction.model.BattleAction;
+import it.vitalegi.jarg.battleaction.model.DeletePersona;
 import it.vitalegi.jarg.persona.model.Persona;
 import it.vitalegi.jarg.persona.service.PersonaService;
 import lombok.extern.log4j.Log4j2;
@@ -51,6 +52,24 @@ public class AddPlayerActionService {
 
         return Arrays.asList(new AddPersona(placement));
     }
+
+
+    public List<BattleAction> removePlayerPersona(UUID battleId, int userId, UUID personaId) {
+        var battle = getBattlePayload(battleId, userId);
+        var exists = battle.getPersona(personaId);
+        if (exists == null) {
+            throw new IllegalArgumentException("Persona " + personaId + " not displaced");
+        }
+        var persona = personaService.getPersonaCheckPermissions(personaId, userId);
+
+        battle.getPersonae().removeIf(p -> persona.getId().equals(personaId));
+        battle.getPlacements().removeIf(p -> p.getPersonaId().equals(personaId));
+        battleService.updateBattlePayload(battleId, battle);
+        log.info("Battle {} - removed persona {}", battleId, personaId);
+
+        return Arrays.asList(new DeletePersona(personaId));
+    }
+
 
     public List<Coordinate> getAvailableDisplacements(UUID battleId, int userId) {
         var battle = getBattlePayload(battleId, userId);

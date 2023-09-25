@@ -15,8 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public abstract class BaseMock {
@@ -50,6 +49,10 @@ public abstract class BaseMock {
 
     public ResultActions postJson(RequestPostProcessor user, String url, Object request) throws Exception {
         return mockMvc.perform(post(url).with(csrf()).with(user).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)));
+    }
+
+    public ResultActions deleteJson(RequestPostProcessor user, String url, Object request) throws Exception {
+        return mockMvc.perform(delete(url).with(csrf()).with(user).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)));
     }
 
     public ResultActions getJson(RequestPostProcessor user, String url) throws Exception {
