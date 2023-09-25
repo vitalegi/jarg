@@ -6,7 +6,7 @@ import { Container, Text } from 'pixi.js';
 import StringUtil from '../../util/string-util';
 import SimpleTable from '../components/simple-table';
 import ArrayUtil from '../../util/array-util';
-import { List } from '@pixi/ui';
+import { Button, List } from '@pixi/ui';
 import ApplicationContext from '../application-context';
 
 export default class PersonaSheetCompact extends SceneElement {
@@ -35,6 +35,7 @@ export default class PersonaSheetCompact extends SceneElement {
 
   protected async entry(persona: Persona): Promise<Container> {
     const entry = new Container();
+
     entry.name = this.namingFn(persona);
     const col1 = new List({ type: 'vertical' });
     col1.x = 90;

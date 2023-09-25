@@ -7,21 +7,29 @@ import { Button, List, ScrollBox } from '@pixi/ui';
 import ApplicationContext from '../application-context';
 import { SortBy, SortOrder } from '../../core/models/ui/sorting';
 import ScreenData from '../devices/screen';
-import PersonaSheetCompact from './persona-sheet-compact';
-import PixiNames from '../pixi-names';
+import PersonaSheetCompactSelectable from './persona-sheet-compact-selectable';
+import { PersonaeSelectionService } from '../../core/services/personae-selection-service';
 
 export default class PersonaeCatalogueMenu extends SceneElement {
   log = Logger.getInstance('PersonaeCatalogueMenu');
 
-  personae: Array<Persona>;
   scrollBox?: ScrollBox;
 
   sortBy?: SortBy;
   sortOrder?: SortOrder;
+  namingFn: (persona: Persona) => string;
+  selectionManager: PersonaeSelectionService;
+  _children = new Array<PersonaSheetCompactSelectable>();
 
-  public constructor(container: Container, ctx: ApplicationContext, personae: Persona[]) {
+  public constructor(
+    container: Container,
+    ctx: ApplicationContext,
+    namingFn: (persona: Persona) => string,
+    selectionManager: PersonaeSelectionService
+  ) {
     super(container, ctx);
-    this.personae = personae;
+    this.namingFn = namingFn;
+    this.selectionManager = selectionManager;
   }
 
   public async start() {
@@ -44,7 +52,7 @@ export default class PersonaeCatalogueMenu extends SceneElement {
           this.sortBy = 'name';
           this.sortOrder = 'asc';
         }
-        this.updatePersonae(this.personae, this.sortBy, this.sortOrder);
+        this.updatePersonae(this.sortBy, this.sortOrder);
       })
     );
     options.addChild(
@@ -59,45 +67,60 @@ export default class PersonaeCatalogueMenu extends SceneElement {
           this.sortBy = 'level';
           this.sortOrder = 'asc';
         }
-        this.updatePersonae(this.personae, this.sortBy, this.sortOrder);
+        this.updatePersonae(this.sortBy, this.sortOrder);
       })
     );
     this.container.addChild(options);
 
     this.scrollBox = new ScrollBox({
       elementsMargin: 20,
-      width: ScreenData.width() - 2 * marginLR,
+      width: 500,
       height: ScreenData.height() - 2 * marginTB,
       type: 'vertical'
     });
     this.scrollBox.x = marginLR;
     this.scrollBox.y = marginTB;
 
-    this.addEntries(this.scrollBox, this.personae);
+    this.addEntries(this.scrollBox, this.selectionManager.availablePersonae);
     this.container.addChild(this.scrollBox);
   }
 
-  public tick(time: number) {}
+  public tick(time: number) {
+    this._children.forEach((entry) => entry.tick(time));
+  }
 
   protected async addEntries(scrollBox: ScrollBox, personae: Persona[]): Promise<void> {
+    this._children = new Array<PersonaSheetCompactSelectable>();
     for (const persona of personae) {
-      const entry = new PersonaSheetCompact(scrollBox, this.ctx, persona, (p) => PixiNames.cataloguePersona(p));
-      entry.addToContainer = (content) => scrollBox.addItem(content);
-      await entry.start();
+      await this.addEntry(scrollBox, persona);
     }
   }
 
-  protected async updatePersonae(personae: Persona[], sortBy: SortBy, order: SortOrder): Promise<void> {
+  protected async addEntry(scrollBox: ScrollBox, persona: Persona): Promise<void> {
+    const entry = new PersonaSheetCompactSelectable(
+      scrollBox,
+      this.ctx,
+      persona,
+      this.namingFn,
+      (p) => this.selectionManager.enabled(p),
+      (p) => this.selectionManager.onPress(p)
+    );
+    entry.addToContainer = (content) => scrollBox.addItem(content);
+    await entry.start();
+    this._children.push(entry);
+  }
+
+  protected async updatePersonae(sortBy: SortBy, order: SortOrder): Promise<void> {
     if (!this.scrollBox) {
       return;
     }
-    const sorted = this.sortPersonae(personae, sortBy, order);
+    const sorted = this.sortPersonae(sortBy, order);
     this.scrollBox.removeItems();
     this.addEntries(this.scrollBox, sorted);
   }
 
-  protected sortPersonae(personae: Persona[], sortBy: SortBy, order: SortOrder): Persona[] {
-    let sorted = personae;
+  protected sortPersonae(sortBy: SortBy, order: SortOrder): Persona[] {
+    let sorted = this.selectionManager.availablePersonae;
     if (sortBy === 'name') {
       sorted = sorted.sort((p1, p2) => this.cmpStr(p1.name, p2.name));
     }

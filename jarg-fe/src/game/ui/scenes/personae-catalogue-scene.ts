@@ -11,6 +11,7 @@ import PersonaSheetCompact from '../scene-elements/persona-sheet-compact';
 import PixiNames from '../pixi-names';
 import { SortBy, SortOrder } from '../../core/models/ui/sorting';
 
+// TODO use personae-catalogue-menu as the list implementation
 export default class PersonaeCatalogueScene extends AbstractGameScene {
   log = Logger.getInstance('PersonaeCatalogueScene');
 

@@ -1,4 +1,4 @@
-import { Container, Application } from 'pixi.js';
+import { Container } from 'pixi.js';
 import ApplicationContext from '../application-context';
 
 export default class SceneElement {

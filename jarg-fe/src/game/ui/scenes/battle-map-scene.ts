@@ -13,6 +13,7 @@ import { Coordinate } from '../../core/models/coordinate';
 import PixiNames from '../pixi-names';
 import { Persona } from '../../core/models/persona';
 import PersonaeCatalogueMenu from '../scene-elements/personae-catalogue-menu';
+import { PersonaeSelectionService } from '../../core/services/personae-selection-service';
 
 export default class BattleMapScene extends AbstractGameScene {
   log = Logger.getInstance('BattleMapScene');
@@ -37,7 +38,15 @@ export default class BattleMapScene extends AbstractGameScene {
     this.getContainer().addChild(mapContainer);
 
     const myPersonae = await jargBe.persona().getMyPersonae();
-    const selectPersonae = new PersonaeCatalogueMenu(this.getContainer(), this.ctx, myPersonae);
+
+    const selectPersonaeService = new PersonaeSelectionService(myPersonae, new Array<Persona>(), this._battleMap);
+    const selectPersonae = new PersonaeCatalogueMenu(
+      this.getContainer(),
+      this.ctx,
+      (p) => PixiNames.cataloguePersona(p),
+      selectPersonaeService
+    );
+
     selectPersonae.start();
     this.addTicker((time: number) => {
       selectPersonae.tick(time);
