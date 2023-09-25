@@ -235,7 +235,6 @@ public class BattleResourceTests {
         var persona3 = createRandomPersona(id1, "C");
         var persona4 = createRandomPersona(id1, "D");
         var persona5 = createRandomPersona(id1, "E");
-        var persona6 = createRandomPersona(id1, "F");
 
         var coordinatesInDisplacementArea = battleMapTestBuilder.map1PlayerArea();
 

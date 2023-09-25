@@ -48,6 +48,22 @@ export default class Http {
     this.validate(response);
     return response;
   }
+
+  async deleteJson<E>(path: string, body: E, headers: Record<string, string> = { 'Content-Type': 'application/json' }): Promise<unknown> {
+    const response = await this.delete(path, body, headers);
+    return await response.json();
+  }
+
+  async delete<E>(path: string, body: E, headers: Record<string, string> = { 'Content-Type': 'application/json' }): Promise<Response> {
+    const options = this.options();
+    options.method = 'DELETE';
+    options.headers = headers;
+    options.body = JSON.stringify(body);
+    const response = await fetch(this.baseUrl + path, options);
+    this.validate(response);
+    return response;
+  }
+
   validate(response: Response): void {
     if (response.status >= 400) {
       throw Error(`Received error ${response.status}`);

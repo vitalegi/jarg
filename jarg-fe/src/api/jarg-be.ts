@@ -45,6 +45,12 @@ class BattleApi {
     });
     return parseBattleActions(response);
   }
+  public async deletePlayerPersona(battleId: string, personaId: string): Promise<BattleAction[]> {
+    const response = await this.http.deleteJson(`/battle/${battleId}/persona`, {
+      personaId: personaId
+    });
+    return parseBattleActions(response);
+  }
 
   public async getAvailableDisplacements(battleId: string): Promise<Coordinate[]> {
     const response = await this.http.getJson(`/battle/${battleId}/displacement/available`);

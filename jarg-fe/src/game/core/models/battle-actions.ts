@@ -1,3 +1,4 @@
+import { asString } from '../../util/converter-utils';
 import { PersonaPlacement } from './persona-placement';
 
 export interface BattleAction {}
@@ -19,6 +20,23 @@ export class AddPersona implements BattleAction {
     return out;
   }
 }
+export class DeletePersona implements BattleAction {
+  personaId = '';
+
+  public static parse(value: unknown): DeletePersona {
+    if (!value) {
+      throw new Error(`invalid element`);
+    }
+    if (typeof value !== 'object') {
+      throw new Error(`invalid element`);
+    }
+    const out = new DeletePersona();
+    if ('personaId' in value) {
+      out.personaId = asString(value.personaId);
+    }
+    return out;
+  }
+}
 
 export const parseBattleAction = (value: unknown): BattleAction => {
   if (!value) {
@@ -33,6 +51,8 @@ export const parseBattleAction = (value: unknown): BattleAction => {
   switch (value.type) {
     case 'add-persona':
       return AddPersona.parse(value);
+    case 'delete-persona':
+      return DeletePersona.parse(value);
   }
   throw Error(`Missing processor for type ${value.type}`);
 };
@@ -53,5 +73,12 @@ export class BattleActionUtil {
       return action;
     }
     throw Error(`Action is not of type AddPersona, ${action}`);
+  }
+
+  public static toDeletePersona(action: BattleAction): DeletePersona {
+    if (action instanceof DeletePersona) {
+      return action;
+    }
+    throw Error(`Action is not of type DeletePersona, ${action}`);
   }
 }

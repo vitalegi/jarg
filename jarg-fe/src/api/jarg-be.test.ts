@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import jargBe from './jarg-be';
 import { NewPersona } from '../game/core/models/new-persona';
 import { Coordinate } from '../game/core/models/coordinate';
-import { AddPersona, BattleActionUtil } from '../game/core/models/battle-actions';
+import { AddPersona, BattleActionUtil, DeletePersona } from '../game/core/models/battle-actions';
 
 beforeEach(() => {
   vi.resetAllMocks();
@@ -96,11 +96,28 @@ describe('battle', async () => {
     });
     expect(out.length).toBe(1);
     expect(out[0] instanceof AddPersona).toBe(true);
-    const addPersona = BattleActionUtil.toAddPersona(out[0]);
-    expect(addPersona.personaPlacement.personaId).toBe('10');
-    expect(addPersona.personaPlacement.coordinate.x).toBe(1);
-    expect(addPersona.personaPlacement.coordinate.y).toBe(2);
-    expect(addPersona.personaPlacement.groupId).toBe('20');
+    const actual = BattleActionUtil.toAddPersona(out[0]);
+    expect(actual.personaPlacement.personaId).toBe('10');
+    expect(actual.personaPlacement.coordinate.x).toBe(1);
+    expect(actual.personaPlacement.coordinate.y).toBe(2);
+    expect(actual.personaPlacement.groupId).toBe('20');
+  });
+  test('deletePlayerPersona, external call with correct params', async () => {
+    const spy = vi.spyOn(jargBe.http, 'deleteJson');
+    spy.mockResolvedValue([
+      {
+        type: 'delete-persona',
+        personaId: '20'
+      }
+    ]);
+    const out = await jargBe.battle().deletePlayerPersona('1', '2');
+    expect(spy).toHaveBeenCalledWith('/battle/1/persona', {
+      personaId: '2'
+    });
+    expect(out.length).toBe(1);
+    expect(out[0] instanceof DeletePersona).toBe(true);
+    const actual = BattleActionUtil.toDeletePersona(out[0]);
+    expect(actual.personaId).toBe('20');
   });
 
   test('getAvailableDisplacements, external call with correct params', async () => {

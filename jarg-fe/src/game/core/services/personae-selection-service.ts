@@ -30,6 +30,7 @@ export class PersonaeSelectionService {
   }
   public async onPress(persona: Persona): Promise<void> {
     if (this.isSelected(persona)) {
+      await jargBe.battle().deletePlayerPersona(this.battleMap.battleId, persona.id);
       this.remove(persona);
     } else {
       this.add(persona);
