@@ -1,5 +1,7 @@
+import jargBe from '../../../api/jarg-be';
 import Logger from '../../../logging/logger';
 import { BattleMap } from '../models/battle-map';
+import { Coordinate } from '../models/coordinate';
 import { Persona } from '../models/persona';
 
 export class PersonaeSelectionService {
@@ -27,11 +29,13 @@ export class PersonaeSelectionService {
     return false;
   }
   public async onPress(persona: Persona): Promise<void> {
-    this.log.info(`Selected ${persona.id}`);
     if (this.isSelected(persona)) {
       this.remove(persona);
     } else {
       this.add(persona);
+      const availableCoordinates = await jargBe.battle().getAvailableDisplacements(this.battleMap.battleId);
+      const coordinate = availableCoordinates[0];
+      const actions = await jargBe.battle().addPlayerPersona(this.battleMap.battleId, persona.id, coordinate);
     }
   }
 

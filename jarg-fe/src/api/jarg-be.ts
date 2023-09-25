@@ -1,4 +1,6 @@
+import { BattleAction, parseBattleActions } from '../game/core/models/battle-actions';
 import { BattleMap } from '../game/core/models/battle-map';
+import { Coordinate } from '../game/core/models/coordinate';
 import { NewPersona } from '../game/core/models/new-persona';
 import { Persona } from '../game/core/models/persona';
 import User from '../game/core/models/user';
@@ -34,6 +36,25 @@ class BattleApi {
   public async createRandom(): Promise<BattleMap> {
     const response = await this.http.putJson('/battle/random', {});
     return BattleMap.parse(response);
+  }
+
+  public async addPlayerPersona(battleId: string, personaId: string, coordinate: Coordinate): Promise<BattleAction[]> {
+    const response = await this.http.postJson(`/battle/${battleId}/persona`, {
+      personaId: personaId,
+      coordinate: coordinate
+    });
+    return parseBattleActions(response);
+  }
+
+  public async getAvailableDisplacements(battleId: string): Promise<Coordinate[]> {
+    const response = await this.http.getJson(`/battle/${battleId}/displacement/available`);
+    if (!response) {
+      throw new Error(`invalid element`);
+    }
+    if (!Array.isArray(response)) {
+      throw new Error(`element is not an array`);
+    }
+    return response.map((e) => Coordinate.parse(e));
   }
 }
 
