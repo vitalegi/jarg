@@ -23,16 +23,6 @@ export default class GameAccessScene extends AbstractGameScene {
       OptionFactory.alwaysEnabled('Battle!', () => SceneManager.startBattle(this.observer)),
       OptionFactory.alwaysEnabled('Bouncer', () => SceneManager.startBouncing(this.observer))
     );
-
-    let animation = await this.ctx.getAssetLoader().loadAnimatedSprite('arcanine');
-    animation.play();
-    this.getContainer().addChild(animation);
-
-    animation = await this.ctx.getAssetLoader().loadAnimatedSprite('abra');
-    animation.x = 200;
-    animation.play();
-    this.getContainer().addChild(animation);
-
     this.addTicker((time: number) => {});
   }
 
