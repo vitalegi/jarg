@@ -62,6 +62,10 @@ class BattleApi {
     }
     return response.map((e) => Coordinate.parse(e));
   }
+
+  public async completeInitPhase(battleId: string): Promise<void> {
+    await this.http.put(`/battle/${battleId}/phase/init/complete`, {});
+  }
 }
 
 export class JargBe {

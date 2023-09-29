@@ -9,6 +9,7 @@ import { SortBy, SortOrder } from '../../core/models/ui/sorting';
 import ScreenData from '../devices/screen';
 import PersonaSheetCompactSelectable from './persona-sheet-compact-selectable';
 import { PersonaeSelectionService } from '../../core/services/personae-selection-service';
+import ArrayUtil from '../../util/array-util';
 
 export default class PersonaeCatalogueMenu extends SceneElement {
   log = Logger.getInstance('PersonaeCatalogueMenu');
@@ -20,6 +21,7 @@ export default class PersonaeCatalogueMenu extends SceneElement {
   namingFn: (persona: Persona) => string;
   selectionManager: PersonaeSelectionService;
   _children = new Array<PersonaSheetCompactSelectable>();
+  _actions = new Array<{ text: string; onClick: () => void }>();
 
   public constructor(
     container: Container,
@@ -39,6 +41,12 @@ export default class PersonaeCatalogueMenu extends SceneElement {
       marginLR = 5;
       marginTB = 5;
     }
+    const actions = new List({ type: 'horizontal' });
+    for (const action of this._actions) {
+      actions.addChild(this.button(action.text, action.onClick));
+    }
+    actions.y = marginTB;
+    this.container.addChild(actions);
     const options = new List({ type: 'horizontal' });
     options.addChild(
       this.button('Sort by Name', () => {
@@ -70,6 +78,7 @@ export default class PersonaeCatalogueMenu extends SceneElement {
         this.updatePersonae(this.sortBy, this.sortOrder);
       })
     );
+    options.y = actions.y + actions.height + 10;
     this.container.addChild(options);
 
     this.scrollBox = new ScrollBox({
@@ -82,11 +91,16 @@ export default class PersonaeCatalogueMenu extends SceneElement {
     this.scrollBox.y = marginTB;
 
     this.addEntries(this.scrollBox, this.selectionManager.availablePersonae);
+    this.scrollBox.y = options.y + options.height + 10;
     this.container.addChild(this.scrollBox);
   }
 
   public tick(time: number) {
     this._children.forEach((entry) => entry.tick(time));
+  }
+
+  public addAction(text: string, onClick: () => void) {
+    this._actions.push({ text: text, onClick: onClick });
   }
 
   protected async addEntries(scrollBox: ScrollBox, personae: Persona[]): Promise<void> {

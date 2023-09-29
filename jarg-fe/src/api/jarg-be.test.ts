@@ -129,6 +129,12 @@ describe('battle', async () => {
     expect(out[1].x).toBe(3);
     expect(out[1].y).toBe(4);
   });
+  test('completeInitPhase, external call with correct params', async () => {
+    const spy = vi.spyOn(jargBe.http, 'put');
+    spy.mockResolvedValue('');
+    await jargBe.battle().completeInitPhase('1');
+    expect(spy).toHaveBeenCalledWith('/battle/1/phase/init/complete', {});
+  });
 });
 
 describe('persona', async () => {

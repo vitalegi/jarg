@@ -40,28 +40,7 @@ export default class BattleMapScene extends AbstractGameScene {
     this._mapContainer = new Container();
     await this.renderMap(this._battleMap, this._mapContainer);
     this.getContainer().addChild(this._mapContainer);
-
-    const myPersonae = await jargBe.persona().getMyPersonae();
-
-    const selectPersonaeService = new PersonaeSelectionService(
-      myPersonae,
-      new Array<Persona>(),
-      this._battleMap,
-      (p) => this.addPersona(p),
-      (p) => this.removePersona(p)
-    );
-    const selectPersonae = new PersonaeCatalogueMenu(
-      this.getContainer(),
-      this.ctx,
-      (p) => PixiNames.cataloguePersona(p),
-      selectPersonaeService
-    );
-
-    selectPersonae.start();
-    this.addTicker((time: number) => {
-      selectPersonae.tick(time);
-    }, 'SelectPersonae');
-
+    await this.startInitPhase();
     this.addTicker((time: number) => {});
   }
 
@@ -190,6 +169,13 @@ export default class BattleMapScene extends AbstractGameScene {
     container.removeChild(element);
   }
 
+  protected async completeInitPhase(): Promise<void> {
+    await jargBe.battle().completeInitPhase(this.getBattleMap().battleId);
+    this.log.info(`INIT phase is completed`);
+
+    this.log.debug(`TODO - Remove personae menu`);
+  }
+
   protected async loadTileTextures(tiles: Array<Tile>): Promise<Map<string, Texture>> {
     const map = new Map<string, Texture>();
     for (const tile of tiles) {
@@ -207,6 +193,30 @@ export default class BattleMapScene extends AbstractGameScene {
     animation.name = PixiNames.persona(persona);
     animation.play();
     return animation;
+  }
+
+  protected async startInitPhase(): Promise<void> {
+    const myPersonae = await jargBe.persona().getMyPersonae();
+
+    const selectPersonaeService = new PersonaeSelectionService(
+      myPersonae,
+      new Array<Persona>(),
+      this.getBattleMap(),
+      (p) => this.addPersona(p),
+      (p) => this.removePersona(p)
+    );
+    const selectPersonae = new PersonaeCatalogueMenu(
+      this.getContainer(),
+      this.ctx,
+      (p) => PixiNames.cataloguePersona(p),
+      selectPersonaeService
+    );
+    selectPersonae.addAction('Start', () => this.completeInitPhase());
+
+    selectPersonae.start();
+    this.addTicker((time: number) => {
+      selectPersonae.tick(time);
+    }, 'SelectPersonae');
   }
 
   protected getBattleMap(): BattleMap {
