@@ -10,6 +10,7 @@ import { Persona } from '../../core/models/persona';
 import PersonaSheet from '../scene-elements/persona-sheet';
 import SceneManager from '../scene-coordinators/scene-manager';
 import { OptionFactory } from '../scene-elements/menu';
+import ArrayUtil from '../../util/array-util';
 
 export default class PersonaBuilderScene extends AbstractGameScene {
   log = Logger.getInstance('PersonaBuilderScene');
@@ -51,7 +52,18 @@ export default class PersonaBuilderScene extends AbstractGameScene {
   protected async createPersona(): Promise<void> {
     const request = new NewPersona();
     request.name = 'No name ' + Math.floor(Math.random() * 100);
-    request.skin = 'arcanine';
+    request.skin = ArrayUtil.getRandomElement([
+      'abra',
+      'aerodactyl',
+      'alakazam',
+      'arbok',
+      'arcanine',
+      'articuno',
+      'beedrill',
+      'bellsprout',
+      'blastoise',
+      'bulbasaur'
+    ]);
     const persona = await jargBe.persona().createPersona(request);
     this.withPersona(persona);
   }

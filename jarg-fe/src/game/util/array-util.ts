@@ -12,4 +12,12 @@ export default class ArrayUtil {
     }
     return str;
   }
+
+  public static getRandomElement<E>(array: Array<E>): E {
+    if (array.length === 0) {
+      throw Error(`Array is empty`);
+    }
+    const index = Math.floor(Math.random() * array.length);
+    return array[index];
+  }
 }
