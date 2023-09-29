@@ -5,8 +5,10 @@ import it.vitalegi.jarg.auth.AuthService;
 import it.vitalegi.jarg.battle.model.BattleMap;
 import it.vitalegi.jarg.battle.model.Coordinate;
 import it.vitalegi.jarg.battle.service.BattleTransactionalService;
+import it.vitalegi.jarg.battleaction.model.AddPersona;
 import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
 import it.vitalegi.jarg.battleaction.model.BattleAction;
+import it.vitalegi.jarg.battleaction.model.DeletePersona;
 import it.vitalegi.jarg.battleaction.model.DeletePersonaRequest;
 import it.vitalegi.jarg.logging.Performance;
 import it.vitalegi.jarg.logging.Type;
@@ -44,15 +46,15 @@ public class BattleResource {
 
     @Operation(description = "Add player's persona to battle")
     @PostMapping("/{battleId}/persona")
-    public List<BattleAction> addPersona(@PathVariable("battleId") UUID battleId, @RequestBody AddPersonaRequest addPersona) {
+    public AddPersona addPersona(@PathVariable("battleId") UUID battleId, @RequestBody AddPersonaRequest addPersona) {
         return battleTransactionalService.addPlayerPersona(battleId, getUserId(), addPersona);
     }
 
 
     @Operation(description = "Remove player's persona from battle")
     @DeleteMapping("/{battleId}/persona")
-    public List<BattleAction> removePersona(@PathVariable("battleId") UUID battleId, @RequestBody DeletePersonaRequest deletePersona) {
-        return battleTransactionalService.removePlayerPersona(battleId, getUserId(), deletePersona);
+    public DeletePersona deletePersona(@PathVariable("battleId") UUID battleId, @RequestBody DeletePersonaRequest deletePersona) {
+        return battleTransactionalService.deletePlayerPersona(battleId, getUserId(), deletePersona);
     }
 
     @Operation(description = "Get battle")

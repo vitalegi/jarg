@@ -14,11 +14,15 @@ import PixiNames from '../pixi-names';
 import { Persona } from '../../core/models/persona';
 import PersonaeCatalogueMenu from '../scene-elements/personae-catalogue-menu';
 import { PersonaeSelectionService } from '../../core/services/personae-selection-service';
+import { PersonaPlacement } from '../../core/models/persona-placement';
+import { battleActionService } from '../../core/services/battle-action-service';
 
 export default class BattleMapScene extends AbstractGameScene {
   log = Logger.getInstance('BattleMapScene');
 
   _battleMap?: BattleMap;
+
+  _mapContainer?: Container;
 
   name(): string {
     return GameSceneConstants.BATTLE_MAP;
@@ -33,13 +37,19 @@ export default class BattleMapScene extends AbstractGameScene {
     const w = 100;
     const h = 100;
 
-    const mapContainer = new Container();
-    await this.renderMap(this._battleMap, mapContainer);
-    this.getContainer().addChild(mapContainer);
+    this._mapContainer = new Container();
+    await this.renderMap(this._battleMap, this._mapContainer);
+    this.getContainer().addChild(this._mapContainer);
 
     const myPersonae = await jargBe.persona().getMyPersonae();
 
-    const selectPersonaeService = new PersonaeSelectionService(myPersonae, new Array<Persona>(), this._battleMap);
+    const selectPersonaeService = new PersonaeSelectionService(
+      myPersonae,
+      new Array<Persona>(),
+      this._battleMap,
+      (p) => this.addPersona(p),
+      (p) => this.removePersona(p)
+    );
     const selectPersonae = new PersonaeCatalogueMenu(
       this.getContainer(),
       this.ctx,
@@ -71,8 +81,6 @@ export default class BattleMapScene extends AbstractGameScene {
   protected async renderMap(battleMap: BattleMap, container: Container): Promise<void> {
     const textures = await this.loadTileTextures(battleMap.battle.tiles);
 
-    const w = 120;
-    const h = 120;
     const maxX = ArrayUtil.max(battleMap.battle.tiles.map((t) => t.coordinate.x));
     const maxY = ArrayUtil.max(battleMap.battle.tiles.map((t) => t.coordinate.y));
 
@@ -86,8 +94,8 @@ export default class BattleMapScene extends AbstractGameScene {
           continue;
         }
 
-        const pixel_x = ((x - y) * w) / 2;
-        const pixel_y = ((x + y) * w) / 4;
+        const pixel_x = ((x - y) * this.getTileWidth()) / 2;
+        const pixel_y = ((x + y) * this.getTileWidth()) / 4;
 
         this.log.debug(`Render ${x},${y} in ${pixel_x},${pixel_y}`);
         const texture = textures.get(tileEntry.animation);
@@ -96,10 +104,10 @@ export default class BattleMapScene extends AbstractGameScene {
         }
         const tile = new Sprite(texture);
         tile.name = PixiNames.tile(tileEntry);
-        tile.x = pixel_x + (Math.max(maxX, maxY) * w) / 2;
+        tile.x = pixel_x + (Math.max(maxX, maxY) * this.getTileWidth()) / 2;
         tile.y = pixel_y;
-        tile.width = w;
-        tile.height = h;
+        tile.width = this.getTileWidth();
+        tile.height = this.getTileHeight();
         container.addChild(tile);
       }
       // personae
@@ -111,24 +119,75 @@ export default class BattleMapScene extends AbstractGameScene {
           continue;
         }
         const persona = this.getBattleMap().battle.getPersona(placement.personaId);
-        const animation = await this.createPersonaSprite(persona);
-        const tile = container.getChildByName(PixiNames.tile(placement.coordinate));
-        if (tile === null) {
-          throw Error(`Missing tile for ${placement.coordinate.toString()}`);
-        }
-        if (!(tile instanceof Sprite)) {
-          throw Error(`Tile ${placement.coordinate.toString()} is not a Sprite`);
-        }
-        const tileSprite = tile as Sprite;
-        animation.x = tile.x + (tileSprite.width - animation.width) / 2;
-        animation.y = tile.y + (h / 3 - animation.height);
-        this.log.info(`Persona in ${placement.coordinate.toString()}`);
-        container.addChild(animation);
+        await this.renderPersonaOnMap(persona, placement.coordinate);
       }
     }
 
-    container.x = (ScreenData.width() - container.width - w) / 2;
+    container.x = (ScreenData.width() - container.width - this.getTileWidth()) / 2;
     container.y = 200;
+  }
+
+  protected async addPersona(persona: Persona): Promise<void> {
+    this.log.info(`Add persona ${persona.id} to map`);
+    const battleMap = this.getBattleMap();
+    this.log.debug(`Add persona to backend`);
+    const availableCoordinates = await jargBe.battle().getAvailableDisplacements(battleMap.battleId);
+    const coordinate = availableCoordinates[0];
+    const addPersona = await jargBe.battle().addPlayerPersona(battleMap.battleId, persona.id, coordinate);
+
+    this.log.debug(`Add persona to local model`);
+    await battleActionService.addPersona(persona, addPersona.personaPlacement, battleMap);
+
+    this.log.debug(`Render persona`);
+    this.renderPersonaOnMap(persona, coordinate);
+  }
+
+  protected async removePersona(persona: Persona): Promise<void> {
+    this.log.info(`Remove persona ${persona.id} from map`);
+    const battleMap = this.getBattleMap();
+
+    this.log.debug(`Remove persona from backend`);
+    await jargBe.battle().deletePlayerPersona(battleMap.battleId, persona.id);
+
+    this.log.debug(`Remove persona from local model`);
+    await battleActionService.removePersona(persona.id, battleMap);
+
+    this.log.debug(`Remove persona from rendering`);
+    this.removePersonaRenderingFromMap(persona);
+  }
+
+  protected async renderPersonaOnMap(persona: Persona, coordinate: Coordinate): Promise<void> {
+    if (!this._mapContainer) {
+      throw Error(`map container is null`);
+    }
+    const container = this._mapContainer;
+    const animation = await this.createPersonaSprite(persona);
+    const tile = container.getChildByName(PixiNames.tile(coordinate));
+    if (tile === null) {
+      throw Error(`Missing tile for ${coordinate.toString()}`);
+    }
+    if (!(tile instanceof Sprite)) {
+      throw Error(`Tile ${coordinate.toString()} is not a Sprite`);
+    }
+    const tileSprite = tile as Sprite;
+    animation.x = tile.x + (tileSprite.width - animation.width) / 2;
+    animation.y = tile.y + (this.getTileHeight() / 3 - animation.height);
+    this.log.info(`Persona in ${coordinate.toString()}`);
+    container.addChild(animation);
+  }
+
+  protected async removePersonaRenderingFromMap(persona: Persona): Promise<void> {
+    if (!this._mapContainer) {
+      throw Error(`map container is null`);
+    }
+    const container = this._mapContainer;
+    const name = PixiNames.persona(persona);
+    const element = container.getChildByName(name);
+    if (!element) {
+      this.log.info(`Missing animation for persona ${persona.id}, skip removal`);
+      return;
+    }
+    container.removeChild(element);
   }
 
   protected async loadTileTextures(tiles: Array<Tile>): Promise<Map<string, Texture>> {
@@ -155,5 +214,13 @@ export default class BattleMapScene extends AbstractGameScene {
       return this._battleMap;
     }
     throw Error(`BattleMap is null`);
+  }
+
+  protected getTileWidth(): number {
+    return 120;
+  }
+
+  protected getTileHeight(): number {
+    return 120;
   }
 }

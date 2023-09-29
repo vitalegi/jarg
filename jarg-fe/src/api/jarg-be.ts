@@ -1,4 +1,4 @@
-import { BattleAction, parseBattleActions } from '../game/core/models/battle-actions';
+import { AddPersona, BattleAction, parseBattleActions } from '../game/core/models/battle-actions';
 import { BattleMap } from '../game/core/models/battle-map';
 import { Coordinate } from '../game/core/models/coordinate';
 import { NewPersona } from '../game/core/models/new-persona';
@@ -38,12 +38,12 @@ class BattleApi {
     return BattleMap.parse(response);
   }
 
-  public async addPlayerPersona(battleId: string, personaId: string, coordinate: Coordinate): Promise<BattleAction[]> {
+  public async addPlayerPersona(battleId: string, personaId: string, coordinate: Coordinate): Promise<AddPersona> {
     const response = await this.http.postJson(`/battle/${battleId}/persona`, {
       personaId: personaId,
       coordinate: coordinate
     });
-    return parseBattleActions(response);
+    return AddPersona.parse(response);
   }
   public async deletePlayerPersona(battleId: string, personaId: string): Promise<BattleAction[]> {
     const response = await this.http.deleteJson(`/battle/${battleId}/persona`, {

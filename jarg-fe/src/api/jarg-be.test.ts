@@ -73,20 +73,18 @@ describe('battle', async () => {
 
   test('addPlayerPersona, external call with correct params', async () => {
     const spy = vi.spyOn(jargBe.http, 'postJson');
-    spy.mockResolvedValue([
-      {
-        type: 'add-persona',
-        personaPlacement: {
-          personaId: '10',
-          coordinate: {
-            x: 1,
-            y: 2
-          },
-          groupId: '20'
-        }
+    spy.mockResolvedValue({
+      type: 'add-persona',
+      personaPlacement: {
+        personaId: '10',
+        coordinate: {
+          x: 1,
+          y: 2
+        },
+        groupId: '20'
       }
-    ]);
-    const out = await jargBe.battle().addPlayerPersona('1', '2', new Coordinate(5, 6));
+    });
+    const actual = await jargBe.battle().addPlayerPersona('1', '2', new Coordinate(5, 6));
     expect(spy).toHaveBeenCalledWith('/battle/1/persona', {
       personaId: '2',
       coordinate: {
@@ -94,9 +92,6 @@ describe('battle', async () => {
         y: 6
       }
     });
-    expect(out.length).toBe(1);
-    expect(out[0] instanceof AddPersona).toBe(true);
-    const actual = BattleActionUtil.toAddPersona(out[0]);
     expect(actual.personaPlacement.personaId).toBe('10');
     expect(actual.personaPlacement.coordinate.x).toBe(1);
     expect(actual.personaPlacement.coordinate.y).toBe(2);

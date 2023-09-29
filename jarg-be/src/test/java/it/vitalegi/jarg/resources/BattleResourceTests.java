@@ -165,9 +165,8 @@ public class BattleResourceTests {
         var persona1 = createRandomPersona(authMock.accountId(jwt1), "A");
 
         var coordinate = battleMapTestBuilder.map1PlayerArea().get(0);
-        var actions = battleMock.addPlayerPersonaOk(jwt1, battleId, new AddPersonaRequest(persona1.getId(), coordinate));
-        assertEquals(1, actions.size());
-        battleMock.validateActionAddPersona(new PersonaPlacement(persona1.getId(), coordinate, battle.getBattle().getGroupByOwnerId(id1).getId()), actions.get(0));
+        var addPersona = battleMock.addPlayerPersonaOk(jwt1, battleId, new AddPersonaRequest(persona1.getId(), coordinate));
+        battleMock.validateActionAddPersona(new PersonaPlacement(persona1.getId(), coordinate, battle.getBattle().getGroupByOwnerId(id1).getId()), addPersona);
 
         var battle2 = battleMock.getBattleOk(jwt1, battleId);
         battleMock.validatePersona(persona1, battle2.getBattle().getPersonae());
@@ -187,9 +186,8 @@ public class BattleResourceTests {
         var persona1 = createRandomPersona(authMock.accountId(jwt1), "A");
 
         var coordinate = battleMapTestBuilder.map1PlayerArea().get(0);
-        var actions = battleMock.addPlayerPersonaOk(jwt1, battleId, new AddPersonaRequest(persona1.getId(), coordinate));
-        assertEquals(1, actions.size());
-        battleMock.validateActionAddPersona(new PersonaPlacement(persona1.getId(), coordinate, battle.getBattle().getGroupByOwnerId(id1).getId()), actions.get(0));
+        var addPersona = battleMock.addPlayerPersonaOk(jwt1, battleId, new AddPersonaRequest(persona1.getId(), coordinate));
+        battleMock.validateActionAddPersona(new PersonaPlacement(persona1.getId(), coordinate, battle.getBattle().getGroupByOwnerId(id1).getId()), addPersona);
 
         var battle2 = battleMock.getBattleOk(jwt1, battleId);
         battleMock.validatePersona(persona1, battle2.getBattle().getPersonae());

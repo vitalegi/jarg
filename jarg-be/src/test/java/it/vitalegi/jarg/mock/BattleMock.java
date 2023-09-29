@@ -11,6 +11,7 @@ import it.vitalegi.jarg.battle.model.Tile;
 import it.vitalegi.jarg.battleaction.model.AddPersona;
 import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
 import it.vitalegi.jarg.battleaction.model.BattleAction;
+import it.vitalegi.jarg.battleaction.model.DeletePersona;
 import it.vitalegi.jarg.battleaction.model.DeletePersonaRequest;
 import it.vitalegi.jarg.persona.model.Persona;
 import org.opentest4j.AssertionFailedError;
@@ -52,20 +53,20 @@ public class BattleMock extends BaseMock {
         return postJson(user, "/battle/" + battleId + "/persona", request);
     }
 
-    public List<BattleAction> addPlayerPersonaOk(RequestPostProcessor user, UUID battleId, AddPersonaRequest request) throws Exception {
+    public AddPersona addPlayerPersonaOk(RequestPostProcessor user, UUID battleId, AddPersonaRequest request) throws Exception {
         var response = addPlayerPersona(user, battleId, request);
         response.andExpect(status().isOk());
-        return toBattleAction(response);
+        return payloadJson(response, AddPersona.class);
     }
 
     public ResultActions deletePlayerPersona(RequestPostProcessor user, UUID battleId, UUID personaId) throws Exception {
         return deleteJson(user, "/battle/" + battleId + "/persona", new DeletePersonaRequest(personaId));
     }
 
-    public List<BattleAction> deletePlayerPersonaOk(RequestPostProcessor user, UUID battleId, UUID personaId) throws Exception {
+    public DeletePersona deletePlayerPersonaOk(RequestPostProcessor user, UUID battleId, UUID personaId) throws Exception {
         var response = deletePlayerPersona(user, battleId, personaId);
         response.andExpect(status().isOk());
-        return toBattleAction(response);
+        return payloadJson(response, DeletePersona.class);
     }
 
     protected List<BattleAction> toBattleAction(ResultActions response) throws Exception {

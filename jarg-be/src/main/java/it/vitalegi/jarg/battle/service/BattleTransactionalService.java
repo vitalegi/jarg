@@ -2,8 +2,10 @@ package it.vitalegi.jarg.battle.service;
 
 import it.vitalegi.jarg.battle.model.BattleMap;
 import it.vitalegi.jarg.battle.model.Coordinate;
+import it.vitalegi.jarg.battleaction.model.AddPersona;
 import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
 import it.vitalegi.jarg.battleaction.model.BattleAction;
+import it.vitalegi.jarg.battleaction.model.DeletePersona;
 import it.vitalegi.jarg.battleaction.model.DeletePersonaRequest;
 import it.vitalegi.jarg.mapbuilder.service.BattleMapBuilderRandomService;
 import jakarta.transaction.Transactional;
@@ -31,12 +33,12 @@ public class BattleTransactionalService {
         return battleMapBuilderRandomService.createMap(userId);
     }
 
-    public List<BattleAction> addPlayerPersona(UUID battleId, int userId, AddPersonaRequest addPersona) {
+    public AddPersona addPlayerPersona(UUID battleId, int userId, AddPersonaRequest addPersona) {
         return addPlayerActionService.addPlayerPersona(battleId, userId, addPersona);
     }
 
-    public List<BattleAction> removePlayerPersona(UUID battleId, int userId, DeletePersonaRequest deletePersonaRequest) {
-        return addPlayerActionService.removePlayerPersona(battleId, userId, deletePersonaRequest.getPersonaId());
+    public DeletePersona deletePlayerPersona(UUID battleId, int userId, DeletePersonaRequest deletePersonaRequest) {
+        return addPlayerActionService.deletePlayerPersona(battleId, userId, deletePersonaRequest.getPersonaId());
     }
 
     public BattleMap getBattle(UUID battleId, int userId) {

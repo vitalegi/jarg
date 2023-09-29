@@ -1,7 +1,5 @@
-import jargBe from '../../../api/jarg-be';
 import Logger from '../../../logging/logger';
 import { BattleMap } from '../models/battle-map';
-import { Coordinate } from '../models/coordinate';
 import { Persona } from '../models/persona';
 
 export class PersonaeSelectionService {
@@ -10,11 +8,21 @@ export class PersonaeSelectionService {
   availablePersonae: Persona[];
   selectedPersonae: Persona[];
   battleMap: BattleMap;
+  onPersonaSelect: (persona: Persona) => Promise<void>;
+  onPersonaDeselect: (persona: Persona) => Promise<void>;
 
-  public constructor(availablePersonae: Persona[], selectedPersonae: Persona[], battleMap: BattleMap) {
+  public constructor(
+    availablePersonae: Persona[],
+    selectedPersonae: Persona[],
+    battleMap: BattleMap,
+    onPersonaSelect: (persona: Persona) => Promise<void>,
+    onPersonaDeselect: (persona: Persona) => Promise<void>
+  ) {
     this.availablePersonae = availablePersonae;
     this.selectedPersonae = selectedPersonae;
     this.battleMap = battleMap;
+    this.onPersonaSelect = onPersonaSelect;
+    this.onPersonaDeselect = onPersonaDeselect;
   }
 
   public enabled(persona: Persona): boolean {
@@ -30,13 +38,11 @@ export class PersonaeSelectionService {
   }
   public async onPress(persona: Persona): Promise<void> {
     if (this.isSelected(persona)) {
-      await jargBe.battle().deletePlayerPersona(this.battleMap.battleId, persona.id);
+      await this.onPersonaDeselect(persona);
       this.remove(persona);
     } else {
+      await this.onPersonaSelect(persona);
       this.add(persona);
-      const availableCoordinates = await jargBe.battle().getAvailableDisplacements(this.battleMap.battleId);
-      const coordinate = availableCoordinates[0];
-      const actions = await jargBe.battle().addPlayerPersona(this.battleMap.battleId, persona.id, coordinate);
     }
   }
 

@@ -6,7 +6,6 @@ import it.vitalegi.jarg.battle.model.PersonaPlacement;
 import it.vitalegi.jarg.battle.model.Tile;
 import it.vitalegi.jarg.battleaction.model.AddPersona;
 import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
-import it.vitalegi.jarg.battleaction.model.BattleAction;
 import it.vitalegi.jarg.battleaction.model.DeletePersona;
 import it.vitalegi.jarg.persona.model.Persona;
 import it.vitalegi.jarg.persona.service.PersonaService;
@@ -14,7 +13,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +28,7 @@ public class AddPlayerActionService {
     @Autowired
     PersonaService personaService;
 
-    public List<BattleAction> addPlayerPersona(UUID battleId, int userId, AddPersonaRequest addPersona) {
+    public AddPersona addPlayerPersona(UUID battleId, int userId, AddPersonaRequest addPersona) {
         var battle = getBattlePayload(battleId, userId);
         var exists = battle.getPersona(addPersona.getPersonaId());
         if (exists != null) {
@@ -50,11 +48,11 @@ public class AddPlayerActionService {
 
         battleService.updateBattlePayload(battleId, battle);
 
-        return Arrays.asList(new AddPersona(placement));
+        return new AddPersona(placement);
     }
 
 
-    public List<BattleAction> removePlayerPersona(UUID battleId, int userId, UUID personaId) {
+    public DeletePersona deletePlayerPersona(UUID battleId, int userId, UUID personaId) {
         var battle = getBattlePayload(battleId, userId);
         var exists = battle.getPersona(personaId);
         if (exists == null) {
@@ -67,7 +65,7 @@ public class AddPlayerActionService {
         battleService.updateBattlePayload(battleId, battle);
         log.info("Battle {} - removed persona {}", battleId, personaId);
 
-        return Arrays.asList(new DeletePersona(personaId));
+        return new DeletePersona(personaId);
     }
 
 
