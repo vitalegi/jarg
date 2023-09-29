@@ -1,12 +1,14 @@
 package it.vitalegi.jarg.battle.service;
 
 import it.vitalegi.jarg.battle.model.BattleMapPayload;
+import it.vitalegi.jarg.battle.model.BattleStatus;
 import it.vitalegi.jarg.battle.model.Coordinate;
 import it.vitalegi.jarg.battle.model.PersonaPlacement;
 import it.vitalegi.jarg.battle.model.Tile;
 import it.vitalegi.jarg.battleaction.model.AddPersona;
 import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
 import it.vitalegi.jarg.battleaction.model.DeletePersona;
+import it.vitalegi.jarg.exception.InvalidStatusException;
 import it.vitalegi.jarg.persona.model.Persona;
 import it.vitalegi.jarg.persona.service.PersonaService;
 import lombok.extern.log4j.Log4j2;
@@ -34,6 +36,7 @@ public class AddPlayerActionService {
         if (exists != null) {
             throw new IllegalArgumentException("Persona " + addPersona.getPersonaId() + " already displaced");
         }
+        validateStatus(battleId);
         var group = battle.getGroupByOwnerId(userId);
         var persona = personaService.getPersonaCheckPermissions(addPersona.getPersonaId(), userId);
 
@@ -58,6 +61,7 @@ public class AddPlayerActionService {
         if (exists == null) {
             throw new IllegalArgumentException("Persona " + personaId + " not displaced");
         }
+        validateStatus(battleId);
         var persona = personaService.getPersonaCheckPermissions(personaId, userId);
 
         battle.getPersonae().removeIf(p -> persona.getId().equals(personaId));
@@ -82,6 +86,13 @@ public class AddPlayerActionService {
 
     protected BattleMapPayload getBattlePayload(UUID battleId, int userId) {
         return battleService.getBattleCheckPermission(battleId, userId).getBattle();
+    }
+
+    protected void validateStatus(UUID battleId) {
+        var status = battleService.getBattleStatus(battleId);
+        if (status != BattleStatus.INIT) {
+            throw new InvalidStatusException();
+        }
     }
 
     protected void validateAddPersona(BattleMapPayload battle, int userId, Coordinate coordinate, Persona persona) {

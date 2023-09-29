@@ -4,7 +4,6 @@ import it.vitalegi.jarg.battle.model.BattleMap;
 import it.vitalegi.jarg.battle.model.Coordinate;
 import it.vitalegi.jarg.battleaction.model.AddPersona;
 import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
-import it.vitalegi.jarg.battleaction.model.BattleAction;
 import it.vitalegi.jarg.battleaction.model.DeletePersona;
 import it.vitalegi.jarg.battleaction.model.DeletePersonaRequest;
 import it.vitalegi.jarg.mapbuilder.service.BattleMapBuilderRandomService;
@@ -47,5 +46,9 @@ public class BattleTransactionalService {
 
     public List<Coordinate> getAvailableDisplacements(UUID battleId, int userId) {
         return addPlayerActionService.getAvailableDisplacements(battleId, userId);
+    }
+
+    public void completeInitPhase(UUID battleId, int userId) {
+        battleService.completeInitPhase(battleId, userId);
     }
 }

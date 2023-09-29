@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.vitalegi.jarg.exception.Ex;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -48,17 +49,28 @@ public abstract class BaseMock {
 
 
     public ResultActions postJson(RequestPostProcessor user, String url, Object request) throws Exception {
-        return mockMvc.perform(post(url).with(csrf()).with(user).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)));
+        return mockMvc.perform(requestJson(user, HttpMethod.POST, url, request));
+    }
+
+    public ResultActions putJson(RequestPostProcessor user, String url, Object request) throws Exception {
+        return mockMvc.perform(requestJson(user, HttpMethod.PUT, url, request));
     }
 
     public ResultActions deleteJson(RequestPostProcessor user, String url, Object request) throws Exception {
-        return mockMvc.perform(delete(url).with(csrf()).with(user).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)));
+        return mockMvc.perform(requestJson(user, HttpMethod.DELETE, url, request));
     }
 
     public ResultActions getJson(RequestPostProcessor user, String url) throws Exception {
-        return mockMvc.perform(get(url).with(user).contentType(MediaType.APPLICATION_JSON));
+        return mockMvc.perform(requestJson(user, HttpMethod.GET, url, null));
     }
 
+    protected MockHttpServletRequestBuilder requestJson(RequestPostProcessor user, HttpMethod method, String url, Object payload) throws JsonProcessingException {
+        var request = request(method, url).contentType(MediaType.APPLICATION_JSON).with(csrf()).with(user);
+        if (payload != null) {
+            request = request.content(objectMapper.writeValueAsString(payload));
+        }
+        return request;
+    }
 
     protected MockHttpServletRequestBuilder withJsonPayload(MockHttpServletRequestBuilder builder, Object obj) {
         builder.contentType(MediaType.APPLICATION_JSON);

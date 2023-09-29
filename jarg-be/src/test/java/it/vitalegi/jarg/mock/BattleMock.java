@@ -88,6 +88,17 @@ public class BattleMock extends BaseMock {
         });
     }
 
+
+    public ResultActions completeInitPhase(RequestPostProcessor user, UUID battleId) throws Exception {
+        return putJson(user, "/battle/" + battleId + "/phase/init/complete", null);
+    }
+
+    public void completeInitPhaseOk(RequestPostProcessor user, UUID battleId) throws Exception {
+        var response = completeInitPhase(user, battleId);
+        response.andExpect(status().isOk());
+    }
+
+
     public void validateEqualsBattle(BattleMap expected, BattleMap actual) {
         assertEquals(expected.getBattleId(), actual.getBattleId());
         assertEquals(expected.getStatus(), actual.getStatus());

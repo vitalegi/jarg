@@ -34,9 +34,26 @@ public class BattleService {
         return entity;
     }
 
+    public BattleStatus getBattleStatus(UUID battleId) {
+        return battleMapRepository.getReferenceById(battleId).getStatus();
+    }
+
+    public void completeInitPhase(UUID battleId, int userId) {
+        var battle = getBattleEntityCheckPermission(battleId, userId);
+        if (battle.getStatus() != BattleStatus.INIT) {
+            throw new IllegalArgumentException("Battle phase is invalid. Actual: " + battle.getStatus() + ", Expected: " + BattleStatus.INIT);
+        }
+        battle.setStatus(BattleStatus.ONGOING);
+        updateBattle(battle);
+    }
+
     protected BattleEntity updateBattlePayload(UUID battleId, BattleMapPayload payload) {
         var entity = battleMapRepository.getReferenceById(battleId);
         entity.setPayload(SerializrUtil.toByte(payload));
+        return updateBattle(entity);
+    }
+
+    protected BattleEntity updateBattle(BattleEntity entity) {
         var now = LocalDateTime.now();
         entity.setLastUpdate(now);
         entity = battleMapRepository.save(entity);

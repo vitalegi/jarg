@@ -280,6 +280,60 @@ public class BattleResourceTests {
         assertTrue(battle2.getBattle().getPlacements().stream().noneMatch(p -> p.getPersonaId().equals(persona1.getId())));
     }
 
+    @DisplayName("addOrDeletePersona - GIVEN owner of a battle WHEN status is NOT INIT THEN should not update battle")
+    @Test
+    void given_authorizedUser_when_initPhaseCompleted_addOrDeletePersona_then_shouldFail() throws Exception {
+        var jwt1 = MockUtil.randomJwt();
+        var id1 = authMock.accountId(jwt1);
+
+        var battle = battleMapTestBuilder.map1(jwt1);
+        var battleId = battle.getBattleId();
+
+        battleMock.completeInitPhaseOk(jwt1, battleId);
+        assertEquals(BattleStatus.ONGOING, battleTransactionalService.getBattle(battleId, id1).getStatus(), "Status should be updated");
+        var expected = battleTransactionalService.getBattle(battleId, id1);
+
+        var persona1 = createRandomPersona(id1, "A");
+        var coordinatesInDisplacementArea = battleMapTestBuilder.map1PlayerArea();
+        var e1 = battleMock.exception500(battleMock.addPlayerPersona(jwt1, battleId, new AddPersonaRequest(persona1.getId(), coordinatesInDisplacementArea.get(0))));
+        battleMock.validateEqualsBattle(expected, battleTransactionalService.getBattle(battleId, id1));
+
+        var e2 = battleMock.exception500(battleMock.deletePlayerPersona(jwt1, battleId, persona1.getId()));
+        battleMock.validateEqualsBattle(expected, battleTransactionalService.getBattle(battleId, id1));
+    }
+
+    @DisplayName("completeInitPhase - GIVEN owner of a battle WHEN status is INIT THEN should update status")
+    @Test
+    void given_authorizedUser_when_completeInitPhase_isInitPhase_then_shouldUpdate() throws Exception {
+        var jwt1 = MockUtil.randomJwt();
+        var id1 = authMock.accountId(jwt1);
+
+        var battle = battleMapTestBuilder.map1(jwt1);
+        var battleId = battle.getBattleId();
+
+        battleMock.completeInitPhaseOk(jwt1, battleId);
+        assertEquals(BattleStatus.ONGOING, battleTransactionalService.getBattle(battleId, id1).getStatus(), "Status should be updated");
+    }
+
+
+    @DisplayName("completeInitPhase - GIVEN owner of a battle WHEN status is not INIT THEN should not update status")
+    @Test
+    void given_authorizedUser_when_completeInitPhase_isNotInitPhase_then_shouldUpdate() throws Exception {
+        var jwt1 = MockUtil.randomJwt();
+        var id1 = authMock.accountId(jwt1);
+
+        var battle = battleMapTestBuilder.map1(jwt1);
+        var battleId = battle.getBattleId();
+
+        battleMock.completeInitPhaseOk(jwt1, battleId);
+        assertEquals(BattleStatus.ONGOING, battleTransactionalService.getBattle(battleId, id1).getStatus(), "Status should be updated");
+
+        var e = battleMock.exception500(battleMock.completeInitPhase(jwt1, battleId));
+        assertEquals("Battle phase is invalid. Actual: ONGOING, Expected: INIT", e.getMessage());
+        assertEquals(BattleStatus.ONGOING, battleTransactionalService.getBattle(battleId, id1).getStatus(), "Status should not be updated");
+    }
+
+
     private List<Tile> getEmptyTiles(BattleMap map) {
         return map.getBattle().getTiles().stream().filter(t -> map.getBattle().getPersonaeOnTile(t).isEmpty()).collect(Collectors.toList());
     }

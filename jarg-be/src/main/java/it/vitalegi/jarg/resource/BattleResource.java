@@ -7,7 +7,6 @@ import it.vitalegi.jarg.battle.model.Coordinate;
 import it.vitalegi.jarg.battle.service.BattleTransactionalService;
 import it.vitalegi.jarg.battleaction.model.AddPersona;
 import it.vitalegi.jarg.battleaction.model.AddPersonaRequest;
-import it.vitalegi.jarg.battleaction.model.BattleAction;
 import it.vitalegi.jarg.battleaction.model.DeletePersona;
 import it.vitalegi.jarg.battleaction.model.DeletePersonaRequest;
 import it.vitalegi.jarg.logging.Performance;
@@ -67,6 +66,12 @@ public class BattleResource {
     @GetMapping("/{battleId}/displacement/available")
     public List<Coordinate> getAvailableDisplacements(@PathVariable("battleId") UUID battleId) {
         return battleTransactionalService.getAvailableDisplacements(battleId, getUserId());
+    }
+
+    @Operation(description = "Complete init phase")
+    @PutMapping("/{battleId}/phase/init/complete")
+    public void completeInitPhase(@PathVariable("battleId") UUID battleId) {
+        battleTransactionalService.completeInitPhase(battleId, getUserId());
     }
 
     protected int getUserId() {

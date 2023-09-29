@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalControllerExceptionHandler {
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<Ex> handleConversion(RuntimeException ex) {
+    public ResponseEntity<Ex> handleConversion(Throwable ex) {
         logEx(ex);
         return new ResponseEntity<>(new Ex(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
