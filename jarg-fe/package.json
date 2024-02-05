@@ -33,7 +33,7 @@
     "vitest": "^0.34.6"
   },
   "dependencies": {
-    "@pixi/ui": "^0.10.3",
+    "@pixi/ui": "^0.10.5",
     "pixi.js": "^7.4.0"
   }
 }
