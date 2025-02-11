@@ -21,7 +21,7 @@
     "@typescript-eslint/parser": "^6.21.0",
     "@vitest/coverage-istanbul": "^0.34.6",
     "@vitest/ui": "^0.34.7",
-    "esbuild": "^0.20.0",
+    "esbuild": "^0.25.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
